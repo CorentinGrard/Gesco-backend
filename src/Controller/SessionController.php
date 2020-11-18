@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Session;
+use App\Repository\SessionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,13 +11,34 @@ use Symfony\Component\Routing\Annotation\Route;
 class SessionController extends AbstractController
 {
     /**
-     * @Route("/session", name="session")
+     * @Route("/sessions", name="session_list")
+     * @param SessionRepository $sessionRepository
+     * @return Response
      */
-    public function index(): Response
+    public function list(SessionRepository $sessionRepository): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SessionController.php',
-        ]);
+        $sessions = $sessionRepository->findAll();
+        $sessionArray = [];
+
+
+        foreach($sessions as $session){
+            array_push($sessionArray, $session->getArray());
+        }
+
+        return $this->json(
+            $sessionArray
+        );
+    }
+
+    /**
+     * @Route("/sessions/{id}", name="session")
+     * @param Session $session
+     * @return Response
+     */
+    public function read(Session $session): Response
+    {
+        return $this->json(
+            $session->getArray()
+        );
     }
 }

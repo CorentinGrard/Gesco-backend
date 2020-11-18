@@ -106,4 +106,18 @@ class Session
 
         return $this;
     }
+
+    public function getArray()
+    {
+        return [
+            "id" => $this->getId(),
+            "obligatoire" => $this->getObligatoire(),
+            "type" => $this->getType(),
+            "dateDebut" => $this->getDateDebut(),
+            "dateFin" => $this->getDateFin(),
+            "idMatiere" => $this->getMatiere()->getId(),
+            "nomMatiere" => $this->getMatiere()->getNom()
+        ];
+    }
+
 }

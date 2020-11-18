@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MatiereRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,7 @@ class Matiere
     private $coefficient;
 
     /**
+     * @Groups("matiere")
      * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
      */
     private $sessions;
@@ -97,4 +99,20 @@ class Matiere
 
         return $this;
     }
+
+    public function getArray()
+    {
+        $sessions = [];
+        foreach($this->getSessions() as $session){
+            array_push($sessions, $session->getId());
+        }
+        return [
+            "id" => $this->getId(),
+            "nom" => $this->getNom(),
+            "coefficient" => $this->getCoefficient(),
+            "idSessions" => $sessions
+        ];
+    }
+
+
 }

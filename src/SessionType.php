@@ -3,7 +3,6 @@
 
 abstract class SessionType
 {
-    const __default = self::NONE;
     const NONE = "none";
     const COURS = "cours";
     const CONFERENCE = "conference";
@@ -11,5 +10,15 @@ abstract class SessionType
     const TP = "tp";
     const EXAMEN = "examen";
     const AUTRE = "autre";
+
+    const values = [
+        self::NONE,
+        self::COURS,
+        self::CONFERENCE,
+        self::TD,
+        self::TP,
+        self::EXAMEN,
+        self::AUTRE
+    ];
 
 }
