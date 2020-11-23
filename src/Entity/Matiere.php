@@ -36,6 +36,12 @@ class Matiere
      */
     private $sessions;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $module;
+
     public function __construct()
     {
         $this->sessions = new ArrayCollection();
@@ -112,6 +118,18 @@ class Matiere
             "coefficient" => $this->getCoefficient(),
             "idSessions" => $sessions
         ];
+    }
+
+    public function getModule(): ?Module
+    {
+        return $this->module;
+    }
+
+    public function setModule(?Module $module): self
+    {
+        $this->module = $module;
+
+        return $this;
     }
 
 

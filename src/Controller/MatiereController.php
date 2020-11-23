@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Matiere;
 use App\Repository\MatiereRepository;
+use App\Repository\ModuleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -51,24 +52,27 @@ class MatiereController extends AbstractController
      * @Route("/matieres", name="add_matiere", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param ModuleRepository $moduleRepository
      * @return JsonResponse
      */
-    public function add(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function add(Request $request, EntityManagerInterface $entityManager, ModuleRepository $moduleRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
         $coeff = $data['coefficient'];
-        //TODO $module = $data['idModule'];
+        $idModule = $data['idModule'];
 
         if (empty($nom) || empty($coeff) /*TODO || empty($module) */) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
+        $module = $moduleRepository->find($idModule);
+
         $matiere = new Matiere();
         $matiere->setNom($nom);
         $matiere->setCoefficient($coeff);
-        //TODO $matiere->setModule($module);
+        $matiere->setModule($module);
 
 
         $entityManager->persist($matiere);
