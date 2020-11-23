@@ -63,7 +63,7 @@ class MatiereController extends AbstractController
         $coeff = $data['coefficient'];
         $idModule = $data['idModule'];
 
-        if (empty($nom) || empty($coeff) /*TODO || empty($module) */) {
+        if (empty($nom) || empty($coeff) || empty($module)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
