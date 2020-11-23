@@ -32,7 +32,11 @@ class PersonneController extends AbstractController
     /**
      * @Route("/personnes/{id}", name="personne")
      */
-    public function getPersonneById(Personne personne) {
+    public function getPersonneById(Personne $personne) {
+
+        return $this->json(
+            $personne->getArray()
+        );
 
     }
 
