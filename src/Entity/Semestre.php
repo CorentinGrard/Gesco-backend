@@ -98,4 +98,22 @@ class Semestre
 
         return $this;
     }
+
+    public function getArray(){
+        $modules = $this->getModules();
+        $moduleArray = [];
+        foreach ($modules as $module) {
+            array_push($moduleArray, $module->getId());
+        }
+
+        return [
+            "id"=>$this->getId(),
+            "nom"=>$this->getNom(),
+            "idPromotion"=>$this->getPromotion()->getId(),
+            "nomPromotion"=>$this->getPromotion()->getNom(),
+            "nomFormation"=>$this->getPromotion()->getFormation()->getNom(),
+            "idModules"=>$moduleArray
+        ];
+    }
+
 }
