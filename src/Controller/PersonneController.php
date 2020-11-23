@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Personne;
 use App\Repository\PersonneRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,11 +16,25 @@ class PersonneController extends AbstractController
     public function list(PersonneRepository $personneRepository): Response
     {
 
+        $personnes = $personneRepository->findAll();
+        $personnesArray = [];
 
 
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PersonneController.php',
-        ]);
+        foreach($personnes as $personne){
+            array_push($personnesArray, $personne->getArray());
+        }
+
+        return $this->json(
+            $personnesArray
+        );
     }
+
+    /**
+     * @Route("/personnes/{id}", name="personne")
+     */
+    public function getPersonneById(Personne personne) {
+
+    }
+
+
 }
