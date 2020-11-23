@@ -115,4 +115,20 @@ class Module
 
         return $this;
     }
+
+    public function getArray()
+    {
+        $matieres = [];
+        foreach($this->getMatieres() as $matiere){
+            array_push($matieres, $matiere->getId());
+        }
+        return [
+            "id" => $this->getId(),
+            "nom" => $this->getNom(),
+            "matieres" => $matieres,
+            "coefficient" => $this->getCoeff(),
+            "idSemestre" => $this->getSemestre()->getId(),
+            "nomSemestre" => $this->getSemestre()->getNom()
+        ];
+    }
 }
