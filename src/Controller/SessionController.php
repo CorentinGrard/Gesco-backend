@@ -64,7 +64,7 @@ class SessionController extends AbstractController
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
 
-        if (empty($nom) || empty($coeff) /*TODO || empty($module) */) {
+        if (empty($type) || empty($obligatoire) || empty($idMatiere) || empty($dateDebut) || empty($dateFin) ) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
