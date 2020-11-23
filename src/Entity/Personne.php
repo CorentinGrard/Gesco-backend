@@ -106,4 +106,15 @@ class Personne
 
         return $this;
     }
+
+    public function getArray()
+    {
+        return [
+            "id" => $this->getId(),
+            "nom" => $this->getNom(),
+            "prenom" => $this->getPrenom(),
+            "email" => $this->getEmail(),
+            "numeroTel" => $this->getNumeroTel()
+        ];
+    }
 }
