@@ -60,7 +60,7 @@ class SessionController extends AbstractController
 
         $type = $data['type'];
         $obligatoire = $data['obligatoire'];
-        $idMatiere = $data['idMmatiere'];
+        $idMatiere = $data['idMatiere'];
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
 
