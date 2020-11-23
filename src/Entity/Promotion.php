@@ -98,4 +98,44 @@ class Promotion
 
         return $this;
     }
+
+    public function getModules(){
+        $semestres = $this->semestres;
+
+        $modules = [];
+        foreach($semestres as $semestre){
+            $mods = $semestre->getModules();
+            foreach($mods as $module){
+                array_push($modules, $module);
+            }
+        }
+        return $modules;
+    }
+
+    public function getMatieres(){
+        $modules = $this->getModules();
+
+        $matieres = [];
+        foreach($modules as $module){
+            $mats = $module->getMatieres();
+            foreach($mats as $matiere){
+                array_push($matieres, $matiere);
+            }
+        }
+        return $matieres;
+    }
+
+    public function getSessions()
+    {
+        $matieres = $this->getMatieres();
+
+        $sessions = [];
+        foreach($matieres as $matiere){
+            $sesss = $matiere->getSessions();
+            foreach($sesss as $session){
+                array_push($sessions, $session);
+            }
+        }
+        return $sessions;
+    }
 }

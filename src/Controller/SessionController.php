@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Promotion;
 use App\Entity\Session;
 use App\Repository\MatiereRepository;
+use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
+use App\Tools;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +37,39 @@ class SessionController extends AbstractController
             $sessionArray
         );
     }
+
+    /**
+     * @Route("/promo/{id}/sessions/week/{dateString}", name="session_promo", methods={"GET"}, defaults={"dateString"=""})
+     * @param SessionRepository $sessionRepository
+     * @param Promotion $promotion
+     * @param $dateString
+     * @return Response
+     */
+    public function listWeekPourPromo(SessionRepository $sessionRepository, Promotion $promotion, $dateString): Response
+    {
+        $dates = Tools::getDatesMonToFri($dateString);
+
+        $sessions = $promotion->getSessions();
+
+        $sessionArray = [];
+        foreach($sessions as $session){
+            if($session->getDateDebut() >= $dates["debut"] && $session->getDateFin() <= $dates["fin"]){
+                array_push($sessionArray, $session->getArray());
+            }
+        }
+
+        return $this->json(
+            [
+                "status"=>200,
+                "result"=>$sessionArray,
+                "info"=>
+                    [
+                        "dates"=>$dates
+                    ]
+            ]
+        );
+    }
+
 
     /**
      * @Route("/sessions/{id}", name="session", methods={"GET"})
@@ -74,8 +110,8 @@ class SessionController extends AbstractController
         $session->setType($type);
         $session->setObligatoire($obligatoire);
         $session->setMatiere($matiere);
-        $session->setDateDebut($dateDebut);
-        $session->setDateFin($dateFin);
+        $session->setDateDebut(new \DateTime($dateDebut));
+        $session->setDateFin(new \DateTime($dateFin));
 
 
         $entityManager->persist($session);

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Matiere;
+use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -79,6 +80,29 @@ class MatiereController extends AbstractController
         $entityManager->flush();
 
         return new JsonResponse(['status' => 'Matière ajoutée !'], Response::HTTP_CREATED);
+
+    }
+
+
+    /**
+     * @Route("/semestres/{id}/matieres", name="semestre_matieres", methods={"GET"})
+     * @param Semestre $semestre
+     * @return Response
+     */
+    public function getMatieresParSemestre(Semestre $semestre):Response{
+        $modules = $semestre->getModules();
+        $matieres = [];
+        foreach ($modules as $module) {
+            $mats = $module->getMatieres();
+            foreach ($mats as $mat) {
+                array_push($matieres, $mat->getArray());
+            }
+        }
+
+        return $this->json([
+            "status"=>200,
+            "result"=>$matieres
+        ]);
 
     }
 }

@@ -115,6 +115,7 @@ class Matiere
         return [
             "id" => $this->getId(),
             "nom" => $this->getNom(),
+            "idModule" => $this->getModule()->getId(),
             "coefficient" => $this->getCoefficient(),
             "idSessions" => $sessions
         ];
