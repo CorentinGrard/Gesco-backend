@@ -27,7 +27,7 @@ class Module
     /**
      * @ORM\Column(type="smallint")
      */
-    private $coeff;
+    private $ects;
 
     /**
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
@@ -62,14 +62,14 @@ class Module
         return $this;
     }
 
-    public function getCoeff(): ?int
+    public function getEcts(): ?int
     {
-        return $this->coeff;
+        return $this->ects;
     }
 
-    public function setCoeff(int $coeff): self
+    public function setEcts(int $ects): self
     {
-        $this->coeff = $coeff;
+        $this->ects = $ects;
 
         return $this;
     }
@@ -126,7 +126,7 @@ class Module
             "id" => $this->getId(),
             "nom" => $this->getNom(),
             "matieres" => $matieres,
-            "coefficient" => $this->getCoeff(),
+            "ects" => $this->getEcts(),
             "idSemestre" => $this->getSemestre()->getId(),
             "nomSemestre" => $this->getSemestre()->getNom()
         ];

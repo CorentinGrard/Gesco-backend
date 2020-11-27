@@ -39,7 +39,7 @@ class SessionController extends AbstractController
     }
 
     /**
-     * @Route("/promo/{id}/sessions/week/{dateString}", name="session_promo", methods={"GET"}, defaults={"dateString"=""})
+     * @Route("/promos/{id}/sessions/week/{dateString}", name="sessions_promo", methods={"GET"}, defaults={"dateString"=""})
      * @param SessionRepository $sessionRepository
      * @param Promotion $promotion
      * @param $dateString
