@@ -42,9 +42,15 @@ class Matiere
      */
     private $module;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Matiere")
+     */
+    private $notes;
+
     public function __construct()
     {
         $this->sessions = new ArrayCollection();
+        $this->notes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +135,36 @@ class Matiere
     public function setModule(?Module $module): self
     {
         $this->module = $module;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Note[]
+     */
+    public function getNotes(): Collection
+    {
+        return $this->notes;
+    }
+
+    public function addNote(Note $note): self
+    {
+        if (!$this->notes->contains($note)) {
+            $this->notes[] = $note;
+            $note->setMatiere($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNote(Note $note): self
+    {
+        if ($this->notes->removeElement($note)) {
+            // set the owning side to null (unless already changed)
+            if ($note->getMatiere() === $this) {
+                $note->setMatiere(null);
+            }
+        }
 
         return $this;
     }
