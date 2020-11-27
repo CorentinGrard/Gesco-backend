@@ -159,6 +159,7 @@ class Promotion
 
     public function getArray(){
         return [
+            "id" => $this->getId(),
             "nom" => $this->getNom(),
             "idFormation" => $this->getFormation()->getId(),
             "nomFormation" => $this->getFormation()->getNom()

@@ -13,6 +13,8 @@ class AssistantController extends AbstractController
 {
     /**
      * @Route("/assistants", name="assistant_list")
+     * @param AssistantRepository $assistantRepository
+     * @return Response
      */
     public function list(AssistantRepository $assistantRepository): Response
     {
@@ -28,7 +30,7 @@ class AssistantController extends AbstractController
     }
 
     /**
-     * @Route("/assistants/{id}", name="assistant_list")
+     * @Route("/assistants/{id}", name="assistant")
      * @param Assistant $assistant
      * @return Response
      */

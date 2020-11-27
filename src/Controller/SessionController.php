@@ -33,9 +33,8 @@ class SessionController extends AbstractController
             array_push($sessionArray, $session->getArray());
         }
 
-        return $this->json(
-            $sessionArray
-        );
+        return new JsonResponse($sessionArray, Response::HTTP_OK);
+
     }
 
     /**
@@ -58,16 +57,13 @@ class SessionController extends AbstractController
             }
         }
 
-        return $this->json(
-            [
-                "status"=>200,
-                "result"=>$sessionArray,
-                "info"=>
-                    [
-                        "dates"=>$dates
-                    ]
-            ]
-        );
+/*        return new JsonResponse([
+            "result"=>$sessionArray,
+            "info"=>["dates"=>$dates]
+        ],Response::HTTP_OK);*/
+        return new JsonResponse($sessionArray,Response::HTTP_OK);
+
+
     }
 
 

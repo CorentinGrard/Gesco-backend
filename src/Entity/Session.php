@@ -113,8 +113,8 @@ class Session
             "id" => $this->getId(),
             "obligatoire" => $this->getObligatoire(),
             "type" => $this->getType(),
-            "dateDebut" => $this->getDateDebut(),
-            "dateFin" => $this->getDateFin(),
+            "dateDebut" => $this->getDateDebut()->format('Y-m-d\TH:i:sO'),
+            "dateFin" => $this->getDateFin()->format('Y-m-d\TH:i:sO'),
             "idMatiere" => $this->getMatiere()->getId(),
             "nomMatiere" => $this->getMatiere()->getNom()
         ];
