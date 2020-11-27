@@ -15,10 +15,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
+
 class MatiereController extends AbstractController
 {
     /**
      * @Route("/matieres", name="matiere_list", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Liste des matières",
+     *     @OA\JsonContent(
+     *         type="array",
+     *         @OA\Items(ref=@Model(type=Matiere::class))
+     *     )
+     * )
+     * @OA\Tag(name="matieres")
+     * @Security(name="Bearer")
      * @param MatiereRepository $matiereRepository
      * @return Response
      */
@@ -33,7 +47,6 @@ class MatiereController extends AbstractController
         }
 
         return new JsonResponse($matiereArray, Response::HTTP_OK);
-
     }
 
     /**
