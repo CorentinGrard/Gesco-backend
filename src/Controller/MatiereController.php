@@ -32,9 +32,8 @@ class MatiereController extends AbstractController
             array_push($matiereArray, $matiere->getArray());
         }
 
-        return $this->json(
-            $matiereArray
-        );
+        return new JsonResponse($matiereArray, Response::HTTP_OK);
+
     }
 
     /**
@@ -44,9 +43,8 @@ class MatiereController extends AbstractController
      */
     public function read(Matiere $matiere): Response
     {
-        return $this->json(
-            $matiere->getArray()
-        );
+        return new JsonResponse($matiere->getArray(), Response::HTTP_OK);
+
     }
 
     /**
@@ -64,7 +62,7 @@ class MatiereController extends AbstractController
         $coeff = $data['coefficient'];
         $idModule = $data['idModule'];
 
-        if (empty($nom) || empty($coeff) || empty($module)) {
+        if (empty($nom) || empty($coeff) || empty($idModule)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
@@ -89,7 +87,8 @@ class MatiereController extends AbstractController
      * @param Semestre $semestre
      * @return Response
      */
-    public function getMatieresParSemestre(Semestre $semestre):Response{
+    public function getMatieresParSemestre(Semestre $semestre):Response
+    {
         $modules = $semestre->getModules();
         $matieres = [];
         foreach ($modules as $module) {
@@ -99,10 +98,7 @@ class MatiereController extends AbstractController
             }
         }
 
-        return $this->json([
-            "status"=>200,
-            "result"=>$matieres
-        ]);
+        return new JsonResponse($matieres, Response::HTTP_OK);
 
     }
 }

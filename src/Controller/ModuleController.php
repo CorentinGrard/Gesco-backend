@@ -30,9 +30,8 @@ class ModuleController extends AbstractController
             array_push($moduleArray, $module->getArray());
         }
 
-        return $this->json(
-            $moduleArray
-        );
+        return new JsonResponse($moduleArray, Response::HTTP_OK);
+
     }
 
     /**
@@ -42,9 +41,7 @@ class ModuleController extends AbstractController
      */
     public function read(Module $module): Response
     {
-        return $this->json(
-            $module->getArray()
-        );
+        return new JsonResponse($module->getArray(), Response::HTTP_OK);
     }
 
     /**
@@ -60,9 +57,9 @@ class ModuleController extends AbstractController
 
         $nom = $data['nom'];
         $idSemestre = $data['idSemestre'];
-        $coefficient = $data['coefficient'];
+        $ects = $data['ects'];
 
-        if (empty($nom) || empty($idSemestre) || empty($coefficient) ) {
+        if (empty($nom) || empty($idSemestre) || empty($ects) ) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
@@ -71,13 +68,13 @@ class ModuleController extends AbstractController
         $module = new Module();
         $module->setNom($nom);
         $module->setSemestre($semestre);
-        $module->setCoeff($coefficient);
+        $module->setEcts($ects);
 
 
         $entityManager->persist($module);
         $entityManager->flush();
 
-        return new JsonResponse(['status' => 'Module ajouté !'], Response::HTTP_CREATED); //TODO
+        return new JsonResponse(['status' => 'Module ajouté !'], Response::HTTP_CREATED);
     }
 
 

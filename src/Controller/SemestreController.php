@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SemestreController extends AbstractController
 {
     /**
-     * @Route("/promo/{id}/semestres", name="promo_semestres")
+     * @Route("/promos/{id}/semestres", name="promo_semestres")
      * @param Promotion $promotion
      * @return Response
      */

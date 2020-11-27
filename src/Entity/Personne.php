@@ -110,6 +110,8 @@ class Personne
         return $this;
     }
 
+    //TODO Créer la fonction de génération d'email
+
     public function getArray()
     {
         return [
