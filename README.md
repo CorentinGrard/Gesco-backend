@@ -2,7 +2,7 @@
 
 ## Routes
 
-GET matieres
+### Matieres
 
 - GET `/matieres`
     - Response: `array(Matiere)`
@@ -44,7 +44,7 @@ GET matieres
         "idSessions": [int]
     }
     ```
----    
+### Sessions   
 - GET `/sessions`
     - Response:`array(Session)`
     ```json
@@ -99,7 +99,7 @@ GET matieres
         "nomMatiere":string
     }
     ```
----
+### Modules
 - GET `/modules`
     - Response: `array(Module)`
     ```json
@@ -141,7 +141,7 @@ GET matieres
         "nomSemestre": string
     }
     ```
----
+### Sessions par promo dans la semaine
 - GET `/sessions/promo/{id:int}/week/{YYYYMMDD:?}`
     - `YYYYMMDD = 20201127`
     - Response:`array(Session)`
@@ -158,7 +158,7 @@ GET matieres
       }
     ]
     ```
----
+### Semestres par promo
 - GET `/promos/{id:int}/semestres`
     - Response: `array(Semestre)`
     ```json
@@ -173,7 +173,7 @@ GET matieres
         }
     ]
     ```
----
+### Promo par assistant
 - GET `/assistants/{id:int}/promos`
     - Response: `array(Promotion)`
     ```json
