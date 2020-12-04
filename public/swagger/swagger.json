@@ -176,7 +176,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Matiere ajoutée !"
+                        "description": "Session ajoutée !"
                     },
                     "404": {
                         "description": "Non trouvé..."
@@ -259,6 +259,42 @@
                         "type": "object"
                     },
                     "notes": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Module": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "ects": {
+                        "type": "integer"
+                    },
+                    "matieres": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "semestre": {
                         "type": "array",
                         "items": {
                             "properties": {
