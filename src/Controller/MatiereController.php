@@ -7,6 +7,7 @@ use App\Entity\Matiere;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,10 +15,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class MatiereController extends AbstractController
 {
     /**
+     * @OA\Get(
+     *      tags={"Matieres"},
+     *      path="/matieres",
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Matiere"))
+     *      )
+     * )
      * @Route("/matieres", name="matiere_list", methods={"GET"})
      * @param MatiereRepository $matiereRepository
      * @return Response
@@ -25,29 +41,69 @@ class MatiereController extends AbstractController
     public function list(MatiereRepository $matiereRepository): Response
     {
         $matieres = $matiereRepository->findAll();
-        $matiereArray = [];
+        /*$matiereArray = [];
 
 
         foreach($matieres as $matiere){
             array_push($matiereArray, $matiere->getArray());
         }
 
-        return new JsonResponse($matiereArray, Response::HTTP_OK);
+        return new JsonResponse($matiereArray, Response::HTTP_OK);*/
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer([$normalizer],[new JsonEncoder()]);
+
+        $json = $serializer->normalize($matieres, 'json',['groups'=>'matiere_get']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
 
     }
 
     /**
+     * @OA\Get(
+     *      tags={"Matieres"},
+     *      path="/matieres/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(ref="#/components/schemas/Matiere")
+     *      )
+     * )
      * @Route("/matieres/{id}", name="matiere")
      * @param Matiere $matiere
      * @return Response
      */
     public function read(Matiere $matiere): Response
     {
-        return new JsonResponse($matiere->getArray(), Response::HTTP_OK);
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer([$normalizer],[new JsonEncoder()]);
 
+        $json = $serializer->normalize($matiere, 'json',['groups'=>'matiere_get']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
     }
 
     /**
+     * @OA\Post(
+     *      tags={"Matieres"},
+     *      path="/matieres",
+     *      @OA\RequestBody(
+     *          request="matieres",
+     *          @OA\JsonContent(
+     *              @OA\Property(type="string", property="nom"),
+     *              @OA\Property(type="integer", property="coefficient"),
+     *              @OA\Property(type="integer", property="module", description="idModule")
+     *          )
+     *      ),
+     *      @OA\Response(response="201", description="Matiere ajoutée !"),
+     *      @OA\Response(response="404", description="Non trouvé...")
+     * )
      * @Route("/matieres", name="add_matiere", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
@@ -60,7 +116,7 @@ class MatiereController extends AbstractController
 
         $nom = $data['nom'];
         $coeff = $data['coefficient'];
-        $idModule = $data['idModule'];
+        $idModule = $data['module'];
 
         if (empty($nom) || empty($coeff) || empty($idModule)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
@@ -83,6 +139,20 @@ class MatiereController extends AbstractController
 
 
     /**
+     * @OA\Get(
+     *      tags={"Matieres"},
+     *      path="/semestres/{id}/matieres",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Matiere"))
+     *      )
+     * )
      * @Route("/semestres/{id}/matieres", name="semestre_matieres", methods={"GET"})
      * @param Semestre $semestre
      * @return Response
@@ -94,11 +164,18 @@ class MatiereController extends AbstractController
         foreach ($modules as $module) {
             $mats = $module->getMatieres();
             foreach ($mats as $mat) {
-                array_push($matieres, $mat->getArray());
+                array_push($matieres, $mat);//->getArray());
             }
         }
 
-        return new JsonResponse($matieres, Response::HTTP_OK);
+        //return new JsonResponse($matieres, Response::HTTP_OK);
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer([$normalizer],[new JsonEncoder()]);
+
+        $json = $serializer->normalize($matieres, 'json',['groups'=>'matiere_get']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
 
     }
 }
