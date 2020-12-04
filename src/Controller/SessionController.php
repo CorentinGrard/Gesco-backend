@@ -5,11 +5,9 @@ namespace App\Controller;
 use App\Entity\Promotion;
 use App\Entity\Session;
 use App\Repository\MatiereRepository;
-use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
 use App\Serializers\SessionSerializer;
 use App\Tools;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,13 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
+
 
 class SessionController extends AbstractController
 {
@@ -44,14 +36,8 @@ class SessionController extends AbstractController
     public function list(SessionRepository $sessionRepository): Response
     {
         $sessions = $sessionRepository->findAll();
-        $sessionArray = [];
 
-
-        foreach($sessions as $session){
-            array_push($sessionArray, $session);//->getArray());
-        }
-
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'session_get']);
+        $json = SessionSerializer::serializeJson($sessions, ['groups'=>'session_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 

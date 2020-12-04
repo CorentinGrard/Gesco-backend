@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-class SessionSerializer
+abstract class SessionSerializer
 {
     public static $serializer;
 

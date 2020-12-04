@@ -7,7 +7,7 @@ use App\Entity\Matiere;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
-use Doctrine\Common\Annotations\AnnotationReader;
+use App\Serializers\MatiereSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,12 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 class MatiereController extends AbstractController
 {
@@ -41,19 +35,8 @@ class MatiereController extends AbstractController
     public function list(MatiereRepository $matiereRepository): Response
     {
         $matieres = $matiereRepository->findAll();
-        /*$matiereArray = [];
 
-
-        foreach($matieres as $matiere){
-            array_push($matiereArray, $matiere->getArray());
-        }
-
-        return new JsonResponse($matiereArray, Response::HTTP_OK);*/
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $serializer = new Serializer([$normalizer],[new JsonEncoder()]);
-
-        $json = $serializer->normalize($matieres, 'json',['groups'=>'matiere_get']);
+        $json = MatiereSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -80,11 +63,7 @@ class MatiereController extends AbstractController
      */
     public function read(Matiere $matiere): Response
     {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $serializer = new Serializer([$normalizer],[new JsonEncoder()]);
-
-        $json = $serializer->normalize($matiere, 'json',['groups'=>'matiere_get']);
+        $json = MatiereSerializer::serializeJson($matiere, ['groups'=>'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -168,12 +147,7 @@ class MatiereController extends AbstractController
             }
         }
 
-        //return new JsonResponse($matieres, Response::HTTP_OK);
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory);
-        $serializer = new Serializer([$normalizer],[new JsonEncoder()]);
-
-        $json = $serializer->normalize($matieres, 'json',['groups'=>'matiere_get']);
+        $json = MatiereSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 

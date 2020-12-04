@@ -9,11 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=ModuleRepository::class)
  */
 class Module
 {
     /**
+     * @OA\Property(type="integer"))
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -22,24 +24,28 @@ class Module
     private $id;
 
     /**
+     * @OA\Property(type="string"))
      * @ORM\Column(type="string", length=255)
      * @Groups("module_get")
      */
     private $nom;
 
     /**
+     * @OA\Property(type="integer"))
      * @ORM\Column(type="smallint")
      * @Groups("module_get")
      */
     private $ects;
 
     /**
+     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
      * @Groups("module_get")
      */
     private $matieres;
 
     /**
+     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("module_get")
