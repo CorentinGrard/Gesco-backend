@@ -49,7 +49,5 @@ class EtudiantRepository extends ServiceEntityRepository
     */
 
     public function ajoutNoteEtudiant($idEtudiant,$idMatiere,$note): bool
-    {
-
-    }
+    {}
 }

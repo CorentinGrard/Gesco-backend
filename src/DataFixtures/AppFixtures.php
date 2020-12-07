@@ -62,10 +62,10 @@ class AppFixtures extends Fixture
         }
 
         $promotions = [];
-        for($i = 0; $i < 5; $i++){
-            for($j = 0; $j < 3; $j++){
+        for ($i = 0; $i < 5; $i++) {
+            for ($j = 0; $j < 3; $j++) {
                 $promotion = new Promotion();
-                $promotion->setNom($i+11);
+                $promotion->setNom($i + 11);
                 $promotion->setFormation($formations[$j]);
                 $promotion->setAssistant($assistants[$j]);
                 $manager->persist($promotion);
@@ -75,7 +75,7 @@ class AppFixtures extends Fixture
 
         $k = 0;
         $semestres = [];
-        foreach($promotions as $promotion){
+        foreach ($promotions as $promotion) {
             $semestre = new Semestre();
             $semestre->setNom("Semestre " . ($k + 1));
             $semestre->setPromotion($promotion);
@@ -87,7 +87,7 @@ class AppFixtures extends Fixture
 
         $k = 0;
         $modules = [];
-        foreach($semestres as $semestre){
+        foreach ($semestres as $semestre) {
             $module = new Module();
             $module->setNom(self::generateRandomString($k%5+10));
             $module->setEcts(3);
@@ -100,10 +100,10 @@ class AppFixtures extends Fixture
 
         $k = 0;
         $matieres = [];
-        foreach($modules as $module){
+        foreach ($modules as $module) {
             $matiere = new Matiere();
-            $matiere->setNom(self::generateRandomString($k%5+10));
-            $matiere->setCoefficient($k%4+1);
+            $matiere->setNom(self::generateRandomString($k % 5 + 10));
+            $matiere->setCoefficient($k % 4 + 1);
             $matiere->setModule($module);
             $manager->persist($matiere);
             array_push($matieres, $matiere);
@@ -116,8 +116,8 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 100; $i++) {
             $bool = !$bool;
             $session = new Session();
-            $session->setMatiere($matieres[$i%$mat]);
-            $session->setType(SessionType::values[$i%6+1]);
+            $session->setMatiere($matieres[$i % $mat]);
+            $session->setType(SessionType::values[$i % 6 + 1]);
             $session->setObligatoire($bool);
             $session->setDateDebut(new DateTime());
             $session->setDateFin(new DateTime());
