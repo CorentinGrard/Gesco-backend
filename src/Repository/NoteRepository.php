@@ -77,7 +77,7 @@ class NoteRepository extends ServiceEntityRepository
     public function getAllNotesBySemestre(int $idEtudiant, int $idSemestre)
     {
 
-        $sql = "SELECT S.id as \"IDSEMESTRE\", S.nom as \"NOMSEMESTRE\", MO.id as \"IDMODULE\", MO.nom as \"NOMMODULE\", MA.id as \"IDMATIERE\", MA.nom as \"NOMMATIERE\", N.note, MA.coefficient".
+        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", N.note, MA.coefficient".
                 " FROM Semestre S".
                 " JOIN module MO ON MO.semestre_id=S.id".
                 " JOIN matiere MA ON MA.module_id=MO.id".
@@ -100,8 +100,6 @@ class NoteRepository extends ServiceEntityRepository
 
         $result = $stmt->fetchAll();
 
-        $resultFormatted = [];
-
        # "IDSEMESTRE": "1",
        # "NOMSEMESTRE": "Semestre 1",
        # "IDMODULE": "1",
@@ -110,24 +108,59 @@ class NoteRepository extends ServiceEntityRepository
        # "NOMMATIERE": "oqsQatqRL6VQ",
        # "note": "19",#"coefficient": "1"
 
+
+
+        $resultFormatted = [
+            "id" => $result[0]["idSemestre"],
+            "name" => $result[0]["nomSemestre"],
+            "modules" => []
+        ];
+
         $modules = [];
 
         foreach ($result as $elem) {
-            $idModule = $elem["IDMODULE"];
-            $idMatiere = $elem["IDMATIERE"];
-            $nomModule = $elem["NOMMODULE"];
-            $nomMatiere = $elem["NOMMATIERE"];
-            $note = $elem["NOTE"];
+            $moduleFound = false;
+
+            $idModule = $elem["idModule"];
+            $idMatiere = $elem["idMatiere"];
+            $nomModule = $elem["nomModule"];
+            $nomMatiere = $elem["nomMatiere"];
+            $note = $elem["note"];
+            $coeff = $elem["coefficient"];
+
 
             foreach($modules as $module){
-                if()
+                if($module["id"] == $idModule){
+                    $modulefound = true;
+                    array_push($module["matieres"],
+                        [
+                            "id"=>$idMatiere,
+                            "name"=>$nomMatiere,
+                            "note"=>$note,
+                            "coeff"=>$coeff
+                        ]);
+                }
+            }
+            if(!$moduleFound){
+                array_push($modules, [
+                    "id"=>$idModule,
+                    "name"=>$nomModule,
+                    "matieres"=>[
+                        [
+                            "id"=>$idMatiere,
+                            "name"=>$nomMatiere,
+                            "note"=>$note,
+                            "coeff"=>$coeff
+                        ]
+                    ]
+                ]);
             }
 
         }
 
+        $resultFormatted["modules"] = $modules;
 
-
-        return $result;
+        return $resultFormatted;
     }
 
     // /**
