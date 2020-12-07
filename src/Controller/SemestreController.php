@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Promotion;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SemestreController extends AbstractController
 {
     /**
-     * @Route("/promo/{id}/semestres", name="promo_semestres")
+     * @Route("/promos/{id}/semestres", name="promo_semestres")
      * @param Promotion $promotion
      * @return Response
      */
@@ -22,9 +23,11 @@ class SemestreController extends AbstractController
             array_push($semestreArray, $semestre->getArray());
         }
 
-        return $this->json([
+        return new JsonResponse($semestreArray, Response::HTTP_OK);
+
+        /*return $this->json([
             'status' => 200,
             'result' => $semestreArray
-        ]);
+        ]);*/
     }
 }

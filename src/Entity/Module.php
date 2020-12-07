@@ -6,37 +6,50 @@ use App\Repository\ModuleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=ModuleRepository::class)
  */
 class Module
 {
     /**
+     * @OA\Property(type="integer"))
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"module_get", "matiere_get"})
      */
     private $id;
 
     /**
+     * @OA\Property(type="string"))
      * @ORM\Column(type="string", length=255)
+     * @Groups("module_get")
      */
     private $nom;
 
     /**
+     * @OA\Property(type="integer"))
      * @ORM\Column(type="smallint")
+     * @Groups("module_get")
      */
-    private $coeff;
+    private $ects;
 
     /**
+     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
+     * @Groups("module_get")
      */
     private $matieres;
 
     /**
+     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("module_get")
      */
     private $semestre;
 
@@ -62,14 +75,14 @@ class Module
         return $this;
     }
 
-    public function getCoeff(): ?int
+    public function getEcts(): ?int
     {
-        return $this->coeff;
+        return $this->ects;
     }
 
-    public function setCoeff(int $coeff): self
+    public function setEcts(int $ects): self
     {
-        $this->coeff = $coeff;
+        $this->ects = $ects;
 
         return $this;
     }
@@ -126,7 +139,7 @@ class Module
             "id" => $this->getId(),
             "nom" => $this->getNom(),
             "matieres" => $matieres,
-            "coefficient" => $this->getCoeff(),
+            "ects" => $this->getEcts(),
             "idSemestre" => $this->getSemestre()->getId(),
             "nomSemestre" => $this->getSemestre()->getNom()
         ];

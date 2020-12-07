@@ -2,15 +2,18 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Assistant;
 use App\Entity\Formation;
 use App\Entity\Matiere;
 use App\Entity\Module;
+use App\Entity\Personne;
 use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Entity\Session;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 use SessionType;
 
 class AppFixtures extends Fixture
@@ -41,6 +44,22 @@ class AppFixtures extends Fixture
         $manager->persist($formation);
         array_push($formations, $formation);
 
+        $assistants = [];
+        for($i = 0; $i < 3;$i++){
+            $faker = Factory::create();
+            $personne = new Personne();
+
+            $personne->setNom($faker->lastName);
+            $personne->setPrenom($faker->firstName);
+            $personne->setAdresse($faker->address);
+            $personne->setEmail($faker->email);
+            $personne->setNumeroTel($faker->phoneNumber);
+
+            $assistant = new Assistant();
+            $assistant->setPersonne($personne);
+            $manager->persist($assistant);
+            array_push($assistants, $assistant);
+        }
 
         $promotions = [];
         for ($i = 0; $i < 5; $i++) {
@@ -48,6 +67,7 @@ class AppFixtures extends Fixture
                 $promotion = new Promotion();
                 $promotion->setNom($i + 11);
                 $promotion->setFormation($formations[$j]);
+                $promotion->setAssistant($assistants[$j]);
                 $manager->persist($promotion);
                 array_push($promotions, $promotion);
             }
@@ -69,8 +89,8 @@ class AppFixtures extends Fixture
         $modules = [];
         foreach ($semestres as $semestre) {
             $module = new Module();
-            $module->setNom(self::generateRandomString($k % 5 + 10));
-            $module->setCoeff(3);
+            $module->setNom(self::generateRandomString($k%5+10));
+            $module->setEcts(3);
             $module->setSemestre($semestre);
             $manager->persist($module);
 
@@ -90,16 +110,6 @@ class AppFixtures extends Fixture
 
             $k++;
         }
-
-        /*$matieres = [];
-
-        for ($i = 0; $i < 10; $i++) {
-            $matiere = new Matiere();
-            $matiere->setNom(self::generateRandomString($i%5+5));
-            $matiere->setCoefficient(2);
-            array_push($matieres, $matiere);
-            $manager->persist($matiere);
-        }*/
 
         $mat = sizeof($matieres);
         $bool = true;

@@ -35,6 +35,12 @@ class Promotion
      */
     private $formation;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $assistant;
+
     public function __construct()
     {
         $this->semestres = new ArrayCollection();
@@ -138,4 +144,26 @@ class Promotion
         }
         return $sessions;
     }
+
+    public function getAssistant(): ?Assistant
+    {
+        return $this->assistant;
+    }
+
+    public function setAssistant(?Assistant $assistant): self
+    {
+        $this->assistant = $assistant;
+
+        return $this;
+    }
+
+    public function getArray(){
+        return [
+            "id" => $this->getId(),
+            "nom" => $this->getNom(),
+            "idFormation" => $this->getFormation()->getId(),
+            "nomFormation" => $this->getFormation()->getNom()
+        ];
+    }
+
 }
