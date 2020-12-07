@@ -1,4 +1,11 @@
-
+# Get started
+Installation :
+La db doit être up lors du build du php-fpm, à cause du doctrine update (solution temporaire)
+```
+docker-compose up -d database
+docker-compose build php-fpm
+docker-compose up php-fpm
+```
 
 ## Routes
 
