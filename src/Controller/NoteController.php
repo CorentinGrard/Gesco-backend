@@ -96,23 +96,28 @@ class NoteController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          @OA\JsonContent(type="array",
+     *          @OA\JsonContent(type="object",
      *              @OA\Property(property="id", type="integer"),
      *              @OA\Property(property="nom", type="string"),
      *              @OA\Property(property="modules", type="array",
      *                  @OA\Items(
-     *                      @OA\Property(property="id", type="integer"),
-     *                      @OA\Property(property="nom", type="string"),
-     *                      @OA\Property(property="matieres", type="array",
-     *                          @OA\Items(
-     *                              @OA\Property(property="id", type="integer"),
-     *                              @OA\Property(property="nom", type="string"),
-     *                              @OA\Property(property="note", type="string"),
-     *                              @OA\Property(property="coeff", type="string")
+     *                      @OA\Schema(schema="module",
+     *                          @OA\Property(property="id", type="integer"),
+     *                          @OA\Property(property="nom", type="string"),
+     *                          @OA\Property(property="matieres", type="array",
+     *                              @OA\Items(
+     *                                  @OA\Schema(schema="matiere",
+     *                                      @OA\Property(property="id", type="integer"),
+     *                                          @OA\Property(property="nom", type="string"),
+     *                                          @OA\Property(property="note", type="string"),
+     *                                          @OA\Property(property="coeff", type="string")
+     *
+     *                                  )
+     *                              )
      *                          )
      *                      )
      *                  )
-     *              ),
+     *              )
      *          )
      *      ),
      *      @OA\Response(response="404", description="Non trouvé...")
