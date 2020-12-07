@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Repository\EtudiantRepository;
+use App\Repository\MatiereRepository;
+use App\Repository\NoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class EtudiantController extends AbstractController
@@ -23,25 +26,5 @@ class EtudiantController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/etudiants/{idEtudiant}/matieres/{idMatiere}/note/{note}", methods={"POST"}, requirements={"idEtudiant"="\d+", "idMatiere"="\d+"})
-     * @param EtudiantRepository $etudiantRepository
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @return JsonResponse
-     */
-    public function ajoutNoteAEtudiantDansUneMatiere(EtudiantRepository $etudiantRepository, int $idEtudiant, int $idMatiere, Request $request, EntityManagerInterface $entityManager): Response
-    {
 
-        $data = json_decode($request->getContent(), true);
-        $note = $data['note'];
-
-
-
-        $etudiantRepository->ajoutNoteEtudiant($idEtudiant,$idMatiere,$note);
-
-        return $this->json([
-
-        ]);
-    }
 }
