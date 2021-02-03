@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Assistant;
 use App\Entity\Promotion;
+use App\Repository\PromotionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,5 +28,19 @@ class PromotionController extends AbstractController
 
         return new JsonResponse($promoArray, Response::HTTP_OK);
 
+    }
+
+    /**
+     * @Route("/promos", name="promos", mthods={"GET"})
+     * @param PromotionRepository $promotionRepository
+     * @return Response
+     */
+    public function promos(PromotionRepository $promotionRepository):Response
+    {
+        $promos = $promotionRepository->findAll();
+
+$json = PromotionSerializer
+
+        return new JsonResponse($promoArray, Response::HTTP_OK);
     }
 }

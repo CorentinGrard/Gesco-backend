@@ -6,32 +6,43 @@ use App\Repository\PromotionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=PromotionRepository::class)
  */
 class Promotion
 {
     /**
+     * @OA\Property(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_all_promotions"})
      */
     private $id;
 
     /**
+     * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_all_promotions"})
      */
     private $nom;
 
     /**
+     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
      * @ORM\OneToMany(targetEntity=Semestre::class, mappedBy="promotion")
+     * @Groups({"get_promotion"})
      */
     private $semestres;
 
     /**
+     * @OA\Property(type="formation", @OA\Property(property="id", type="integer"))
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_promotion"})
      */
     private $formation;
 
