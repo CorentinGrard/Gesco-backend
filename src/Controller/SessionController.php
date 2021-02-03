@@ -9,6 +9,7 @@ use App\Repository\SessionRepository;
 use App\Serializers\SessionSerializer;
 use App\Tools;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -138,6 +139,7 @@ class SessionController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param MatiereRepository $matiereRepository
      * @return JsonResponse
+     * @throws Exception
      */
     public function add(Request $request, EntityManagerInterface $entityManager, MatiereRepository $matiereRepository): JsonResponse
     {
