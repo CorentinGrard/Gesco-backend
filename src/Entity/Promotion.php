@@ -20,14 +20,14 @@ class Promotion
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_all_promotions"})
+     * @Groups({"get_all_promotions", "get_promotion"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_all_promotions"})
+     * @Groups({"get_promotion"})
      */
     private $nom;
 
@@ -39,16 +39,24 @@ class Promotion
     private $semestres;
 
     /**
-     * @OA\Property(type="formation", @OA\Property(property="id", type="integer"))
+     * @OA\Property(
+     *     property="formation",
+     *     @OA\Property(property="id", type="integer")
+     * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_promotion"})
+     * @Groups({"get_promotion", "get_all_promotions"})
      */
     private $formation;
 
     /**
+     * @OA\Property(
+     *     property="assistant",
+     *     @OA\Property(property="id", type="integer")
+     * )
      * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_promotion"})
      */
     private $assistant;
 
@@ -166,6 +174,15 @@ class Promotion
         $this->assistant = $assistant;
 
         return $this;
+    }
+
+    /**
+     * @OA\Property(property="nomPromotion", type="string")
+     * @Groups({"get_all_promotions"})
+     */
+    public function getNomPromotion(): string
+    {
+        return $this->getFormation()->getNom() . " " . $this->getNom();
     }
 
     public function getArray(){
