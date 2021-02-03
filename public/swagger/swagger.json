@@ -119,6 +119,120 @@
                 }
             }
         },
+        "/notes": {
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "App\\Controller\\NoteController::ajoutNoteAEtudiantDansUneMatiere",
+                "requestBody": {
+                    "request": "notes",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "idMatiere": {
+                                        "type": "integer"
+                                    },
+                                    "idEtudiant": {
+                                        "type": "integer"
+                                    },
+                                    "note": {
+                                        "type": "number",
+                                        "format": "float"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Note ajoutée !"
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
+        "/etudiants/{idEtudiant}/semestres/{idSemestre}/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "App\\Controller\\NoteController::notesEtudiantParSemestre",
+                "parameters": [
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "idSemestre",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "nom": {
+                                            "type": "string"
+                                        },
+                                        "modules": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "nom": {
+                                                    "type": "string"
+                                                },
+                                                "matieres": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "nom": {
+                                                            "type": "string"
+                                                        },
+                                                        "note": {
+                                                            "type": "string"
+                                                        },
+                                                        "coeff": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "array"
+                                                }
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
         "/sessions": {
             "get": {
                 "tags": [
@@ -304,6 +418,34 @@
                             },
                             "type": "object"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "Note": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "note": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "etudiant": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "matiere": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
