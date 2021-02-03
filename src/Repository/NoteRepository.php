@@ -74,6 +74,99 @@ class NoteRepository extends ServiceEntityRepository
         return false;
     }
 
+    public function getAllNotes(int $idEtudiant) {
+        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", N.note, MA.coefficient".
+            " FROM Semestre S".
+            " JOIN module MO ON MO.semestre_id=S.id".
+            " JOIN matiere MA ON MA.module_id=MO.id".
+            " JOIN note N ON N.matiere_id=MA.id".
+            " JOIN etudiant E ON N.etudiant_id=E.id".
+            " WHERE E.id = $idEtudiant".
+            " GROUP BY S.id";
+
+        $stmt = null;
+        try {
+            $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        } catch (Exception $e) {
+            return null;
+        }
+        try {
+            $stmt->execute([]);
+        } catch (\Doctrine\DBAL\Driver\Exception $e) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        # "IDSEMESTRE": "1",
+        # "NOMSEMESTRE": "Semestre 1",
+        # "IDMODULE": "1",
+        # "NOMMODULE": "8n4BfmIzFJ",
+        # "IDMATIERE": "1",
+        # "NOMMATIERE": "oqsQatqRL6VQ",
+        # "note": "19",#"coefficient": "1"
+
+        $resultFormatted = [];
+
+        foreach ($result as $semestreCourant) {
+
+
+            $semestreCourantFormatted = [
+                "id" => $result[0]["idSemestre"],
+                "name" => $result[0]["nomSemestre"],
+                "modules" => []
+            ];
+
+            $modules = [];
+
+            foreach ($result as $elem) {
+                $moduleFound = false;
+
+                $idModule = $elem["idModule"];
+                $idMatiere = $elem["idMatiere"];
+                $nomModule = $elem["nomModule"];
+                $nomMatiere = $elem["nomMatiere"];
+                $note = $elem["note"];
+                $coeff = $elem["coefficient"];
+
+
+                foreach ($modules as $module) {
+                    if ($module["id"] == $idModule) {
+                        $modulefound = true;
+                        array_push($module["matieres"],
+                            [
+                                "id" => $idMatiere,
+                                "name" => $nomMatiere,
+                                "note" => $note,
+                                "coeff" => $coeff
+                            ]);
+                    }
+                }
+                if (!$moduleFound) {
+                    array_push($modules, [
+                        "id" => $idModule,
+                        "name" => $nomModule,
+                        "matieres" => [
+                            [
+                                "id" => $idMatiere,
+                                "name" => $nomMatiere,
+                                "note" => $note,
+                                "coeff" => $coeff
+                            ]
+                        ]
+                    ]);
+                }
+
+            }
+
+            $semestreCourantFormatted["modules"] = $modules;
+            array_push($resultFormatted,$semestreCourantFormatted);
+        }
+
+
+        return $resultFormatted;
+    }
+
     public function getAllNotesBySemestre(int $idEtudiant, int $idSemestre)
     {
 

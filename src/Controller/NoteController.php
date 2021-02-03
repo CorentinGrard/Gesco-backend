@@ -101,21 +101,19 @@ class NoteController extends AbstractController
      *              @OA\Property(property="nom", type="string"),
      *              @OA\Property(property="modules", type="array",
      *                  @OA\Items(
-     *                      @OA\Schema(schema="module",
      *                          @OA\Property(property="id", type="integer"),
      *                          @OA\Property(property="nom", type="string"),
      *                          @OA\Property(property="matieres", type="array",
      *                              @OA\Items(
-     *                                  @OA\Schema(schema="matiere",
      *                                      @OA\Property(property="id", type="integer"),
      *                                          @OA\Property(property="nom", type="string"),
      *                                          @OA\Property(property="note", type="string"),
      *                                          @OA\Property(property="coeff", type="string")
      *
-     *                                  )
-     *                              )
+     *                               )
+     *
      *                          )
-     *                      )
+     *
      *                  )
      *              )
      *          )
@@ -128,10 +126,59 @@ class NoteController extends AbstractController
      * @param integer $idSemestre
      * @return JsonResponse
      */
-    public function notesEtudiantParSemestre(NoteRepository $noteRepository, $idEtudiant, $idSemestre)
+    public function notesEtudiantParSemestre(NoteRepository $noteRepository, int $idEtudiant, int $idSemestre)
     {
         $notesSemestres = $noteRepository->getAllNotesBySemestre($idEtudiant, $idSemestre);
 
         return new JsonResponse($notesSemestres, Response::HTTP_OK);
     }
+
+
+    /**
+     * @OA\Get(
+     *      tags={"Notes"},
+     *      path="/etudiants/{idEtudiant}/notes",
+     *      @OA\Parameter(
+     *          name="idEtudiant",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="id", type="integer"),
+     *              @OA\Property(property="nom", type="string"),
+     *              @OA\Property(property="modules", type="array",
+     *                  @OA\Items(
+     *                          @OA\Property(property="id", type="integer"),
+     *                          @OA\Property(property="nom", type="string"),
+     *                          @OA\Property(property="matieres", type="array",
+     *                              @OA\Items(
+     *                                      @OA\Property(property="id", type="integer"),
+     *                                      @OA\Property(property="nom", type="string"),
+     *                                      @OA\Property(property="note", type="string"),
+     *                                      @OA\Property(property="coeff", type="string")
+     *                                  )
+     *
+     *                          )
+     *
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(response="404", description="Non trouvé...")
+     * )
+     * @Route("/etudiants/{idEtudiant}/notes")
+     * @param NoteRepository $noteRepository
+     * @param integer $idEtudiant
+     * @return JsonResponse
+     */
+    public function notesEtudiant(NoteRepository $noteRepository, int $idEtudiant)
+    {
+        $notesSemestres = $noteRepository->getAllNotes($idEtudiant);
+
+        return new JsonResponse($notesSemestres, Response::HTTP_OK);
+    }
+
 }

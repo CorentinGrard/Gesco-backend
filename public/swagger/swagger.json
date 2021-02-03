@@ -194,32 +194,112 @@
                                             "type": "string"
                                         },
                                         "modules": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "nom": {
-                                                    "type": "string"
-                                                },
-                                                "matieres": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer"
-                                                        },
-                                                        "nom": {
-                                                            "type": "string"
-                                                        },
-                                                        "note": {
-                                                            "type": "string"
-                                                        },
-                                                        "coeff": {
-                                                            "type": "string"
-                                                        }
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
                                                     },
-                                                    "type": "array"
-                                                }
-                                            },
-                                            "type": "array"
+                                                    "nom": {
+                                                        "type": "string"
+                                                    },
+                                                    "matieres": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "nom": {
+                                                                    "type": "string"
+                                                                },
+                                                                "note": {
+                                                                    "type": "string"
+                                                                },
+                                                                "coeff": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
+        "/etudiants/{idEtudiant}/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "App\\Controller\\NoteController::notesEtudiant",
+                "parameters": [
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "nom": {
+                                            "type": "string"
+                                        },
+                                        "modules": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "nom": {
+                                                        "type": "string"
+                                                    },
+                                                    "matieres": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "nom": {
+                                                                    "type": "string"
+                                                                },
+                                                                "note": {
+                                                                    "type": "string"
+                                                                },
+                                                                "coeff": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
