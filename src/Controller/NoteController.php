@@ -131,7 +131,6 @@ class NoteController extends AbstractController
     public function notesEtudiantParSemestre(NoteRepository $noteRepository, $idEtudiant, $idSemestre)
     {
         $notesSemestres = $noteRepository->getAllNotesBySemestre($idEtudiant, $idSemestre);
-
         return new JsonResponse($notesSemestres, Response::HTTP_OK);
     }
 }
