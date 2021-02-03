@@ -194,32 +194,8 @@
                                             "type": "string"
                                         },
                                         "modules": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "nom": {
-                                                    "type": "string"
-                                                },
-                                                "matieres": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer"
-                                                        },
-                                                        "nom": {
-                                                            "type": "string"
-                                                        },
-                                                        "note": {
-                                                            "type": "string"
-                                                        },
-                                                        "coeff": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "type": "array"
-                                                }
-                                            },
-                                            "type": "array"
+                                            "type": "array",
+                                            "items": {}
                                         }
                                     },
                                     "type": "object"
@@ -229,6 +205,66 @@
                     },
                     "404": {
                         "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
+        "/assistants/{id}/promotions": {
+            "get": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::promosParAssistant",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Promotion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/promotions": {
+            "get": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::getAllPromotions",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "formation": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "nomPromotion": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -342,6 +378,28 @@
     },
     "components": {
         "schemas": {
+            "Formation": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "promotions": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Matiere": {
                 "properties": {
                     "id": {
@@ -446,6 +504,47 @@
                             }
                         },
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Promotion": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "semestres": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "formation": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "assistant": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "nomPromotion": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
