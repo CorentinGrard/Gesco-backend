@@ -10,3 +10,5 @@
 /vendor/
 .idea
 ###< symfony/framework-bundle ###
+
+/database/
