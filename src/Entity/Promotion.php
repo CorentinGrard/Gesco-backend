@@ -18,7 +18,7 @@ class Promotion
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_promotion"})
+     * @Groups({"get_promotion", "get_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -210,7 +210,7 @@ class Promotion
     /**
      * @OA\Property(property="nomPromotion", type="string",
      *      readOnly="true")
-     * @Groups({"get_promotion"})
+     * @Groups({"get_promotion", "get_assistant"})
      */
     public function getNomPromotion(): string
     {

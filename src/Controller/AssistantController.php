@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Assistant;
 use App\Repository\AssistantRepository;
+use App\Serializers\AssistantSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,14 +32,16 @@ class AssistantController extends AbstractController
     public function list(AssistantRepository $assistantRepository): Response
     {
         $assistants = $assistantRepository->findAll();
-        $assistantsArray = [];
+        /* $assistantsArray = [];
 
 
         foreach($assistants as $assistant){
             array_push($assistantsArray, $assistant->getArray());
         }
 
-        return new JsonResponse($assistantsArray, Response::HTTP_OK);
+        return new JsonResponse($assistantsArray, Response::HTTP_OK);*/
+        $json = AssistantSerializer::serializeJson($assistants, ["groups"=>"get_assistant"]);
+        return new JsonResponse($json, Response::HTTP_OK);
     }
 
     /**
@@ -62,7 +65,9 @@ class AssistantController extends AbstractController
      */
     public function read(Assistant $assistant): Response
     {
-        return new JsonResponse($assistant->getArray(), Response::HTTP_OK);
+        //return new JsonResponse($assistant->getArray(), Response::HTTP_OK);
+        $json = AssistantSerializer::serializeJson($assistant, ["groups"=>"get_assistant"]);
+        return new JsonResponse($json, Response::HTTP_OK);
     }
 
 }

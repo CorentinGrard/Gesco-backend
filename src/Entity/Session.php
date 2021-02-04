@@ -36,7 +36,7 @@ class Session
      *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get"})
      */
     private $matiere;
 

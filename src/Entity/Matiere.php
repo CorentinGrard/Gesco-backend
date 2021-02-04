@@ -20,24 +20,24 @@ class Matiere
      *      type="integer",
      *      readOnly="true"
      * )
-     * @Groups({"matiere_get", "session_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"matiere_get", "session_get"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"matiere_get", "matiere_post", "session_get"})
      * @ORM\Column(type="string", length=255)
+     * @Groups({"matiere_get", "matiere_post", "session_get"})
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer")
-     * @Groups({"matiere_get", "matiere_post"})
      * @ORM\Column(type="smallint")
+     * @Groups({"matiere_get", "matiere_post"})
      */
     private $coefficient;
 
@@ -96,15 +96,15 @@ class Matiere
      *      ),
      *      readOnly="true"
      * )
-     * @Groups({"matiere_get"})
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Matiere")
+     * @Groups({"matiere_get"})
      */
     private $notes;
 
     /**
      * @OA\Property(type="integer")
-     * @Groups({"matiere_get", "matiere_post"})
      * @ORM\Column(type="integer")
+     * @Groups({"matiere_get", "matiere_post"})
      */
     private $nombreHeuresAPlacer;
 

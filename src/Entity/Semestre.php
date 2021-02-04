@@ -62,6 +62,7 @@ class Semestre
      * )
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="semestres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"semestre_get"})
      */
     private $promotion;
 

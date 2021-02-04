@@ -30,7 +30,7 @@ class PromotionController extends AbstractController
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Promotion"))
      *      )
      * )
-     * @Route("/assistants/{id}/promotions", name="promos_assistant", methods={"GET"})
+     * @Route("/assistants/{id}/promotions", name="promotions_assistant", methods={"GET"})
      * @param Assistant $assistant
      * @return Response
      */

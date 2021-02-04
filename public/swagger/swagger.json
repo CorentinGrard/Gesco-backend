@@ -229,7 +229,36 @@
                 }
             }
         },
-        "/modules/{idSemestre}": {
+        "/modules/{id}": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::read",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Module"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/semestres/{id}/modules": {
             "post": {
                 "tags": [
                     "Modules"
@@ -237,8 +266,9 @@
                 "operationId": "App\\Controller\\ModuleController::add",
                 "parameters": [
                     {
-                        "name": "idSemestre",
+                        "name": "id",
                         "in": "path",
+                        "description": "id Semestre",
                         "required": true,
                         "schema": {
                             "type": "integer"
