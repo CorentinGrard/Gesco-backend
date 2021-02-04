@@ -114,13 +114,18 @@ class AppFixtures extends Fixture
         $mat = sizeof($matieres);
         $bool = true;
         for ($i = 0; $i < 100; $i++) {
+            $faker = Factory::create();
+
             $bool = !$bool;
             $session = new Session();
             $session->setMatiere($matieres[$i % $mat]);
             $session->setType(SessionType::values[$i % 6 + 1]);
             $session->setObligatoire($bool);
-            $session->setDateDebut(new DateTime());
-            $session->setDateFin(new DateTime());
+            $dateDebut = $faker->dateTimeThisMonth();
+            $dateFin = $dateDebut->add(new \DateInterval('P3H'));
+            $session->setDateDebut($dateDebut);
+            $session->setDateFin($dateFin);
+
             $manager->persist($session);
         }
 
