@@ -88,10 +88,6 @@ class Matiere
      *          @OA\Property(
      *              property="note",
      *              ref="#/components/schemas/Note/properties/note"
-     *          ),
-     *          @OA\Property(
-     *              property="idEtudiant",
-     *              ref="#/components/schemas/Etudiant/properties/id"
      *          )
      *      ),
      *      readOnly="true"

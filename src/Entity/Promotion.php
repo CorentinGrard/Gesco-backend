@@ -75,14 +75,6 @@ class Promotion
      *          property="id",
      *          ref="#/components/schemas/Assistant/properties/id"
      *      ),
-     *      @OA\Property(
-     *          property="nom",
-     *          ref="#/components/schemas/Personne/properties/nom"
-     *      ),
-     *      @OA\Property(
-     *          property="prenom",
-     *          ref="#/components/schemas/Personne/properties/prenom"
-     *      ),
      *      readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")

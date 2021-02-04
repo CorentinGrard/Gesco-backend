@@ -119,7 +119,7 @@
                 }
             }
         },
-        "/matieres/{idModule}": {
+        "/modules/{id}/matieres": {
             "post": {
                 "tags": [
                     "Matieres"
@@ -616,7 +616,7 @@
                 }
             }
         },
-        "/sessions/{idMatiere}": {
+        "/matieres/{id}/sessions": {
             "post": {
                 "tags": [
                     "Sessions"
@@ -624,8 +624,9 @@
                 "operationId": "App\\Controller\\SessionController::add",
                 "parameters": [
                     {
-                        "name": "idMatiere",
+                        "name": "id",
                         "in": "path",
+                        "description": "id Matiere",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -788,9 +789,6 @@
                                 },
                                 "note": {
                                     "$ref": "#/components/schemas/Note/properties/note"
-                                },
-                                "idEtudiant": {
-                                    "$ref": "#/components/schemas/Etudiant/properties/id"
                                 }
                             },
                             "type": "object"
@@ -937,12 +935,6 @@
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Assistant/properties/id"
-                            },
-                            "nom": {
-                                "$ref": "#/components/schemas/Personne/properties/nom"
-                            },
-                            "prenom": {
-                                "$ref": "#/components/schemas/Personne/properties/prenom"
                             }
                         },
                         "type": "object",
@@ -1024,8 +1016,7 @@
                         "format": "date-time"
                     },
                     "duree": {
-                        "type": "string",
-                        "format": "date-time",
+                        "type": "number",
                         "readOnly": "true"
                     }
                 },

@@ -151,7 +151,7 @@ class Session
     }
 
     /**
-     * @OA\Property(property="duree", type="string", format="date-time",
+     * @OA\Property(property="duree", type="number",
      *     readOnly="true")
      * @Groups({"session_get", "matiere_get"})
      */

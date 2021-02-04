@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
 use App\Repository\MatiereRepository;
@@ -121,11 +122,12 @@ class SessionController extends AbstractController
     /**
      * @OA\Post(
      *      tags={"Sessions"},
-     *      path="/sessions/{idMatiere}",
+     *      path="/matieres/{id}/sessions",
      *      @OA\Parameter(
-     *          name="idMatiere",
+     *          name="id",
      *          in="path",
      *          required=true,
+     *          description="id Matiere",
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\RequestBody(
@@ -135,14 +137,14 @@ class SessionController extends AbstractController
      *      @OA\Response(response="201", description="Session ajoutée !"),
      *      @OA\Response(response="404", description="Non trouvée...")
      * )
-     * @Route("/sessions/{idMatiere}", name="add_session", methods={"POST"})
+     * @Route("/matiere/{id}/sessions", name="add_session", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param MatiereRepository $matiereRepository
+     * @param Matiere $matiere
      * @return JsonResponse
      * @throws Exception
      */
-    public function add(Request $request, EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
+    public function add(Request $request, EntityManagerInterface $entityManager, Matiere $matiere): JsonResponse
     {
         //TODO Deserialize json posté !
         $data = json_decode($request->getContent(), true);
@@ -157,7 +159,7 @@ class SessionController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $matiere = $matiereRepository->find($idMatiere);
+        //$matiere = $matiereRepository->find($idMatiere);
 
         $session = new Session();
         $session->setType($type);

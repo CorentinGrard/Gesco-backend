@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Matiere;
+use App\Entity\Module;
 use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
@@ -72,7 +73,7 @@ class MatiereController extends AbstractController
     /**
      * @OA\Post(
      *      tags={"Matieres"},
-     *      path="/matieres/{idModule}",
+     *      path="/modules/{id}/matieres",
      *      @OA\Parameter(
      *          name="idModule",
      *          in="path",
@@ -86,14 +87,13 @@ class MatiereController extends AbstractController
      *      @OA\Response(response="201", description="Matiere ajoutée !"),
      *      @OA\Response(response="404", description="Non trouvé...")
      * )
-     * @Route("/matieres/{idModule}", name="add_matiere", methods={"POST"})
+     * @Route("/modules/{id}/matieres", name="add_matiere", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param ModuleRepository $moduleRepository
-     * @param int $idModule
+     * @param Module $module
      * @return JsonResponse
      */
-    public function add(Request $request, EntityManagerInterface $entityManager, ModuleRepository $moduleRepository, int $idModule): JsonResponse
+    public function add(Request $request, EntityManagerInterface $entityManager /*, ModuleRepository $moduleRepository*/, Module $module): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -106,7 +106,7 @@ class MatiereController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $module = $moduleRepository->find($idModule);
+        //$module = $moduleRepository->find($idModule);
 
         $matiere = new Matiere();
         $matiere->setNom($nom);
