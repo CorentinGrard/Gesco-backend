@@ -44,7 +44,7 @@ class PromotionController extends AbstractController
             array_push($promoArray,$promo->getArray());
         }*/
 
-        $json = PromotionSerializer::serializeJson($promos, ["group"=>"promos_assistant"]);
+        $json = PromotionSerializer::serializeJson($promos, ["group"=>"get_promotion"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
