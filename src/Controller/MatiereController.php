@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Matiere;
+use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
@@ -152,4 +153,30 @@ class MatiereController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK);
 
     }
+
+    /**
+     * @OA\Get(
+     *      tags={"Matieres"},
+     *      path="/promotions/{id}/matieres",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200"
+     *      )
+     * )
+     * @Route("/promotions/{id}/matieres", name="promotion_matieres", methods={"GET"})
+     * @param MatiereRepository $matiereRepository
+     * @param Promotion $promotion
+     * @return Response
+     */
+    public function getMatieresParPromotions(MatiereRepository $matiereRepository, Promotion $promotion): Response
+    {
+        $matieres = $matiereRepository->getMatieresByPromotion($promotion->getId());
+        return new JsonResponse($matieres, Response::HTTP_OK);
+    }
+
 }

@@ -34,7 +34,6 @@ class NoteRepository extends ServiceEntityRepository
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-
     public function ajoutNoteEtudiant(EntityManager $entityManager, EtudiantRepository $etudiantRepository, MatiereRepository $matiereRepository, int $idEtudiant,int $idMatiere,int $valeur)
     {
 
