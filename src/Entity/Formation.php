@@ -18,7 +18,7 @@ class Formation
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"get_formation", "get_all_promotions"})
+     * @Groups({"get_formation", "get_promotion"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -27,7 +27,7 @@ class Formation
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_formation"})
+     * @Groups({"get_formation", "get_promotion"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;

@@ -30,14 +30,14 @@ class Personne
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_promotion"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_promotion"})
      * @ORM\Column(type="string", length=255)
      */
     private $prenom;

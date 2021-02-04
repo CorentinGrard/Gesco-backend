@@ -187,6 +187,27 @@
                 }
             }
         },
+        "/promotions/{id}/matieres": {
+            "get": {
+                "tags": [
+                    "Matieres"
+                ],
+                "operationId": "App\\Controller\\MatiereController::getMatieresParPromotions",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
         "/modules": {
             "get": {
                 "tags": [

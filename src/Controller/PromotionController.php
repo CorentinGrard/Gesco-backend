@@ -70,7 +70,7 @@ class PromotionController extends AbstractController
     {
         $promos = $promotionRepository->findAll();
 
-        $json = PromotionSerializer::serializeJson($promos, ["groups"=>"get_all_promotions"]);
+        $json = PromotionSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }

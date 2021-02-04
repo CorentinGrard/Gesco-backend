@@ -18,7 +18,7 @@ class Promotion
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_all_promotions", "get_promotion", "promos_assistant"})
+     * @Groups({"get_promotion", "promos_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -65,7 +65,7 @@ class Promotion
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_promotion", "get_all_promotions"})
+     * @Groups({"get_promotion"})
      */
     private $formation;
 
@@ -210,7 +210,7 @@ class Promotion
     /**
      * @OA\Property(property="nomPromotion", type="string",
      *      readOnly="true")
-     * @Groups({"get_all_promotions", "promos_assistant"})
+     * @Groups({"get_promotion", "promos_assistant"})
      */
     public function getNomPromotion(): string
     {

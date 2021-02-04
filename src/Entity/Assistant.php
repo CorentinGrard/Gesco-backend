@@ -24,7 +24,7 @@ class Assistant
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_assistant"})
+     * @Groups({"get_assistant", "get_promotion"})
      */
     private $id;
 
@@ -35,7 +35,7 @@ class Assistant
      * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_assistant"})
+     * @Groups({"get_assistant", "get_promotion"})
      */
     private $Personne;
 

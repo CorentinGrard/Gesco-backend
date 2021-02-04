@@ -149,7 +149,7 @@ class MatiereController extends AbstractController
         foreach ($modules as $module) {
             $mats = $module->getMatieres();
             foreach ($mats as $mat) {
-                array_push($matieres, $mat);//->getArray());
+                array_push($matieres, $mat);
             }
         }
 
