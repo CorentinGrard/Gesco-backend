@@ -105,6 +105,7 @@ class AppFixtures extends Fixture
             $matiere->setNom(self::generateRandomString($k % 5 + 10));
             $matiere->setCoefficient($k % 4 + 1);
             $matiere->setModule($module);
+            $matiere->setNombreHeuresAPlacer($k % 5 + 1);
             $manager->persist($matiere);
             array_push($matieres, $matiere);
 

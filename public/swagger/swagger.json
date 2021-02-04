@@ -1,6 +1,56 @@
 {
     "openapi": "3.0.0",
     "paths": {
+        "/assistants": {
+            "get": {
+                "tags": [
+                    "Assistants"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Personne"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assistants/{id}": {
+            "get": {
+                "tags": [
+                    "Assistants"
+                ],
+                "operationId": "App\\Controller\\AssistantController::read",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Personne"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/matieres": {
             "get": {
                 "tags": [
@@ -215,6 +265,16 @@
                     "Promotions"
                 ],
                 "operationId": "App\\Controller\\PromotionController::promosParAssistant",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -378,6 +438,61 @@
     },
     "components": {
         "schemas": {
+            "Assistant": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "personne": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Personne"
+                            }
+                        ]
+                    },
+                    "promotions": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Etudiant": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "personne": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Personne"
+                            }
+                        ]
+                    },
+                    "isAlternant": {
+                        "type": "boolean"
+                    },
+                    "Notes": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Formation": {
                 "properties": {
                     "id": {
@@ -440,6 +555,9 @@
                             },
                             "type": "object"
                         }
+                    },
+                    "nombreHeuresAPlacer": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -508,6 +626,29 @@
                 },
                 "type": "object"
             },
+            "Personne": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "prenom": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "adresse": {
+                        "type": "string"
+                    },
+                    "numeroTel": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Promotion": {
                 "properties": {
                     "id": {
@@ -549,6 +690,14 @@
                 },
                 "type": "object"
             },
+            "Semestre": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "Session": {
                 "properties": {
                     "id": {
@@ -576,6 +725,10 @@
                         "format": "date-time"
                     },
                     "dateFin": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "duree": {
                         "type": "string",
                         "format": "date-time"
                     }

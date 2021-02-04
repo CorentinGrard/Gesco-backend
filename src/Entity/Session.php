@@ -15,10 +15,10 @@ class Session
 {
     /**
      * @OA\Property(type="integer")
+     * @Groups({"matiere_get", "session_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"matiere_get", "session_get"})
      */
     private $id;
 
@@ -141,6 +141,15 @@ class Session
         $this->dateFin = $dateFin;
 
         return $this;
+    }
+
+    /**
+     * @OA\Property(property="duree", type="string", format="date-time")
+     * @Groups({"session_get", "matiere_get"})
+     */
+    public function getDuree(): ?\DateInterval
+    {
+        return $this->dateFin->diff($this->dateDebut); /* TODO à tester en conditions réelles */
     }
 
     public function getArray()

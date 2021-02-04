@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
 /**
  * @OA\Schema()
  * @ORM\Entity(repositoryClass=FormationRepository::class)
@@ -17,17 +18,17 @@ class Formation
 {
     /**
      * @OA\Property(type="integer")
+     * @Groups({"get_formation", "get_all_promotions"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_formation", "get_all_promotions"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
-     * @ORM\Column(type="string", length=255)
      * @Groups({"get_formation"})
+     * @ORM\Column(type="string", length=255)
      */
     private $nom;
 

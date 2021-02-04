@@ -17,48 +17,63 @@ class Matiere
 {
     /**
      * @OA\Property(type="integer")
+     * @Groups({"matiere_get", "session_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"matiere_get", "session_get"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
-     * @ORM\Column(type="string", length=255)
      * @Groups({"matiere_get", "matiere_post", "session_get"})
+     * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer")
-     * @ORM\Column(type="smallint")
      * @Groups({"matiere_get", "matiere_post"})
+     * @ORM\Column(type="smallint")
      */
     private $coefficient;
 
     /**
      * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
-     * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
      * @Groups("matiere_get")
+     * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
      */
     private $sessions;
 
     /**
      * @OA\Property(property="module", @OA\Property(property="id", type="integer"))
+     * @Groups({"matiere_get", "matiere_post"})
      * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"matiere_get", "matiere_post"})
      */
     private $module;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(
+     *      type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              type="integer"
+     *          )
+     *      )
+     * )
+     * @Groups({"matiere_get"})
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Matiere")
-     * @Groups("matiere_get")
      */
     private $notes;
+
+    /**
+     * @OA\Property(type="integer")
+     * @Groups({"matiere_get", "matiere_post"})
+     * @ORM\Column(type="integer")
+     */
+    private $nombreHeuresAPlacer;
 
     public function __construct()
     {
@@ -184,6 +199,20 @@ class Matiere
 
         return $this;
     }
+
+    public function getNombreHeuresAPlacer(): ?int
+    {
+        return $this->nombreHeuresAPlacer;
+    }
+
+    public function setNombreHeuresAPlacer(int $nombreHeuresAPlacer): self
+    {
+        $this->nombreHeuresAPlacer = $nombreHeuresAPlacer;
+
+        return $this;
+    }
+
+    /* TODO getNombreHeuresPlacees() + serialization */
 
 
 }

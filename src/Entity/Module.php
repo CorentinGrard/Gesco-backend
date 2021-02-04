@@ -17,10 +17,10 @@ class Module
 {
     /**
      * @OA\Property(type="integer"))
+     * @Groups({"module_get", "matiere_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"module_get", "matiere_get"})
      */
     private $id;
 

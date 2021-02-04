@@ -17,10 +17,10 @@ class Promotion
 {
     /**
      * @OA\Property(type="integer")
+     * @Groups({"get_all_promotions", "get_promotion", "promos_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_all_promotions", "get_promotion"})
      */
     private $id;
 
@@ -32,7 +32,16 @@ class Promotion
     private $nom;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(
+     *      property="semestres",
+     *      type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              type="integer"
+     *          )
+     *      )
+     * )
      * @ORM\OneToMany(targetEntity=Semestre::class, mappedBy="promotion")
      * @Groups({"get_promotion"})
      */
@@ -40,8 +49,11 @@ class Promotion
 
     /**
      * @OA\Property(
-     *     property="formation",
-     *     @OA\Property(property="id", type="integer")
+     *      property="formation",
+     *      @OA\Property(
+     *          property="id",
+     *          type="integer"
+     *      )
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
@@ -178,7 +190,7 @@ class Promotion
 
     /**
      * @OA\Property(property="nomPromotion", type="string")
-     * @Groups({"get_all_promotions"})
+     * @Groups({"get_all_promotions", "promos_assistant"})
      */
     public function getNomPromotion(): string
     {

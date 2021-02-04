@@ -6,18 +6,21 @@ use App\Repository\SemestreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=SemestreRepository::class)
  */
 class Semestre
 {
     /**
+     * @OA\Property(type="integer")
+     * @Groups({"semestre_get", "module_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"semestre_get", "module_get"})
      */
     private $id;
 

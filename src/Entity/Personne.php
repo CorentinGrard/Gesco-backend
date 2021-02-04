@@ -4,8 +4,13 @@ namespace App\Entity;
 
 use App\Repository\PersonneRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema(
+ *     schema="Personne"
+ * )
  * @ORM\Entity(repositoryClass=PersonneRepository::class)
  * @ORM\MappedSuperclass
  * @ORM\InheritanceType("JOINED")
@@ -14,6 +19,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Personne
 {
     /**
+     * @OA\Property(type="integer")
+     * @Groups({"get_personne"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -21,26 +28,36 @@ class Personne
     private $id;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"get_personne"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"get_personne"})
      * @ORM\Column(type="string", length=255)
      */
     private $prenom;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"get_personne"})
      * @ORM\Column(type="text", length=255)
      */
     private $email;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"get_personne"})
      * @ORM\Column(type="string", length=1024, nullable=true)
      */
     private $adresse;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"get_personne"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $numeroTel;
@@ -110,7 +127,7 @@ class Personne
         return $this;
     }
 
-    //TODO Créer la fonction de génération d'email
+    //TODO Créer la fonction de génération d'email ?
 
     public function getArray()
     {

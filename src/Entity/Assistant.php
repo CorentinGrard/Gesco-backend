@@ -5,14 +5,22 @@ namespace App\Entity;
 use App\Repository\AssistantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
+ * @OA\Schema(
+ *      schema="Assistant",
+ * )
  * @ORM\Entity(repositoryClass=AssistantRepository::class)
  */
 class Assistant
 {
     /**
+     * @OA\Property(type="integer")
+     * @Groups({"get_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,12 +28,28 @@ class Assistant
     private $id;
 
     /**
+     * @OA\Property(
+     *      property="personne",
+     *      allOf={@OA\Schema(ref="#/components/schemas/Personne")}
+     * )
+     * @Groups({"get_assistant"})
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $Personne;
 
     /**
+     * @OA\Property(
+     *      property="promotions",
+     *      type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              type="integer"
+     *          )
+     *      )
+     * )
+     * @Groups({"get_assistant"})
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="assistant")
      */
     private $promotions;
