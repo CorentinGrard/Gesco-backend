@@ -52,7 +52,6 @@ class AppFixtures extends Fixture
             $personne->setNom($faker->lastName);
             $personne->setPrenom($faker->firstName);
             $personne->setAdresse($faker->address);
-            //$personne->set Email($faker->email);
             $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
 
@@ -127,7 +126,7 @@ class AppFixtures extends Fixture
             $session->setObligatoire($bool);
             $dateDebut = $faker->dateTimeThisMonth();
             $dateFin = clone $dateDebut;
-            $dateFin->add(new \DateInterval('PT3H'));
+            $dateFin->add(new \DateInterval('PT3H30M'));
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
 

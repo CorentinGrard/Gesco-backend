@@ -641,16 +641,13 @@
                         "type": "integer"
                     },
                     "Personne": {
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/Personne"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/Personne"
                     },
                     "isAlternant": {
                         "type": "boolean"
                     },
                     "Notes": {
+                        "description": "| ArrayCollection",
                         "type": "array",
                         "items": {
                             "properties": {

@@ -155,9 +155,11 @@ class Session
      *     readOnly="true")
      * @Groups({"session_get", "matiere_get"})
      */
-    public function getDuree(): ?\DateInterval
+    public function getDuree(): float
     {
-        return $this->dateFin->diff($this->dateDebut); /* TODO à tester en conditions réelles */
+        $diff = $this->dateFin->diff($this->dateDebut);
+
+        return $diff->d*24 + $diff->h + ($diff->i/60); /* TODO à tester en conditions réelles */
     }
 
     public function getArray()
