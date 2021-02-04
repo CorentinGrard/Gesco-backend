@@ -101,8 +101,10 @@ class AppFixtures extends Fixture
         $k = 0;
         $matieres = [];
         foreach ($modules as $module) {
+            $faker = Factory::create();
+
             $matiere = new Matiere();
-            $matiere->setNom(self::generateRandomString($k % 5 + 10));
+            $matiere->setNom($faker->firstName);
             $matiere->setCoefficient($k % 4 + 1);
             $matiere->setModule($module);
             $manager->persist($matiere);
@@ -113,7 +115,7 @@ class AppFixtures extends Fixture
 
         $mat = sizeof($matieres);
         $bool = true;
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $faker = Factory::create();
 
             $bool = !$bool;
@@ -122,7 +124,8 @@ class AppFixtures extends Fixture
             $session->setType(SessionType::values[$i % 6 + 1]);
             $session->setObligatoire($bool);
             $dateDebut = $faker->dateTimeThisMonth();
-            $dateFin = $dateDebut->add(new \DateInterval('P3H'));
+            $dateFin = clone $dateDebut;
+            $dateFin->add(new \DateInterval('PT3H'));
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
 
