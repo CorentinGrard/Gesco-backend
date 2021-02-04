@@ -17,10 +17,10 @@ class Etudiant
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"get_etudiant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_etudiant"})
      */
     private $id;
 
@@ -29,16 +29,17 @@ class Etudiant
      *      property="Personne",
      *      allOf={@OA\Property(ref="#/components/schemas/Personne")}
      * )
-     * @Groups({"get_etudiant"})
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_etudiant"})
+     * @var Personne
      */
     private $Personne;
 
     /**
      * @OA\Property(type="boolean")
-     * @Groups({"get_etudiant"})
      * @ORM\Column(type="boolean")
+     * @Groups({"get_etudiant"})
      */
     private $isAlternant;
 
@@ -55,8 +56,9 @@ class Etudiant
      *          )
      *      )
      * )
-     * @Groups({"get_etudiant"})
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Etudiant")
+     * @Groups({"get_etudiant"})
+     * @var Note[] | ArrayCollection
      */
     private $Notes;
 

@@ -47,16 +47,17 @@ class SessionController extends AbstractController
     /**
      * @OA\Get(
      *      tags={"Sessions"},
-     *      path="/promos/{id}/sessions/week/{dateString}",
+     *      path="/promotions/{id}/sessions/week/{dateString}",
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
      *          required=true,
+     *          description="id Promotion",
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Parameter(
      *          name="dateString",
-     *          description="AAAAMMJJ",
+     *          description="format AAAAMMJJ",
      *          in="path",
      *          required=false,
      *          @OA\Schema(type="integer")
@@ -66,7 +67,7 @@ class SessionController extends AbstractController
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
      *      )
      * )
-     * @Route("/promos/{id}/sessions/week/{dateString}", name="sessions_promo", methods={"GET"}, defaults={"dateString"=""})
+     * @Route("/promotions/{id}/sessions/week/{dateString}", name="sessions_promo", methods={"GET"}, defaults={"dateString"=""})
      * @param SessionRepository $sessionRepository
      * @param Promotion $promotion
      * @param $dateString
@@ -93,8 +94,8 @@ class SessionController extends AbstractController
 
     /**
      * @OA\Get(
-     *      tags={"Matieres"},
-     *      path="/matieres/{id}",
+     *      tags={"Sessions"},
+     *      path="/sessions/{id}",
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -103,7 +104,7 @@ class SessionController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          @OA\JsonContent(ref="#/components/schemas/Matiere")
+     *          @OA\JsonContent(ref="#/components/schemas/Session")
      *      )
      * )
      * @Route("/sessions/{id}", name="session", methods={"GET"})
@@ -120,35 +121,35 @@ class SessionController extends AbstractController
     /**
      * @OA\Post(
      *      tags={"Sessions"},
-     *      path="/sessions",
+     *      path="/sessions/{idMatiere}",
+     *      @OA\Parameter(
+     *          name="idMatiere",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
      *      @OA\RequestBody(
-     *          request="matieres",
-     *          @OA\JsonContent(
-     *              @OA\Property(type="string", property="type"),
-     *              @OA\Property(type="boolean", property="obligatoire"),
-     *              @OA\Property(type="integer", property="matiere", description="idModule"),
-     *              @OA\Property(type="string", format="date-time", property="dateDebut"),
-     *              @OA\Property(type="string", format="date-time", property="dateFin")
-     *          )
+     *          request="sessions",
+     *          @OA\JsonContent(ref="#/components/schemas/Session")
      *      ),
      *      @OA\Response(response="201", description="Session ajoutée !"),
-     *      @OA\Response(response="404", description="Non trouvé...")
+     *      @OA\Response(response="404", description="Non trouvée...")
      * )
-     * @Route("/sessions", name="add_session", methods={"POST"})
+     * @Route("/sessions/{idMatiere}", name="add_session", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param MatiereRepository $matiereRepository
      * @return JsonResponse
      * @throws Exception
      */
-    public function add(Request $request, EntityManagerInterface $entityManager, MatiereRepository $matiereRepository): JsonResponse
+    public function add(Request $request, EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
     {
         //TODO Deserialize json posté !
         $data = json_decode($request->getContent(), true);
 
         $type = $data['type'];
         $obligatoire = $data['obligatoire'];
-        $idMatiere = $data['matiere'];
+        //$idMatiere = $data['matiere'];
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
 

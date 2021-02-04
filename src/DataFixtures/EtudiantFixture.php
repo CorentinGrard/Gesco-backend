@@ -15,7 +15,8 @@ class EtudiantFixture extends Fixture
         $personne->setPrenom("Antonin");
         $personne->setNom("CABANE");
         $personne->setAdresse("479 Avenue des euzières 34190 Brissac");
-        $personne->setEmail("antonin.cabane@gmail.com");
+        //$personne->set Email("antonin.cabane@gmail.com");
+        $personne->generateEmail(true);
         $personne->setNumeroTel("0750214383");
 
 

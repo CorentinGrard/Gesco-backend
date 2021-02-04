@@ -16,7 +16,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Matiere
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(
+     *      type="integer",
+     *      readOnly="true"
+     * )
      * @Groups({"matiere_get", "session_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -49,7 +52,8 @@ class Matiere
      *              property="duree",
      *              ref="#/components/schemas/Session/properties/duree"
      *          )
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
      * @Groups("matiere_get")
@@ -65,7 +69,8 @@ class Matiere
      *      @OA\Property(
      *          property="nom",
      *          ref="#/components/schemas/Module/properties/nom"
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
      * @ORM\JoinColumn(nullable=false)
@@ -78,7 +83,7 @@ class Matiere
      *      @OA\Items(
      *          @OA\Property(
      *              property="id",
-     *              ref="#/components/schemas/Note/properties/id"
+     *              ref="#/components/schemas/Note/properties/id",
      *          ),
      *          @OA\Property(
      *              property="note",
@@ -88,7 +93,8 @@ class Matiere
      *              property="idEtudiant",
      *              ref="#/components/schemas/Etudiant/properties/id"
      *          )
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @Groups({"matiere_get"})
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Matiere")

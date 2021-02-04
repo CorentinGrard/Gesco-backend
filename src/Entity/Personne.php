@@ -19,7 +19,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Personne
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(type="integer",
+     *      readOnly="true")
      * @Groups({"get_personne"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -29,35 +30,36 @@ class Personne
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
      * @ORM\Column(type="string", length=255)
      */
     private $prenom;
 
     /**
-     * @OA\Property(type="string")
-     * @Groups({"get_personne"})
+     * @OA\Property(type="string",
+     *      readOnly="true")
+     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
      * @ORM\Column(type="text", length=255)
      */
     private $email;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
      * @ORM\Column(type="string", length=1024, nullable=true)
      */
     private $adresse;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $numeroTel;
@@ -96,12 +98,12 @@ class Personne
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    /*public function set Email(string $email): self
     {
         $this->email = $email;
 
         return $this;
-    }
+    }*/
 
     public function getAdresse(): ?string
     {
@@ -129,6 +131,12 @@ class Personne
 
     //TODO Créer la fonction de génération d'email ?
 
+    public function generateEmail(bool $isEtudiant = true){
+        if(!isset($this->email)){
+            $this->email = strtolower($this->prenom) . "." . strtolower(str_replace(" ", "-", $this->nom)) . "@mines-ales" . ($isEtudiant ? ".org" : ".fr");
+        }
+    }
+
     public function getArray()
     {
         return [
@@ -136,6 +144,7 @@ class Personne
             "nom" => $this->getNom(),
             "prenom" => $this->getPrenom(),
             "email" => $this->getEmail(),
+            "adresse" => $this->getAdresse(),
             "numeroTel" => $this->getNumeroTel()
         ];
     }

@@ -19,7 +19,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Assistant
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(type="integer",
+     *      readOnly="true")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -49,7 +50,8 @@ class Assistant
      *              property="nomPromotion",
      *              ref="#/components/schemas/Promotion/properties/nomPromotion"
      *          )
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="assistant")
      * @Groups({"get_assistant"})

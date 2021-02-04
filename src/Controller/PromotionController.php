@@ -58,14 +58,7 @@ class PromotionController extends AbstractController
      *          response="200",
      *          @OA\JsonContent(
      *              type="array",
-     *              @OA\Items(
-     *                  @OA\Property(type="integer", property="id"),
-     *                  @OA\Property(
-     *                      property="formation",
-     *                      @OA\Property(property="id", type="integer")
-     *                  ),
-     *                  @OA\Property(type="string", property="nomPromotion")
-     *              )
+     *              @OA\Items(ref="#/components/schemas/Promotion")
      *          )
      *      )
      * )

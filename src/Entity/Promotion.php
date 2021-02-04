@@ -16,7 +16,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Promotion
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(type="integer",
+     *      readOnly="true")
      * @Groups({"get_all_promotions", "get_promotion", "promos_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -42,7 +43,8 @@ class Promotion
      *              property="nom",
      *              ref="#/components/schemas/Semestre/properties/nom"
      *          )
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\OneToMany(targetEntity=Semestre::class, mappedBy="promotion")
      * @Groups({"get_promotion"})
@@ -58,7 +60,8 @@ class Promotion
      *      @OA\Property(
      *          property="nom",
      *          ref="#/components/schemas/Formation/properties/nom"
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
@@ -74,12 +77,13 @@ class Promotion
      *      ),
      *      @OA\Property(
      *          property="nom",
-     *          ref="#/components/schemas/Assistant/properties/nom"
+     *          ref="#/components/schemas/Personne/properties/nom"
      *      ),
      *      @OA\Property(
      *          property="prenom",
-     *          ref="#/components/schemas/Assistant/properties/prenom"
-     *      )
+     *          ref="#/components/schemas/Personne/properties/prenom"
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
@@ -204,7 +208,8 @@ class Promotion
     }
 
     /**
-     * @OA\Property(property="nomPromotion", type="string")
+     * @OA\Property(property="nomPromotion", type="string",
+     *      readOnly="true")
      * @Groups({"get_all_promotions", "promos_assistant"})
      */
     public function getNomPromotion(): string

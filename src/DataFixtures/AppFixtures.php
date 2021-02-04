@@ -52,7 +52,8 @@ class AppFixtures extends Fixture
             $personne->setNom($faker->lastName);
             $personne->setPrenom($faker->firstName);
             $personne->setAdresse($faker->address);
-            $personne->setEmail($faker->email);
+            //$personne->set Email($faker->email);
+            $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
 
             $assistant = new Assistant();
@@ -105,7 +106,7 @@ class AppFixtures extends Fixture
             $matiere->setNom(self::generateRandomString($k % 5 + 10));
             $matiere->setCoefficient($k % 4 + 1);
             $matiere->setModule($module);
-            $matiere->setNombreHeuresAPlacer($k % 5 + 1);
+            $matiere->setNombreHeuresAPlacer(($k % 5) * 1);
             $manager->persist($matiere);
             array_push($matieres, $matiere);
 

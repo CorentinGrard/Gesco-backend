@@ -14,7 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Session
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(type="integer",
+     *     readOnly="true")
      * @Groups({"matiere_get", "session_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -31,7 +32,8 @@ class Session
      *      @OA\Property(
      *          property="nom",
      *          ref="#/components/schemas/Matiere/properties/nom"
-     *      )
+     *      ),
+     *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
      * @Groups({"session_get", "session_post"})
@@ -149,7 +151,8 @@ class Session
     }
 
     /**
-     * @OA\Property(property="duree", type="string", format="date-time")
+     * @OA\Property(property="duree", type="string", format="date-time",
+     *     readOnly="true")
      * @Groups({"session_get", "matiere_get"})
      */
     public function getDuree(): ?\DateInterval

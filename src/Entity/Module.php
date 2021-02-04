@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Module
 {
     /**
-     * @OA\Property(type="integer"))
+     * @OA\Property(type="integer", readOnly="true")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -49,7 +49,8 @@ class Module
      *              property="nom",
      *              ref="#/components/schemas/Matiere/properties/nom"
      *          )
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
      * @Groups("module_get")
@@ -65,7 +66,8 @@ class Module
      *      @OA\Property(
      *          property="nom",
      *          ref="#/components/schemas/Semestre/properties/nom"
-     *      )
+     *      ),
+     *      readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")
      * @ORM\JoinColumn(nullable=false)
