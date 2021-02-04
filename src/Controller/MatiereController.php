@@ -71,33 +71,37 @@ class MatiereController extends AbstractController
     /**
      * @OA\Post(
      *      tags={"Matieres"},
-     *      path="/matieres",
+     *      path="/matieres/{idModule}",
+     *      @OA\Parameter(
+     *          name="idModule",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
      *      @OA\RequestBody(
      *          request="matieres",
-     *          @OA\JsonContent(
-     *              @OA\Property(type="string", property="nom"),
-     *              @OA\Property(type="integer", property="coefficient"),
-     *              @OA\Property(type="integer", property="module", description="idModule")
-     *          )
+     *          @OA\JsonContent(ref="#/components/schemas/Matiere")
      *      ),
      *      @OA\Response(response="201", description="Matiere ajoutée !"),
      *      @OA\Response(response="404", description="Non trouvé...")
      * )
-     * @Route("/matieres", name="add_matiere", methods={"POST"})
+     * @Route("/matieres/{idModule}", name="add_matiere", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param ModuleRepository $moduleRepository
+     * @param int $idModule
      * @return JsonResponse
      */
-    public function add(Request $request, EntityManagerInterface $entityManager, ModuleRepository $moduleRepository): JsonResponse
+    public function add(Request $request, EntityManagerInterface $entityManager, ModuleRepository $moduleRepository, int $idModule): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
         $coeff = $data['coefficient'];
-        $idModule = $data['module'];
+        //$idModule = $data['idModule'];
+        $nbhp = $data['nombreHeuresAPlacer'];
 
-        if (empty($nom) || empty($coeff) || empty($idModule)) {
+        if (empty($nom) || empty($coeff) || empty($idModule) || empty($idModule)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
@@ -107,6 +111,7 @@ class MatiereController extends AbstractController
         $matiere->setNom($nom);
         $matiere->setCoefficient($coeff);
         $matiere->setModule($module);
+        $matiere->setNombreHeuresAPlacer($nbhp);
 
 
         $entityManager->persist($matiere);

@@ -7,11 +7,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 class SemestreController extends AbstractController
 {
     /**
-     * @Route("/promos/{id}/semestres", name="promo_semestres")
+     * @OA\Get(
+     *      tags={"Semestres"},
+     *      path="/promotions/{id}/semestres",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Promotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Semestre"))
+     *      )
+     * )
+     * @Route("/promotions/{id}/semestres", name="promo_semestres")
      * @param Promotion $promotion
      * @return Response
      */

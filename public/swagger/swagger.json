@@ -1,6 +1,74 @@
 {
     "openapi": "3.0.0",
     "paths": {
+        "/assistants": {
+            "get": {
+                "tags": [
+                    "Assistants"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Assistant"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assistants/{id}": {
+            "get": {
+                "tags": [
+                    "Assistants"
+                ],
+                "operationId": "App\\Controller\\AssistantController::read",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Assistant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/etudiants": {
+            "get": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Etudiant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/matieres": {
             "get": {
                 "tags": [
@@ -18,42 +86,6 @@
                                 }
                             }
                         }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Matieres"
-                ],
-                "operationId": "App\\Controller\\MatiereController::add",
-                "requestBody": {
-                    "request": "matieres",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "nom": {
-                                        "type": "string"
-                                    },
-                                    "coefficient": {
-                                        "type": "integer"
-                                    },
-                                    "module": {
-                                        "description": "idModule",
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Matiere ajoutée !"
-                    },
-                    "404": {
-                        "description": "Non trouvé..."
                     }
                 }
             }
@@ -87,6 +119,42 @@
                 }
             }
         },
+        "/matieres/{idModule}": {
+            "post": {
+                "tags": [
+                    "Matieres"
+                ],
+                "operationId": "App\\Controller\\MatiereController::add",
+                "parameters": [
+                    {
+                        "name": "idModule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "matieres",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Matiere"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Matiere ajoutée !"
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
         "/semestres/{id}/matieres": {
             "get": {
                 "tags": [
@@ -115,6 +183,63 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/modules": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Module"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/modules/{idSemestre}": {
+            "post": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::add",
+                "parameters": [
+                    {
+                        "name": "idSemestre",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "matieres",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Module"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Matiere ajoutée !"
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
                     }
                 }
             }
@@ -209,12 +334,75 @@
                 }
             }
         },
+        "/personnes": {
+            "get": {
+                "tags": [
+                    "Personnes"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Personne"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/personnes/{id}": {
+            "get": {
+                "tags": [
+                    "Personnes"
+                ],
+                "operationId": "App\\Controller\\PersonneController::getPersonneById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Semestre"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/assistants/{id}/promotions": {
             "get": {
                 "tags": [
                     "Promotions"
                 ],
                 "operationId": "App\\Controller\\PromotionController::promosParAssistant",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -244,23 +432,39 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "formation": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            },
-                                            "nomPromotion": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
+                                        "$ref": "#/components/schemas/Promotion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/promotions/{id}/semestres": {
+            "get": {
+                "tags": [
+                    "Semestres"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Promotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Semestre"
                                     }
                                 }
                             }
@@ -288,53 +492,9 @@
                         }
                     }
                 }
-            },
-            "post": {
-                "tags": [
-                    "Sessions"
-                ],
-                "operationId": "App\\Controller\\SessionController::add",
-                "requestBody": {
-                    "request": "matieres",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "type": {
-                                        "type": "string"
-                                    },
-                                    "obligatoire": {
-                                        "type": "boolean"
-                                    },
-                                    "matiere": {
-                                        "description": "idModule",
-                                        "type": "integer"
-                                    },
-                                    "dateDebut": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    "dateFin": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Session ajoutée !"
-                    },
-                    "404": {
-                        "description": "Non trouvé..."
-                    }
-                }
             }
         },
-        "/promos/{id}/sessions/week/{dateString}": {
+        "/promotions/{id}/sessions/week/{dateString}": {
             "get": {
                 "tags": [
                     "Sessions"
@@ -344,6 +504,7 @@
                     {
                         "name": "id",
                         "in": "path",
+                        "description": "id Promotion",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -352,7 +513,7 @@
                     {
                         "name": "dateString",
                         "in": "path",
-                        "description": "AAAAMMJJ",
+                        "description": "format AAAAMMJJ",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -374,10 +535,138 @@
                     }
                 }
             }
+        },
+        "/sessions/{id}": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::read",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions/{idMatiere}": {
+            "post": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::add",
+                "parameters": [
+                    {
+                        "name": "idMatiere",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "sessions",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Session"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Session ajoutée !"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "Assistant": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true"
+                    },
+                    "personne": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Personne"
+                            }
+                        ]
+                    },
+                    "promotions": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Promotion/properties/id"
+                                },
+                                "nomPromotion": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "Etudiant": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "Personne": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Personne"
+                            }
+                        ]
+                    },
+                    "isAlternant": {
+                        "type": "boolean"
+                    },
+                    "Notes": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Note/properties/id"
+                                },
+                                "note": {
+                                    "$ref": "#/components/schemas/Note/properties/note"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Formation": {
                 "properties": {
                     "id": {
@@ -391,7 +680,10 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Promotion/properties/id"
+                                },
+                                "nomPromotion": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                                 }
                             },
                             "type": "object"
@@ -403,7 +695,8 @@
             "Matiere": {
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "readOnly": "true"
                     },
                     "nom": {
                         "type": "string"
@@ -416,30 +709,48 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Session/properties/id"
+                                },
+                                "duree": {
+                                    "$ref": "#/components/schemas/Session/properties/duree"
                                 }
                             },
                             "type": "object"
-                        }
+                        },
+                        "readOnly": "true"
                     },
                     "module": {
                         "properties": {
                             "id": {
-                                "type": "integer"
+                                "$ref": "#/components/schemas/Module/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Module/properties/nom"
                             }
                         },
-                        "type": "object"
+                        "type": "object",
+                        "readOnly": "true"
                     },
                     "notes": {
                         "type": "array",
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Note/properties/id"
+                                },
+                                "note": {
+                                    "$ref": "#/components/schemas/Note/properties/note"
+                                },
+                                "idEtudiant": {
+                                    "$ref": "#/components/schemas/Etudiant/properties/id"
                                 }
                             },
                             "type": "object"
-                        }
+                        },
+                        "readOnly": "true"
+                    },
+                    "nombreHeuresAPlacer": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -447,7 +758,8 @@
             "Module": {
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "readOnly": "true"
                     },
                     "nom": {
                         "type": "string"
@@ -456,26 +768,30 @@
                         "type": "integer"
                     },
                     "matieres": {
-                        "type": "array",
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Matiere/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Matiere/properties/nom"
                                 }
                             },
                             "type": "object"
-                        }
+                        },
+                        "readOnly": "true"
                     },
                     "semestre": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                }
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Semestre/properties/id"
                             },
-                            "type": "object"
-                        }
+                            "nom": {
+                                "$ref": "#/components/schemas/Semestre/properties/nom"
+                            }
+                        },
+                        "type": "object",
+                        "readOnly": "true"
                     }
                 },
                 "type": "object"
@@ -508,10 +824,36 @@
                 },
                 "type": "object"
             },
+            "Personne": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": "true"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "prenom": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "readOnly": "true"
+                    },
+                    "adresse": {
+                        "type": "string"
+                    },
+                    "numeroTel": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Promotion": {
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "readOnly": "true"
                     },
                     "nom": {
                         "type": "string"
@@ -521,30 +863,82 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Semestre/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Semestre/properties/nom"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "readOnly": "true"
+                    },
+                    "formation": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Formation/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Formation/properties/nom"
+                            }
+                        },
+                        "type": "object",
+                        "readOnly": "true"
+                    },
+                    "assistant": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Assistant/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Personne/properties/nom"
+                            },
+                            "prenom": {
+                                "$ref": "#/components/schemas/Personne/properties/prenom"
+                            }
+                        },
+                        "type": "object",
+                        "readOnly": "true"
+                    },
+                    "nomPromotion": {
+                        "type": "string",
+                        "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "Semestre": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "modules": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Module/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Module/properties/nom"
                                 }
                             },
                             "type": "object"
                         }
                     },
-                    "formation": {
+                    "promotion": {
                         "properties": {
                             "id": {
-                                "type": "integer"
+                                "$ref": "#/components/schemas/Promotion/properties/id"
+                            },
+                            "nomPromotion": {
+                                "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                             }
                         },
                         "type": "object"
-                    },
-                    "assistant": {
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "nomPromotion": {
-                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -552,18 +946,20 @@
             "Session": {
                 "properties": {
                     "id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "readOnly": "true"
                     },
                     "matiere": {
                         "properties": {
                             "id": {
-                                "type": "integer"
+                                "$ref": "#/components/schemas/Matiere/properties/id"
                             },
                             "nom": {
-                                "type": "string"
+                                "$ref": "#/components/schemas/Matiere/properties/nom"
                             }
                         },
-                        "type": "object"
+                        "type": "object",
+                        "readOnly": "true"
                     },
                     "type": {
                         "type": "string"
@@ -578,6 +974,11 @@
                     "dateFin": {
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "duree": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
                     }
                 },
                 "type": "object"

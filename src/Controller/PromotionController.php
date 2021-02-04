@@ -19,6 +19,12 @@ class PromotionController extends AbstractController
      * @OA\Get(
      *      tags={"Promotions"},
      *      path="/assistants/{id}/promotions",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
      *      @OA\Response(
      *          response="200",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Promotion"))
@@ -32,13 +38,15 @@ class PromotionController extends AbstractController
     {
         $promos = $assistant->getPromotions();
 
-        $promoArray = [];
+        /*$promoArray = [];
 
         foreach($promos as $promo){
             array_push($promoArray,$promo->getArray());
-        }
+        }*/
 
-        return new JsonResponse($promoArray, Response::HTTP_OK);
+        $json = PromotionSerializer::serializeJson($promos, ["group"=>"promos_assistant"]);
+
+        return new JsonResponse($json, Response::HTTP_OK);
 
     }
 
@@ -50,14 +58,7 @@ class PromotionController extends AbstractController
      *          response="200",
      *          @OA\JsonContent(
      *              type="array",
-     *              @OA\Items(
-     *                  @OA\Property(type="integer", property="id"),
-     *                  @OA\Property(
-     *                      property="formation",
-     *                      @OA\Property(property="id", type="integer")
-     *                  ),
-     *                  @OA\Property(type="string", property="nomPromotion")
-     *              )
+     *              @OA\Items(ref="#/components/schemas/Promotion")
      *          )
      *      )
      * )
