@@ -24,9 +24,16 @@ class Session
 
     /**
      * @OA\Property(
-     *     property="matiere",
-     *     @OA\Property(property="id", type="integer"),
-     *     @OA\Property(property="nom", type="string")
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Matiere/properties/id"
+     *      ),
+     *      @OA\AdditionalProperties(
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Matiere/properties/nom"
+     *          ),
+     *      )
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
      * @Groups({"session_get", "session_post"})

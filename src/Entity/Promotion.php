@@ -32,13 +32,17 @@ class Promotion
     private $nom;
 
     /**
-     * @OA\Property(
-     *      property="semestres",
-     *      type="array",
+     * @OA\Property(type="array",
      *      @OA\Items(
      *          @OA\Property(
      *              property="id",
-     *              type="integer"
+     *              ref="#/components/schemas/Semestre/properties/id"
+     *          ),
+     *          @OA\AdditionalProperties(
+     *              @OA\Property(
+     *                  property="nom",
+     *                  ref="#/components/schemas/Semestre/properties/nom"
+     *              ),
      *          )
      *      )
      * )
@@ -49,10 +53,15 @@ class Promotion
 
     /**
      * @OA\Property(
-     *      property="formation",
      *      @OA\Property(
      *          property="id",
-     *          type="integer"
+     *          ref="#/components/schemas/Formation/properties/id"
+     *      ),
+     *      @OA\AdditionalProperties(
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Formation/properties/nom"
+     *          ),
      *      )
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")

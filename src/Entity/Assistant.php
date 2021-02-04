@@ -20,10 +20,10 @@ class Assistant
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"get_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_assistant"})
      */
     private $id;
 
@@ -32,25 +32,29 @@ class Assistant
      *      property="personne",
      *      allOf={@OA\Schema(ref="#/components/schemas/Personne")}
      * )
-     * @Groups({"get_assistant"})
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_assistant"})
      */
     private $Personne;
 
     /**
-     * @OA\Property(
-     *      property="promotions",
-     *      type="array",
+     * @OA\Property(type="array",
      *      @OA\Items(
      *          @OA\Property(
      *              property="id",
-     *              type="integer"
+     *              ref="#/components/schemas/Promotion/properties/id"
+     *          ),
+     *          @OA\AdditionalProperties(
+     *              @OA\Property(
+     *                  property="nomPromotion",
+     *                  ref="#/components/schemas/Promotion/properties/nomPromotion"
+     *              ),
      *          )
      *      )
      * )
-     * @Groups({"get_assistant"})
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="assistant")
+     * @Groups({"get_assistant"})
      */
     private $promotions;
 

@@ -455,10 +455,18 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Promotion/properties/id"
                                 }
                             },
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": {
+                                "properties": {
+                                    "nomPromotion": {
+                                        "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
@@ -469,7 +477,7 @@
                     "id": {
                         "type": "integer"
                     },
-                    "personne": {
+                    "Personne": {
                         "allOf": [
                             {
                                 "$ref": "#/components/schemas/Personne"
@@ -484,10 +492,18 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Note/properties/id"
                                 }
                             },
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": {
+                                "properties": {
+                                    "note": {
+                                        "$ref": "#/components/schemas/Note/properties/note"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
@@ -506,10 +522,18 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Promotion/properties/id"
                                 }
                             },
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": {
+                                "properties": {
+                                    "nomPromotion": {
+                                        "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
@@ -531,26 +555,50 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Session/properties/id"
                                 }
                             },
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": {
+                                "properties": {
+                                    "duree": {
+                                        "$ref": "#/components/schemas/Session/properties/duree"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     },
                     "module": {
                         "properties": {
                             "id": {
-                                "type": "integer"
+                                "$ref": "#/components/schemas/Module/properties/id"
                             }
                         },
-                        "type": "object"
+                        "type": "object",
+                        "additionalProperties": {
+                            "properties": {
+                                "nom": {
+                                    "$ref": "#/components/schemas/Module/properties/nom"
+                                }
+                            },
+                            "type": "object"
+                        }
                     },
                     "notes": {
-                        "type": "array",
-                        "items": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Note/properties/id"
+                            }
+                        },
+                        "type": "object",
+                        "additionalProperties": {
                             "properties": {
-                                "id": {
-                                    "type": "integer"
+                                "note": {
+                                    "$ref": "#/components/schemas/Note/properties/note"
+                                },
+                                "idEtudiant": {
+                                    "$ref": "#/components/schemas/Etudiant/properties/id"
                                 }
                             },
                             "type": "object"
@@ -574,22 +622,32 @@
                         "type": "integer"
                     },
                     "matieres": {
-                        "type": "array",
-                        "items": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Matiere/properties/id"
+                            }
+                        },
+                        "type": "object",
+                        "additionalProperties": {
                             "properties": {
-                                "id": {
-                                    "type": "integer"
+                                "nom": {
+                                    "$ref": "#/components/schemas/Matiere/properties/nom"
                                 }
                             },
                             "type": "object"
                         }
                     },
                     "semestre": {
-                        "type": "array",
-                        "items": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Semestre/properties/id"
+                            }
+                        },
+                        "type": "object",
+                        "additionalProperties": {
                             "properties": {
-                                "id": {
-                                    "type": "integer"
+                                "nom": {
+                                    "$ref": "#/components/schemas/Semestre/properties/nom"
                                 }
                             },
                             "type": "object"
@@ -662,19 +720,35 @@
                         "items": {
                             "properties": {
                                 "id": {
-                                    "type": "integer"
+                                    "$ref": "#/components/schemas/Semestre/properties/id"
                                 }
                             },
-                            "type": "object"
+                            "type": "object",
+                            "additionalProperties": {
+                                "properties": {
+                                    "nom": {
+                                        "$ref": "#/components/schemas/Semestre/properties/nom"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     },
                     "formation": {
                         "properties": {
                             "id": {
-                                "type": "integer"
+                                "$ref": "#/components/schemas/Formation/properties/id"
                             }
                         },
-                        "type": "object"
+                        "type": "object",
+                        "additionalProperties": {
+                            "properties": {
+                                "nom": {
+                                    "$ref": "#/components/schemas/Formation/properties/nom"
+                                }
+                            },
+                            "type": "object"
+                        }
                     },
                     "assistant": {
                         "properties": {
@@ -694,6 +768,44 @@
                 "properties": {
                     "id": {
                         "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "modules": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Module/properties/id"
+                                }
+                            },
+                            "type": "object",
+                            "additionalProperties": {
+                                "properties": {
+                                    "nom": {
+                                        "$ref": "#/components/schemas/Module/properties/nom"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "promotion": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Promotion/properties/id"
+                            }
+                        },
+                        "type": "object",
+                        "additionalProperties": {
+                            "properties": {
+                                "nomPromotion": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
@@ -706,13 +818,18 @@
                     "matiere": {
                         "properties": {
                             "id": {
-                                "type": "integer"
-                            },
-                            "nom": {
-                                "type": "string"
+                                "$ref": "#/components/schemas/Matiere/properties/id"
                             }
                         },
-                        "type": "object"
+                        "type": "object",
+                        "additionalProperties": {
+                            "properties": {
+                                "nom": {
+                                    "$ref": "#/components/schemas/Matiere/properties/nom"
+                                }
+                            },
+                            "type": "object"
+                        }
                     },
                     "type": {
                         "type": "string"

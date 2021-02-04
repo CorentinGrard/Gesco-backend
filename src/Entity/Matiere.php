@@ -39,27 +39,58 @@ class Matiere
     private $coefficient;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
-     * @Groups("matiere_get")
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Session/properties/id"
+     *          ),
+     *          @OA\AdditionalProperties(
+     *              @OA\Property(
+     *                  property="duree",
+     *                  ref="#/components/schemas/Session/properties/duree"
+     *              ),
+     *          )
+     *      )
+     * )
      * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
+     * @Groups("matiere_get")
      */
     private $sessions;
 
     /**
-     * @OA\Property(property="module", @OA\Property(property="id", type="integer"))
-     * @Groups({"matiere_get", "matiere_post"})
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Module/properties/id"
+     *      ),
+     *      @OA\AdditionalProperties(
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Module/properties/nom"
+     *          ),
+     *      )
+     * )
      * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"matiere_get", "matiere_post"})
      */
     private $module;
 
     /**
      * @OA\Property(
-     *      type="array",
-     *      @OA\Items(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Note/properties/id"
+     *      ),
+     *      @OA\AdditionalProperties(
      *          @OA\Property(
-     *              property="id",
-     *              type="integer"
+     *              property="note",
+     *              ref="#/components/schemas/Note/properties/note"
+     *          ),
+     *          @OA\Property(
+     *              property="idEtudiant",
+     *              ref="#/components/schemas/Etudiant/properties/id"
      *          )
      *      )
      * )

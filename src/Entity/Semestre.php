@@ -25,16 +25,45 @@ class Semestre
     private $id;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"semestre_get", "module_get"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Module/properties/id"
+     *          ),
+     *          @OA\AdditionalProperties(
+     *              @OA\Property(
+     *                  property="nom",
+     *                  ref="#/components/schemas/Module/properties/nom"
+     *              ),
+     *          )
+     *      )
+     * )
+     * @Groups({"semestre_get"})
      * @ORM\OneToMany(targetEntity=Module::class, mappedBy="semestre")
      */
     private $modules;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Promotion/properties/id"
+     *      ),
+     *      @OA\AdditionalProperties(
+     *          @OA\Property(
+     *              property="nomPromotion",
+     *              ref="#/components/schemas/Promotion/properties/nomPromotion"
+     *          ),
+     *      )
+     * )
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="semestres")
      * @ORM\JoinColumn(nullable=false)
      */

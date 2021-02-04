@@ -33,7 +33,20 @@ class Formation
     private $nom;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Promotion/properties/id"
+     *          ),
+     *          @OA\AdditionalProperties(
+     *              @OA\Property(
+     *                  property="nomPromotion",
+     *                  ref="#/components/schemas/Promotion/properties/nomPromotion"
+     *              ),
+     *          )
+     *      )
+     * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation")
      * @Groups({"get_formation"})
      */

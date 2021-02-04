@@ -24,11 +24,10 @@ class Etudiant
      */
     private $id;
 
-    /* TODO */
     /**
      * @OA\Property(
-     *      property="personne",
-     *      allOf={@OA\Schema(ref="#/components/schemas/Personne")}
+     *      property="Personne",
+     *      allOf={@OA\Property(ref="#/components/schemas/Personne")}
      * )
      * @Groups({"get_etudiant"})
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
@@ -44,7 +43,20 @@ class Etudiant
     private $isAlternant;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Note/properties/id"
+     *          ),
+     *          @OA\AdditionalProperties(
+     *              @OA\Property(
+     *                  property="note",
+     *                  ref="#/components/schemas/Note/properties/note"
+     *              ),
+     *          )
+     *      )
+     * )
      * @Groups({"get_etudiant"})
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Etudiant")
      */
