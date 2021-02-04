@@ -24,7 +24,8 @@ abstract class SessionSerializer
             $defaultContext = [
                 AbstractNormalizer::CALLBACKS => [
                     'dateDebut' => $dateCallback,
-                    'dateFin' => $dateCallback
+                    'dateFin' => $dateCallback,
+                    'getDuree' => $dateCallback
                 ]
             ];
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
