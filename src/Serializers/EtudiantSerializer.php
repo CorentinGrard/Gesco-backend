@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-abstract class PromotionSerializer
+abstract class EtudiantSerializer
 {
     public static $serializer;
 

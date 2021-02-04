@@ -12,10 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 class ModuleController extends AbstractController
 {
     /**
+     * @OA\Get(
+     *      tags={"Modules"},
+     *      path="/modules",
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Module"))
+     *      )
+     * )
      * @Route("/modules", name="module_list", methods={"GET"})
      * @param ModuleRepository $moduleRepository
      * @return Response
@@ -35,6 +44,14 @@ class ModuleController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *      tags={"Modules"},
+     *      path="/modules",
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(ref="#/components/schemas/Module")
+     *      )
+     * )
      * @Route("/modules/{id}", name="module", methods={"GET"})
      * @param Module $module
      * @return Response
@@ -45,18 +62,39 @@ class ModuleController extends AbstractController
     }
 
     /**
-     * @Route("/modules", name="add_module", methods={"POST"})
+     * @OA\Post(
+     *      tags={"Modules"},
+     *      path="/modules/{idSemestre}",
+     *      @OA\Parameter(
+     *          name="idSemestre",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          request="matieres",
+     *          @OA\JsonContent(ref="#/components/schemas/Module")
+     *      ),
+     *      @OA\Response(response="201", description="Matiere ajoutée !"),
+     *      @OA\Response(response="404", description="Non trouvé...")
+     * )
+     * @Route("/modules/{idSemestre}", name="add_module", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param SemestreRepository $semestreRepository
+     * @param int $idSemestre
      * @return Response
      */
-    public function add(Request $request, EntityManagerInterface $entityManager, SemestreRepository $semestreRepository): Response
+    public function add(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SemestreRepository $semestreRepository,
+        int $idSemestre): Response
     {
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
-        $idSemestre = $data['idSemestre'];
+        //$idSemestre = $data['idSemestre'];
         $ects = $data['ects'];
 
         if (empty($nom) || empty($idSemestre) || empty($ects) ) {
