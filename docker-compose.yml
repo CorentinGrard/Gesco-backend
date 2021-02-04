@@ -18,6 +18,8 @@ services:
       context: "."
     depends_on:
       - database
+    links:
+      - database
     environment:
       - DATABASE_URL=postgresql://admin:admin@database:5432/db?serverVersion=5.7
       - APP_ENV=${APP_ENV}
