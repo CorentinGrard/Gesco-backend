@@ -49,11 +49,9 @@ class Etudiant
      *              property="id",
      *              ref="#/components/schemas/Note/properties/id"
      *          ),
-     *          @OA\AdditionalProperties(
-     *              @OA\Property(
-     *                  property="note",
-     *                  ref="#/components/schemas/Note/properties/note"
-     *              ),
+     *          @OA\Property(
+     *              property="note",
+     *              ref="#/components/schemas/Note/properties/note"
      *          )
      *      )
      * )

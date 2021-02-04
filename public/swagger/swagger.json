@@ -13,7 +13,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Personne"
+                                        "$ref": "#/components/schemas/Assistant"
                                     }
                                 }
                             }
@@ -43,7 +43,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Personne"
+                                    "$ref": "#/components/schemas/Assistant"
                                 }
                             }
                         }
@@ -90,6 +90,9 @@
                                     },
                                     "module": {
                                         "description": "idModule",
+                                        "type": "integer"
+                                    },
+                                    "nombreHeuresAPlacer": {
                                         "type": "integer"
                                     }
                                 },
@@ -456,17 +459,12 @@
                             "properties": {
                                 "id": {
                                     "$ref": "#/components/schemas/Promotion/properties/id"
+                                },
+                                "nomPromotion": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                                 }
                             },
-                            "type": "object",
-                            "additionalProperties": {
-                                "properties": {
-                                    "nomPromotion": {
-                                        "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                            "type": "object"
                         }
                     }
                 },
@@ -493,17 +491,12 @@
                             "properties": {
                                 "id": {
                                     "$ref": "#/components/schemas/Note/properties/id"
+                                },
+                                "note": {
+                                    "$ref": "#/components/schemas/Note/properties/note"
                                 }
                             },
-                            "type": "object",
-                            "additionalProperties": {
-                                "properties": {
-                                    "note": {
-                                        "$ref": "#/components/schemas/Note/properties/note"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                            "type": "object"
                         }
                     }
                 },
@@ -523,17 +516,12 @@
                             "properties": {
                                 "id": {
                                     "$ref": "#/components/schemas/Promotion/properties/id"
+                                },
+                                "nomPromotion": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                                 }
                             },
-                            "type": "object",
-                            "additionalProperties": {
-                                "properties": {
-                                    "nomPromotion": {
-                                        "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                            "type": "object"
                         }
                     }
                 },
@@ -556,44 +544,32 @@
                             "properties": {
                                 "id": {
                                     "$ref": "#/components/schemas/Session/properties/id"
+                                },
+                                "duree": {
+                                    "$ref": "#/components/schemas/Session/properties/duree"
                                 }
                             },
-                            "type": "object",
-                            "additionalProperties": {
-                                "properties": {
-                                    "duree": {
-                                        "$ref": "#/components/schemas/Session/properties/duree"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                            "type": "object"
                         }
                     },
                     "module": {
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Module/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Module/properties/nom"
                             }
                         },
-                        "type": "object",
-                        "additionalProperties": {
-                            "properties": {
-                                "nom": {
-                                    "$ref": "#/components/schemas/Module/properties/nom"
-                                }
-                            },
-                            "type": "object"
-                        }
+                        "type": "object"
                     },
                     "notes": {
-                        "properties": {
-                            "id": {
-                                "$ref": "#/components/schemas/Note/properties/id"
-                            }
-                        },
-                        "type": "object",
-                        "additionalProperties": {
+                        "type": "array",
+                        "items": {
                             "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Note/properties/id"
+                                },
                                 "note": {
                                     "$ref": "#/components/schemas/Note/properties/note"
                                 },
@@ -622,14 +598,11 @@
                         "type": "integer"
                     },
                     "matieres": {
-                        "properties": {
-                            "id": {
-                                "$ref": "#/components/schemas/Matiere/properties/id"
-                            }
-                        },
-                        "type": "object",
-                        "additionalProperties": {
+                        "items": {
                             "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Matiere/properties/id"
+                                },
                                 "nom": {
                                     "$ref": "#/components/schemas/Matiere/properties/nom"
                                 }
@@ -641,17 +614,12 @@
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Semestre/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Semestre/properties/nom"
                             }
                         },
-                        "type": "object",
-                        "additionalProperties": {
-                            "properties": {
-                                "nom": {
-                                    "$ref": "#/components/schemas/Semestre/properties/nom"
-                                }
-                            },
-                            "type": "object"
-                        }
+                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -721,39 +689,35 @@
                             "properties": {
                                 "id": {
                                     "$ref": "#/components/schemas/Semestre/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Semestre/properties/nom"
                                 }
                             },
-                            "type": "object",
-                            "additionalProperties": {
-                                "properties": {
-                                    "nom": {
-                                        "$ref": "#/components/schemas/Semestre/properties/nom"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                            "type": "object"
                         }
                     },
                     "formation": {
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Formation/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Formation/properties/nom"
                             }
                         },
-                        "type": "object",
-                        "additionalProperties": {
-                            "properties": {
-                                "nom": {
-                                    "$ref": "#/components/schemas/Formation/properties/nom"
-                                }
-                            },
-                            "type": "object"
-                        }
+                        "type": "object"
                     },
                     "assistant": {
                         "properties": {
                             "id": {
-                                "type": "integer"
+                                "$ref": "#/components/schemas/Assistant/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Assistant/properties/nom"
+                            },
+                            "prenom": {
+                                "$ref": "#/components/schemas/Assistant/properties/prenom"
                             }
                         },
                         "type": "object"
@@ -778,34 +742,24 @@
                             "properties": {
                                 "id": {
                                     "$ref": "#/components/schemas/Module/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Module/properties/nom"
                                 }
                             },
-                            "type": "object",
-                            "additionalProperties": {
-                                "properties": {
-                                    "nom": {
-                                        "$ref": "#/components/schemas/Module/properties/nom"
-                                    }
-                                },
-                                "type": "object"
-                            }
+                            "type": "object"
                         }
                     },
                     "promotion": {
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Promotion/properties/id"
+                            },
+                            "nomPromotion": {
+                                "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                             }
                         },
-                        "type": "object",
-                        "additionalProperties": {
-                            "properties": {
-                                "nomPromotion": {
-                                    "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
-                                }
-                            },
-                            "type": "object"
-                        }
+                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -819,17 +773,12 @@
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Matiere/properties/id"
+                            },
+                            "nom": {
+                                "$ref": "#/components/schemas/Matiere/properties/nom"
                             }
                         },
-                        "type": "object",
-                        "additionalProperties": {
-                            "properties": {
-                                "nom": {
-                                    "$ref": "#/components/schemas/Matiere/properties/nom"
-                                }
-                            },
-                            "type": "object"
-                        }
+                        "type": "object"
                     },
                     "type": {
                         "type": "string"

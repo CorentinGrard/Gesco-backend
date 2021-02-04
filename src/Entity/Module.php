@@ -40,15 +40,15 @@ class Module
 
     /**
      * @OA\Property(
-     *      @OA\Property(
-     *          property="id",
-     *          ref="#/components/schemas/Matiere/properties/id"
-     *      ),
-     *      @OA\AdditionalProperties(
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Matiere/properties/id"
+     *          ),
      *          @OA\Property(
      *              property="nom",
      *              ref="#/components/schemas/Matiere/properties/nom"
-     *          ),
+     *          )
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
@@ -62,11 +62,9 @@ class Module
      *          property="id",
      *          ref="#/components/schemas/Semestre/properties/id"
      *      ),
-     *      @OA\AdditionalProperties(
-     *          @OA\Property(
-     *              property="nom",
-     *              ref="#/components/schemas/Semestre/properties/nom"
-     *          ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Semestre/properties/nom"
      *      )
      * )
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")

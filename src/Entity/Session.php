@@ -28,11 +28,9 @@ class Session
      *          property="id",
      *          ref="#/components/schemas/Matiere/properties/id"
      *      ),
-     *      @OA\AdditionalProperties(
-     *          @OA\Property(
-     *              property="nom",
-     *              ref="#/components/schemas/Matiere/properties/nom"
-     *          ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Matiere/properties/nom"
      *      )
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")

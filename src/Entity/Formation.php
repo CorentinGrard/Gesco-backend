@@ -39,11 +39,9 @@ class Formation
      *              property="id",
      *              ref="#/components/schemas/Promotion/properties/id"
      *          ),
-     *          @OA\AdditionalProperties(
-     *              @OA\Property(
-     *                  property="nomPromotion",
-     *                  ref="#/components/schemas/Promotion/properties/nomPromotion"
-     *              ),
+     *          @OA\Property(
+     *              property="nomPromotion",
+     *              ref="#/components/schemas/Promotion/properties/nomPromotion"
      *          )
      *      )
      * )

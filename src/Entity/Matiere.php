@@ -45,11 +45,9 @@ class Matiere
      *              property="id",
      *              ref="#/components/schemas/Session/properties/id"
      *          ),
-     *          @OA\AdditionalProperties(
-     *              @OA\Property(
-     *                  property="duree",
-     *                  ref="#/components/schemas/Session/properties/duree"
-     *              ),
+     *          @OA\Property(
+     *              property="duree",
+     *              ref="#/components/schemas/Session/properties/duree"
      *          )
      *      )
      * )
@@ -64,11 +62,9 @@ class Matiere
      *          property="id",
      *          ref="#/components/schemas/Module/properties/id"
      *      ),
-     *      @OA\AdditionalProperties(
-     *          @OA\Property(
-     *              property="nom",
-     *              ref="#/components/schemas/Module/properties/nom"
-     *          ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Module/properties/nom"
      *      )
      * )
      * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
@@ -78,12 +74,12 @@ class Matiere
     private $module;
 
     /**
-     * @OA\Property(
-     *      @OA\Property(
-     *          property="id",
-     *          ref="#/components/schemas/Note/properties/id"
-     *      ),
-     *      @OA\AdditionalProperties(
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Note/properties/id"
+     *          ),
      *          @OA\Property(
      *              property="note",
      *              ref="#/components/schemas/Note/properties/note"

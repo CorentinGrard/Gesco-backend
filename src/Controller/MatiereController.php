@@ -77,7 +77,8 @@ class MatiereController extends AbstractController
      *          @OA\JsonContent(
      *              @OA\Property(type="string", property="nom"),
      *              @OA\Property(type="integer", property="coefficient"),
-     *              @OA\Property(type="integer", property="module", description="idModule")
+     *              @OA\Property(type="integer", property="module", description="idModule"),
+     *              @OA\Property(type="integer", property="nombreHeuresAPlacer")
      *          )
      *      ),
      *      @OA\Response(response="201", description="Matiere ajoutée !"),
@@ -96,8 +97,9 @@ class MatiereController extends AbstractController
         $nom = $data['nom'];
         $coeff = $data['coefficient'];
         $idModule = $data['module'];
+        $nbhp = $data['nombreHeuresAPlacer'];
 
-        if (empty($nom) || empty($coeff) || empty($idModule)) {
+        if (empty($nom) || empty($coeff) || empty($idModule) || empty($idModule)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
@@ -107,6 +109,7 @@ class MatiereController extends AbstractController
         $matiere->setNom($nom);
         $matiere->setCoefficient($coeff);
         $matiere->setModule($module);
+        $matiere->setNombreHeuresAPlacer($nbhp);
 
 
         $entityManager->persist($matiere);

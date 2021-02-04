@@ -38,11 +38,9 @@ class Semestre
      *              property="id",
      *              ref="#/components/schemas/Module/properties/id"
      *          ),
-     *          @OA\AdditionalProperties(
-     *              @OA\Property(
-     *                  property="nom",
-     *                  ref="#/components/schemas/Module/properties/nom"
-     *              ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Module/properties/nom"
      *          )
      *      )
      * )
@@ -57,11 +55,9 @@ class Semestre
      *          property="id",
      *          ref="#/components/schemas/Promotion/properties/id"
      *      ),
-     *      @OA\AdditionalProperties(
-     *          @OA\Property(
-     *              property="nomPromotion",
-     *              ref="#/components/schemas/Promotion/properties/nomPromotion"
-     *          ),
+     *      @OA\Property(
+     *          property="nomPromotion",
+     *          ref="#/components/schemas/Promotion/properties/nomPromotion"
      *      )
      * )
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="semestres")

@@ -20,7 +20,7 @@ class AssistantController extends AbstractController
      *          response="200",
      *          @OA\JsonContent(
      *              type="array",
-     *              @OA\Items(ref="#/components/schemas/Personne")
+     *              @OA\Items(ref="#/components/schemas/Assistant")
      *          )
      *      )
      * )
@@ -53,7 +53,7 @@ class AssistantController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          @OA\JsonContent(ref="#/components/schemas/Personne")
+     *          @OA\JsonContent(ref="#/components/schemas/Assistant")
      *      )
      * )
      * @Route("/assistants/{id}", name="assistant")

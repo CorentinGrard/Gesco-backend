@@ -38,11 +38,9 @@ class Promotion
      *              property="id",
      *              ref="#/components/schemas/Semestre/properties/id"
      *          ),
-     *          @OA\AdditionalProperties(
-     *              @OA\Property(
-     *                  property="nom",
-     *                  ref="#/components/schemas/Semestre/properties/nom"
-     *              ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Semestre/properties/nom"
      *          )
      *      )
      * )
@@ -57,11 +55,9 @@ class Promotion
      *          property="id",
      *          ref="#/components/schemas/Formation/properties/id"
      *      ),
-     *      @OA\AdditionalProperties(
-     *          @OA\Property(
-     *              property="nom",
-     *              ref="#/components/schemas/Formation/properties/nom"
-     *          ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Formation/properties/nom"
      *      )
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
@@ -72,8 +68,18 @@ class Promotion
 
     /**
      * @OA\Property(
-     *     property="assistant",
-     *     @OA\Property(property="id", type="integer")
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Assistant/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Assistant/properties/nom"
+     *      ),
+     *      @OA\Property(
+     *          property="prenom",
+     *          ref="#/components/schemas/Assistant/properties/prenom"
+     *      )
      * )
      * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
