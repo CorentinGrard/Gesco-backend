@@ -11,6 +11,6 @@ until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$host" -U "admin" -d "db" -c '\q'; 
   sleep 1
 done
   
->&2 echo "Postgres is up - executing command"
+>&2 echo "Postgres is UP !"
 
 
