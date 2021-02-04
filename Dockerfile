@@ -12,6 +12,6 @@ RUN apk --update --no-cache add git && \
 
 WORKDIR /var/www
 COPY . .
-CMD composer install ; bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
+CMD composer install ; sleep 30 ;bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
 
 EXPOSE 8000
