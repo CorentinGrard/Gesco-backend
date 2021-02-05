@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\NoteRepository;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @OA\Schema()
@@ -17,26 +18,29 @@ class Note
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"notes_etudiant"})
      */
     private $id;
 
     /**
-     * @OA\Property(type="number",format="float")
+     * @OA\Property(property="note",type="number", format="float")
      * @ORM\Column(type="float", scale=2)
+     * @Groups({"notes_etudiant"})
      */
     private $note;
 
     /**
-     * @OA\Property(property="etudiant",@OA\Property(property = "id",type="integer"))
+     * @OA\Property(property="etudiant", ref="#/components/schemas/Etudiant"),
      * @ORM\ManyToOne(targetEntity=Etudiant::class, inversedBy="Notes")
      * @ORM\JoinColumn(nullable=false)
      */
     private $Etudiant;
 
     /**
-     * @OA\Property(property="matiere",@OA\Property(property = "id",type="integer"))
+     * @OA\Property(property="matiere", @OA\Property(property = "id",type="integer"))
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="notes")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"notes_etudiant"})
      */
     private $Matiere;
 

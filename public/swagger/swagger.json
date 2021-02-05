@@ -364,14 +364,44 @@
                                 "schema": {
                                     "properties": {
                                         "id": {
-                                            "type": "integer"
+                                            "$ref": "#/components/schemas/Personne/properties/id"
                                         },
                                         "nom": {
-                                            "type": "string"
+                                            "$ref": "#/components/schemas/Personne/properties/nom"
                                         },
                                         "modules": {
                                             "type": "array",
-                                            "items": {}
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "$ref": "#/components/schemas/Module/properties/id"
+                                                    },
+                                                    "nom": {
+                                                        "$ref": "#/components/schemas/Module/properties/nom"
+                                                    },
+                                                    "matieres": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "$ref": "#/components/schemas/Matiere/properties/id"
+                                                                },
+                                                                "nom": {
+                                                                    "$ref": "#/components/schemas/Matiere/properties/nom"
+                                                                },
+                                                                "note": {
+                                                                    "$ref": "#/components/schemas/Note/properties/note"
+                                                                },
+                                                                "coefficient": {
+                                                                    "$ref": "#/components/schemas/Matiere/properties/coefficient"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -385,7 +415,7 @@
                 }
             }
         },
-        "/etudiants/{idEtudiant}/notes": {
+        "/etudiants/{id}/notes": {
             "get": {
                 "tags": [
                     "Notes"
@@ -393,8 +423,9 @@
                 "operationId": "App\\Controller\\NoteController::notesEtudiant",
                 "parameters": [
                     {
-                        "name": "idEtudiant",
+                        "name": "id",
                         "in": "path",
+                        "description": "id Etudiant",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -407,41 +438,62 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "integer"
+                                        "Personne": {
+                                            "properties": {
+                                                "nom": {
+                                                    "$ref": "#/components/schemas/Personne/properties/nom"
+                                                },
+                                                "prenom": {
+                                                    "$ref": "#/components/schemas/Personne/properties/prenom"
+                                                }
+                                            },
+                                            "type": "object"
                                         },
-                                        "nom": {
-                                            "type": "string"
-                                        },
-                                        "modules": {
+                                        "Notes": {
                                             "type": "array",
                                             "items": {
                                                 "properties": {
                                                     "id": {
-                                                        "type": "integer"
+                                                        "$ref": "#/components/schemas/Note/properties/id"
                                                     },
-                                                    "nom": {
-                                                        "type": "string"
+                                                    "note": {
+                                                        "$ref": "#/components/schemas/Note/properties/note"
                                                     },
-                                                    "matieres": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "properties": {
-                                                                "id": {
-                                                                    "type": "integer"
-                                                                },
-                                                                "nom": {
-                                                                    "type": "string"
-                                                                },
-                                                                "note": {
-                                                                    "type": "string"
-                                                                },
-                                                                "coeff": {
-                                                                    "type": "string"
-                                                                }
+                                                    "Matiere": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/id"
                                                             },
-                                                            "type": "object"
-                                                        }
+                                                            "nom": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/nom"
+                                                            },
+                                                            "coefficient": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/coefficient"
+                                                            },
+                                                            "module": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "$ref": "#/components/schemas/Module/properties/id"
+                                                                    },
+                                                                    "nom": {
+                                                                        "$ref": "#/components/schemas/Module/properties/nom"
+                                                                    },
+                                                                    "semestre": {
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "$ref": "#/components/schemas/Semestre/properties/id"
+                                                                            },
+                                                                            "nom": {
+                                                                                "$ref": "#/components/schemas/Semestre/properties/nom"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
                                                 "type": "object"
@@ -926,12 +978,7 @@
                         "format": "float"
                     },
                     "etudiant": {
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            }
-                        },
-                        "type": "object"
+                        "$ref": "#/components/schemas/Etudiant"
                     },
                     "matiere": {
                         "properties": {

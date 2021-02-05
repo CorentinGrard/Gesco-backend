@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Etudiant;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\NoteRepository;
+use App\Serializers\EtudiantSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -18,6 +20,7 @@ use OpenApi\Annotations as OA;
 
 class NoteController extends AbstractController
 {
+    // TODO à revoir
     /**
      * @Route("/note", name="note")
      */
@@ -29,6 +32,7 @@ class NoteController extends AbstractController
         ]);
     }
 
+    // TODO finir refactor POST '/notes'
     /**
      * @OA\Post(tags={"Notes"},
      *      path="/notes",
@@ -77,7 +81,7 @@ class NoteController extends AbstractController
         return new JsonResponse(['status' => 'Note ajoutée !'], Response::HTTP_CREATED);
     }
 
-
+// TODO refactor '/etudiants/{idEtudiant}/semestres/{idSemestre}/notes'
     /**
      * @OA\Get(
      *      tags={"Notes"},
@@ -96,24 +100,19 @@ class NoteController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          @OA\JsonContent(type="object",
-     *              @OA\Property(property="id", type="integer"),
-     *              @OA\Property(property="nom", type="string"),
+     *          @OA\JsonContent(
+     *              @OA\Property(property="id", ref="#/components/schemas/Personne/properties/id"),
+     *              @OA\Property(property="nom", ref="#/components/schemas/Personne/properties/nom"),
      *              @OA\Property(property="modules", type="array",
      *                  @OA\Items(
-     *                      @OA\Schema(schema="module",
-     *                          @OA\Property(property="id", type="integer"),
-     *                          @OA\Property(property="nom", type="string"),
-     *                          @OA\Property(property="matieres", type="array",
-     *                              @OA\Items(
-     *                                  @OA\Schema(schema="matiere",
-     *                                      @OA\Property(property="id", type="integer"),
-     *                                          @OA\Property(property="nom", type="string"),
-     *                                          @OA\Property(property="note", type="string"),
-     *                                          @OA\Property(property="coeff", type="string")
-     *
-     *                                  )
-     *                              )
+     *                      @OA\Property(property="id", ref="#/components/schemas/Module/properties/id"),
+     *                      @OA\Property(property="nom", ref="#/components/schemas/Module/properties/nom"),
+     *                      @OA\Property(property="matieres", type="array",
+     *                          @OA\Items(
+     *                              @OA\Property(property="id", ref="#/components/schemas/Matiere/properties/id"),
+     *                              @OA\Property(property="nom", ref="#/components/schemas/Matiere/properties/nom"),
+     *                              @OA\Property(property="note", ref="#/components/schemas/Note/properties/note"),
+     *                              @OA\Property(property="coefficient", ref="#/components/schemas/Matiere/properties/coefficient")
      *                          )
      *                      )
      *                  )
@@ -137,48 +136,55 @@ class NoteController extends AbstractController
     /**
      * @OA\Get(
      *      tags={"Notes"},
-     *      path="/etudiants/{idEtudiant}/notes",
+     *      path="/etudiants/{id}/notes",
      *      @OA\Parameter(
-     *          name="idEtudiant",
+     *          name="id",
      *          in="path",
      *          required=true,
+     *          description="id Etudiant",
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          @OA\JsonContent(type="object",
-     *              @OA\Property(property="id", type="integer"),
-     *              @OA\Property(property="nom", type="string"),
-     *              @OA\Property(property="modules", type="array",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="Personne",
+     *                  @OA\Property(property="nom", ref="#/components/schemas/Personne/properties/nom"),
+     *                  @OA\Property(property="prenom", ref="#/components/schemas/Personne/properties/prenom")
+     *              ),
+     *              @OA\Property(property="Notes", type="array",
      *                  @OA\Items(
-     *                          @OA\Property(property="id", type="integer"),
-     *                          @OA\Property(property="nom", type="string"),
-     *                          @OA\Property(property="matieres", type="array",
-     *                                  @OA\Items(
-     *                                      @OA\Property(property="id", type="integer"),
-     *                                      @OA\Property(property="nom", type="string"),
-     *                                      @OA\Property(property="note", type="string"),
-     *                                      @OA\Property(property="coeff", type="string")
-     *
-     *                                  )
-     *
-     *                          )
-     *
+     *                      @OA\Property(property="id", ref="#/components/schemas/Note/properties/id"),
+     *                      @OA\Property(property="note", ref="#/components/schemas/Note/properties/note"),
+     *                      @OA\Property(property="Matiere",
+     *                          @OA\Property(property="id", ref="#/components/schemas/Matiere/properties/id"),
+     *                          @OA\Property(property="nom", ref="#/components/schemas/Matiere/properties/nom"),
+     *                          @OA\Property(property="coefficient", ref="#/components/schemas/Matiere/properties/coefficient"),
+     *                          @OA\Property(property="module",
+     *                              @OA\Property(property="id", ref="#/components/schemas/Module/properties/id"),
+     *                              @OA\Property(property="nom", ref="#/components/schemas/Module/properties/nom"),
+     *                              @OA\Property(property="semestre",
+     *                                  @OA\Property(property="id", ref="#/components/schemas/Semestre/properties/id"),
+     *                                  @OA\Property(property="nom", ref="#/components/schemas/Semestre/properties/nom"),
+     *                              ),
+     *                          ),
+     *                      ),
      *                  )
      *              )
      *          )
      *      ),
      *      @OA\Response(response="404", description="Non trouvé...")
      * )
-     * @Route("/etudiants/{idEtudiant}/notes")
-     * @param NoteRepository $noteRepository
-     * @param integer $idEtudiant
+     * @Route("/etudiants/{id}/notes")
+     * @param Etudiant $etudiant
      * @return JsonResponse
      */
-    public function notesEtudiant(NoteRepository $noteRepository, int $idEtudiant)
+    public function notesEtudiant(/*NoteRepository $noteRepository,*/ Etudiant $etudiant)
     {
-        $notes = $noteRepository->getAllNotes($idEtudiant);
-        return new JsonResponse($notes, Response::HTTP_OK);
+        //$notes = $noteRepository->getAllNotes($etudiant->getId());
+        //return new JsonResponse($notes, Response::HTTP_OK);
+
+        $json = EtudiantSerializer::serializeJson($etudiant, ["groups"=>"notes_etudiant"]);
+        return new JsonResponse($json, Response::HTTP_OK);
     }
 
 

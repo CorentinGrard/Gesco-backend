@@ -31,7 +31,7 @@ class Etudiant
      * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_etudiant"})
+     * @Groups({"get_etudiant", "notes_etudiant"})
      * @var Personne
      */
     private $Personne;
@@ -57,7 +57,7 @@ class Etudiant
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Etudiant")
-     * @Groups({"get_etudiant"})
+     * @Groups({"get_etudiant", "notes_etudiant"})
      * @var Note[] | ArrayCollection
      */
     private $Notes;
