@@ -30,7 +30,7 @@ class PromotionController extends AbstractController
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Promotion"))
      *      )
      * )
-     * @Route("/assistants/{id}/promotions", name="promos_assistant", methods={"GET"})
+     * @Route("/assistants/{id}/promotions", name="assistant_promotions", methods={"GET"})
      * @param Assistant $assistant
      * @return Response
      */
@@ -44,7 +44,7 @@ class PromotionController extends AbstractController
             array_push($promoArray,$promo->getArray());
         }*/
 
-        $json = PromotionSerializer::serializeJson($promos, ["group"=>"get_promotion"]);
+        $json = PromotionSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
 

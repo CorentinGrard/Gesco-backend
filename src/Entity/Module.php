@@ -34,7 +34,7 @@ class Module
     /**
      * @OA\Property(type="integer"))
      * @ORM\Column(type="smallint")
-     * @Groups("module_get")
+     * @Groups({"module_get"})
      */
     private $ects;
 
@@ -53,7 +53,7 @@ class Module
      *      readOnly="true"
      * )
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
-     * @Groups("module_get")
+     * @Groups({"module_get"})
      */
     private $matieres;
 
@@ -71,7 +71,7 @@ class Module
      * )
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("module_get")
+     * @Groups({"module_get"})
      */
     private $semestre;
 

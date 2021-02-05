@@ -119,7 +119,7 @@
                 }
             }
         },
-        "/matieres/{idModule}": {
+        "/modules/{id}/matieres": {
             "post": {
                 "tags": [
                     "Matieres"
@@ -229,7 +229,36 @@
                 }
             }
         },
-        "/modules/{idSemestre}": {
+        "/modules/{id}": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::read",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Module"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/semestres/{id}/modules": {
             "post": {
                 "tags": [
                     "Modules"
@@ -237,8 +266,9 @@
                 "operationId": "App\\Controller\\ModuleController::add",
                 "parameters": [
                     {
-                        "name": "idSemestre",
+                        "name": "id",
                         "in": "path",
+                        "description": "id Semestre",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -586,7 +616,7 @@
                 }
             }
         },
-        "/sessions/{idMatiere}": {
+        "/matieres/{id}/sessions": {
             "post": {
                 "tags": [
                     "Sessions"
@@ -594,8 +624,9 @@
                 "operationId": "App\\Controller\\SessionController::add",
                 "parameters": [
                     {
-                        "name": "idMatiere",
+                        "name": "id",
                         "in": "path",
+                        "description": "id Matiere",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -758,9 +789,6 @@
                                 },
                                 "note": {
                                     "$ref": "#/components/schemas/Note/properties/note"
-                                },
-                                "idEtudiant": {
-                                    "$ref": "#/components/schemas/Etudiant/properties/id"
                                 }
                             },
                             "type": "object"
@@ -907,12 +935,6 @@
                         "properties": {
                             "id": {
                                 "$ref": "#/components/schemas/Assistant/properties/id"
-                            },
-                            "nom": {
-                                "$ref": "#/components/schemas/Personne/properties/nom"
-                            },
-                            "prenom": {
-                                "$ref": "#/components/schemas/Personne/properties/prenom"
                             }
                         },
                         "type": "object",
@@ -994,8 +1016,7 @@
                         "format": "date-time"
                     },
                     "duree": {
-                        "type": "string",
-                        "format": "date-time",
+                        "type": "number",
                         "readOnly": "true"
                     }
                 },

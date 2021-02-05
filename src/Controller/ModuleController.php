@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Module;
+use App\Entity\Semestre;
 use App\Repository\ModuleRepository;
 use App\Repository\SemestreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +47,13 @@ class ModuleController extends AbstractController
     /**
      * @OA\Get(
      *      tags={"Modules"},
-     *      path="/modules",
+     *      path="/modules/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
      *      @OA\Response(
      *          response="200",
      *          @OA\JsonContent(ref="#/components/schemas/Module")
@@ -64,11 +71,12 @@ class ModuleController extends AbstractController
     /**
      * @OA\Post(
      *      tags={"Modules"},
-     *      path="/modules/{idSemestre}",
+     *      path="/semestres/{id}/modules",
      *      @OA\Parameter(
-     *          name="idSemestre",
+     *          name="id",
      *          in="path",
      *          required=true,
+     *          description="id Semestre",
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\RequestBody(
@@ -78,18 +86,18 @@ class ModuleController extends AbstractController
      *      @OA\Response(response="201", description="Matiere ajoutée !"),
      *      @OA\Response(response="404", description="Non trouvé...")
      * )
-     * @Route("/modules/{idSemestre}", name="add_module", methods={"POST"})
+     * @Route("/semestres/{id}/modules", name="add_module", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param SemestreRepository $semestreRepository
-     * @param int $idSemestre
+     * @param Semestre $semestre
      * @return Response
      */
     public function add(
         Request $request,
         EntityManagerInterface $entityManager,
         SemestreRepository $semestreRepository,
-        int $idSemestre): Response
+        Semestre $semestre): Response
     {
         $data = json_decode($request->getContent(), true);
 
@@ -97,11 +105,11 @@ class ModuleController extends AbstractController
         //$idSemestre = $data['idSemestre'];
         $ects = $data['ects'];
 
-        if (empty($nom) || empty($idSemestre) || empty($ects) ) {
+        if (empty($nom) /*|| empty($ects)*/ ) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $semestre = $semestreRepository->find($idSemestre);
+        //$semestre = $semestreRepository->find($idSemestre);
 
         $module = new Module();
         $module->setNom($nom);

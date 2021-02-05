@@ -21,7 +21,7 @@ class Personne
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_personne"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_promotion"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")

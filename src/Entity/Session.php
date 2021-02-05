@@ -36,7 +36,7 @@ class Session
      *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get"})
      */
     private $matiere;
 
@@ -151,7 +151,7 @@ class Session
     }
 
     /**
-     * @OA\Property(property="duree", type="string", format="date-time",
+     * @OA\Property(property="duree", type="number",
      *     readOnly="true")
      * @Groups({"session_get", "matiere_get"})
      */
