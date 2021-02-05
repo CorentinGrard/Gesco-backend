@@ -162,6 +162,96 @@ class NoteRepository extends ServiceEntityRepository
         return $resultFormatted;
     }
 
+    public function getAllNotes(int $idEtudiant)
+    {
+
+        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", N.note, MA.coefficient".
+            " FROM Semestre S".
+            " JOIN module MO ON MO.semestre_id=S.id".
+            " JOIN matiere MA ON MA.module_id=MO.id".
+            " JOIN note N ON N.matiere_id=MA.id".
+            " WHERE N.etudiant_id = $idEtudiant";
+
+        $stmt = null;
+        try {
+            $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        } catch (Exception $e) {
+            return null;
+        }
+        try {
+            $stmt->execute([]);
+        } catch (\Doctrine\DBAL\Driver\Exception $e) {
+            return null;
+        }
+
+        $result = $stmt->fetchAll();
+
+        # "IDSEMESTRE": "1",
+        # "NOMSEMESTRE": "Semestre 1",
+        # "IDMODULE": "1",
+        # "NOMMODULE": "8n4BfmIzFJ",
+        # "IDMATIERE": "1",
+        # "NOMMATIERE": "oqsQatqRL6VQ",
+        # "note": "19",#"coefficient": "1"
+
+        $resultFormatted = [];
+
+        foreach ($result as $elem) {
+
+            $semestreAllreadyUsed = false;
+            $moduleAllreadyUsed = false;
+
+            $idSemestre = $elem["idSemestre"];
+            $nomSemestre = $elem["nomSemestre"];
+            $idModule = $elem["idModule"];
+            $idMatiere = $elem["idMatiere"];
+            $nomModule = $elem["nomModule"];
+            $nomMatiere = $elem["nomMatiere"];
+            $note = $elem["note"];
+            $coeff = $elem["coefficient"];
+
+            foreach ($resultFormatted as $elementsAdded) {
+                if ($elementsAdded["idSemestre"] == $idSemestre) {
+                    $semestreAllreadyUsed = true;
+                }
+            }
+
+            if (!$semestreAllreadyUsed) {
+                array_push($resultFormatted,[
+                   "idSemestre"=> $idSemestre,
+                   "nomSemestre"=> $nomSemestre,
+                   "modules"=> []
+                ]);
+            }
+
+            $semestreIdRef = array_search($idSemestre,array_column($resultFormatted,"idSemestre"));
+
+            foreach ($resultFormatted[$semestreIdRef]["modules"] as $module) {
+                if ($module["idModule"] == $idModule) {
+                    $moduleAllreadyUsed = true;
+                }
+            }
+
+            if (!$moduleAllreadyUsed) {
+                array_push($resultFormatted[$semestreIdRef]["modules"],[
+                    "idModule"=> $idModule,
+                    "nomModule"=> $nomModule,
+                    "matieres"=> []
+                ]);
+            }
+
+            $moduleIdRef = array_search($idSemestre,array_column($resultFormatted[$semestreIdRef]["modules"],"idSemestre"));
+            array_push($resultFormatted[$semestreIdRef]["modules"][$moduleIdRef]["matieres"],[
+                "id"=>$idMatiere,
+                "name"=>$nomMatiere,
+                "note"=>$note,
+                "coeff"=>$coeff
+            ]);
+        }
+
+        return $resultFormatted;
+    }
+
     // /**
     //  * @return Note[] Returns an array of Note objects
     //  */
