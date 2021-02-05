@@ -4,11 +4,14 @@ stages: # Ici on déclare toutes nos étapes
 
 job:build:
   stage: build 
-  script: sudo docker-compose build
+  script: 
+    - sudo docker-compose build
+  only:
+    - master
 
-job:test:
+job:deploy:
   stage: deploy 
-  script: sudo docker-compose up -d
-
-only:
-  - master
+  script: 
+    - sudo docker-compose up -d
+  only:
+    - master
