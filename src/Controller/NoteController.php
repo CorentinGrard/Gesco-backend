@@ -96,6 +96,7 @@ class NoteController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
+ *              description ="Notes",
      *          @OA\JsonContent(type="object",
      *              @OA\Property(property="id", type="integer"),
      *              @OA\Property(property="nom", type="string"),

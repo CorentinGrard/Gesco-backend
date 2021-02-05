@@ -1,1 +1,1 @@
-./vendor/zircote/swagger-php/bin/openapi src -o ./public/swagger/swagger.json
+./vendor/zircote/swagger-php/bin/openapi src schemas-o ./public/swagger/swagger.json

@@ -26,6 +26,7 @@ class SessionController extends AbstractController
      *      path="/sessions",
      *      @OA\Response(
      *          response="200",
+     *          description ="Session",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
      *      )
      * )
@@ -62,6 +63,7 @@ class SessionController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
+     *          description ="Sessions",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
      *      )
      * )
@@ -102,6 +104,7 @@ class SessionController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
+     *          description ="Sessions",
      *          @OA\JsonContent(ref="#/components/schemas/Matiere")
      *      )
      * )

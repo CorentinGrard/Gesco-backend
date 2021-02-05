@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SessionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -60,6 +62,16 @@ class Session
      * @Groups({"session_get", "session_post"})
      */
     private $dateFin;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Salle::class, inversedBy="sessions")
+     */
+    private $sessionSalle;
+
+    public function __construct()
+    {
+        $this->sessionSalle = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -159,6 +171,30 @@ class Session
     public function getTypes()
     {
         return \SessionType::values;
+    }
+
+    /**
+     * @return Collection|Salle[]
+     */
+    public function getSessionSalle(): Collection
+    {
+        return $this->sessionSalle;
+    }
+
+    public function addSessionSalle(Salle $sessionSalle): self
+    {
+        if (!$this->sessionSalle->contains($sessionSalle)) {
+            $this->sessionSalle[] = $sessionSalle;
+        }
+
+        return $this;
+    }
+
+    public function removeSessionSalle(Salle $sessionSalle): self
+    {
+        $this->sessionSalle->removeElement($sessionSalle);
+
+        return $this;
     }
 
 }

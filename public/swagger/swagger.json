@@ -8,6 +8,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matieres",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -76,6 +77,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matiere",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -105,6 +107,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matieres",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -183,6 +186,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Notes",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -194,32 +198,8 @@
                                             "type": "string"
                                         },
                                         "modules": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "nom": {
-                                                    "type": "string"
-                                                },
-                                                "matieres": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer"
-                                                        },
-                                                        "nom": {
-                                                            "type": "string"
-                                                        },
-                                                        "note": {
-                                                            "type": "string"
-                                                        },
-                                                        "coeff": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "type": "array"
-                                                }
-                                            },
-                                            "type": "array"
+                                            "type": "array",
+                                            "items": {}
                                         }
                                     },
                                     "type": "object"
@@ -233,6 +213,28 @@
                 }
             }
         },
+        "/salles": {
+            "get": {
+                "tags": [
+                    "Salles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Salles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Salle"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/sessions": {
             "get": {
                 "tags": [
@@ -240,6 +242,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Session",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -325,6 +328,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Sessions",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -446,6 +450,39 @@
                             }
                         },
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Salle": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nomSalle": {
+                        "type": "string"
+                    },
+                    "batiment": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "sessions": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"

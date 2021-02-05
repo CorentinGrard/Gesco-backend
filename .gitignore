@@ -9,4 +9,6 @@
 /var/
 /vendor/
 .idea
+.php-version
+.env.local
 ###< symfony/framework-bundle ###
