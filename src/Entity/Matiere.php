@@ -16,7 +16,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Matiere
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(
+     *      type="integer",
+     *      readOnly="true"
+     * )
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -39,14 +42,36 @@ class Matiere
     private $coefficient;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Session/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="duree",
+     *              ref="#/components/schemas/Session/properties/duree"
+     *          )
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
      * @Groups("matiere_get")
      */
     private $sessions;
 
     /**
-     * @OA\Property(property="module", @OA\Property(property="id", type="integer"))
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Module/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Module/properties/nom"
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"matiere_get", "matiere_post"})
@@ -54,11 +79,30 @@ class Matiere
     private $module;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Note/properties/id",
+     *          ),
+     *          @OA\Property(
+     *              property="note",
+     *              ref="#/components/schemas/Note/properties/note"
+     *          )
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Matiere")
-     * @Groups("matiere_get")
+     * @Groups({"matiere_get"})
      */
     private $notes;
+
+    /**
+     * @OA\Property(type="integer")
+     * @ORM\Column(type="integer")
+     * @Groups({"matiere_get", "matiere_post"})
+     */
+    private $nombreHeuresAPlacer;
 
     public function __construct()
     {
@@ -184,6 +228,20 @@ class Matiere
 
         return $this;
     }
+
+    public function getNombreHeuresAPlacer(): ?int
+    {
+        return $this->nombreHeuresAPlacer;
+    }
+
+    public function setNombreHeuresAPlacer(int $nombreHeuresAPlacer): self
+    {
+        $this->nombreHeuresAPlacer = $nombreHeuresAPlacer;
+
+        return $this;
+    }
+
+    /* TODO getNombreHeuresPlacees() + serialization */
 
 
 }

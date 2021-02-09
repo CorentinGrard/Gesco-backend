@@ -16,22 +16,29 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Session
 {
     /**
-     * @OA\Property(type="integer")
+     * @OA\Property(type="integer",
+     *     readOnly="true")
+     * @Groups({"matiere_get", "session_get"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"matiere_get", "session_get"})
      */
     private $id;
 
     /**
      * @OA\Property(
-     *     property="matiere",
-     *     @OA\Property(property="id", type="integer"),
-     *     @OA\Property(property="nom", type="string")
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Matiere/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Matiere/properties/nom"
+     *      ),
+     *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get"})
      */
     private $matiere;
 
@@ -153,6 +160,18 @@ class Session
         $this->dateFin = $dateFin;
 
         return $this;
+    }
+
+    /**
+     * @OA\Property(property="duree", type="number",
+     *     readOnly="true")
+     * @Groups({"session_get", "matiere_get"})
+     */
+    public function getDuree(): float
+    {
+        $diff = $this->dateFin->diff($this->dateDebut);
+
+        return $diff->d*24 + $diff->h + ($diff->i/60); /* TODO à tester en conditions réelles */
     }
 
     public function getArray()

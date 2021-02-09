@@ -6,13 +6,19 @@ use App\Repository\FormationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=FormationRepository::class)
  */
 class Formation
 {
     /**
+     * @OA\Property(type="integer")
+     * @Groups({"get_formation", "get_promotion"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,12 +26,27 @@ class Formation
     private $id;
 
     /**
+     * @OA\Property(type="string")
+     * @Groups({"get_formation", "get_promotion"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Promotion/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nomPromotion",
+     *              ref="#/components/schemas/Promotion/properties/nomPromotion"
+     *          )
+     *      )
+     * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation")
+     * @Groups({"get_formation"})
      */
     private $promotions;
 

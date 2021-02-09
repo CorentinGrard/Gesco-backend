@@ -1,6 +1,7 @@
 FROM php:7.4-fpm-alpine
 RUN apk --update --no-cache add git && \
     apk add --no-cache bash && \
+    apk add --no-cache postgresql-client && \
     set -ex && apk --no-cache add postgresql-dev && \
     docker-php-ext-install pdo_pgsql && \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
@@ -11,6 +12,7 @@ RUN apk --update --no-cache add git && \
     mv /root/.symfony/bin/symfony /usr/local/bin/symfony 
 
 WORKDIR /var/www
-CMD composer install ; bin/console doctrine:schema:update ; bin/console doctrine:fixtures:load ; symfony server:start --no-tls
+COPY . .
+CMD  ./wait-for-it.sh database ; composer install ; bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
 
 EXPOSE 8000

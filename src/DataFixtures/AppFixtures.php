@@ -105,7 +105,7 @@ class AppFixtures extends Fixture
             $personne->setNom($faker->lastName);
             $personne->setPrenom($faker->firstName);
             $personne->setAdresse($faker->address);
-            $personne->setEmail($faker->email);
+            $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
 
             $assistant = new Assistant();
@@ -154,10 +154,13 @@ class AppFixtures extends Fixture
         $k = 0;
         $matieres = [];
         foreach ($modules as $module) {
+            $faker = Factory::create();
+
             $matiere = new Matiere();
-            $matiere->setNom(self::generateRandomString($k % 5 + 10));
+            $matiere->setNom($faker->firstName);
             $matiere->setCoefficient($k % 4 + 1);
             $matiere->setModule($module);
+            $matiere->setNombreHeuresAPlacer(($k % 5) * 1);
             $manager->persist($matiere);
             array_push($matieres, $matiere);
 
@@ -166,14 +169,20 @@ class AppFixtures extends Fixture
 
         $mat = sizeof($matieres);
         $bool = true;
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 20; $i++) {
+            $faker = Factory::create();
+
             $bool = !$bool;
             $session = new Session();
             $session->setMatiere($matieres[$i % $mat]);
             $session->setType(SessionType::values[$i % 6 + 1]);
             $session->setObligatoire($bool);
-            $session->setDateDebut(new DateTime());
-            $session->setDateFin(new DateTime());
+            $dateDebut = $faker->dateTimeThisMonth();
+            $dateFin = clone $dateDebut;
+            $dateFin->add(new \DateInterval('PT3H30M'));
+            $session->setDateDebut($dateDebut);
+            $session->setDateFin($dateFin);
+
             $manager->persist($session);
         }
 

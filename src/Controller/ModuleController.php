@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Module;
+use App\Entity\Semestre;
 use App\Repository\ModuleRepository;
 use App\Repository\SemestreRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,10 +13,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 class ModuleController extends AbstractController
 {
     /**
+     * @OA\Get(
+     *      tags={"Modules"},
+     *      path="/modules",
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Module"))
+     *      )
+     * )
      * @Route("/modules", name="module_list", methods={"GET"})
      * @param ModuleRepository $moduleRepository
      * @return Response
@@ -35,6 +45,20 @@ class ModuleController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *      tags={"Modules"},
+     *      path="/modules/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(ref="#/components/schemas/Module")
+     *      )
+     * )
      * @Route("/modules/{id}", name="module", methods={"GET"})
      * @param Module $module
      * @return Response
@@ -45,25 +69,47 @@ class ModuleController extends AbstractController
     }
 
     /**
-     * @Route("/modules", name="add_module", methods={"POST"})
+     * @OA\Post(
+     *      tags={"Modules"},
+     *      path="/semestres/{id}/modules",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Semestre",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          request="matieres",
+     *          @OA\JsonContent(ref="#/components/schemas/Module")
+     *      ),
+     *      @OA\Response(response="201", description="Matiere ajoutée !"),
+     *      @OA\Response(response="404", description="Non trouvé...")
+     * )
+     * @Route("/semestres/{id}/modules", name="add_module", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param SemestreRepository $semestreRepository
+     * @param Semestre $semestre
      * @return Response
      */
-    public function add(Request $request, EntityManagerInterface $entityManager, SemestreRepository $semestreRepository): Response
+    public function add(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SemestreRepository $semestreRepository,
+        Semestre $semestre): Response
     {
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
-        $idSemestre = $data['idSemestre'];
+        //$idSemestre = $data['idSemestre'];
         $ects = $data['ects'];
 
-        if (empty($nom) || empty($idSemestre) || empty($ects) ) {
+        if (empty($nom) /*|| empty($ects)*/ ) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $semestre = $semestreRepository->find($idSemestre);
+        //$semestre = $semestreRepository->find($idSemestre);
 
         $module = new Module();
         $module->setNom($nom);

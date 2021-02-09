@@ -16,40 +16,62 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Module
 {
     /**
-     * @OA\Property(type="integer"))
+     * @OA\Property(type="integer", readOnly="true")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"module_get", "matiere_get"})
+     * @Groups({"module_get", "matiere_get", "semestre_get"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string"))
      * @ORM\Column(type="string", length=255)
-     * @Groups("module_get")
+     * @Groups({"module_get", "matiere_get", "semestre_get"})
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer"))
      * @ORM\Column(type="smallint")
-     * @Groups("module_get")
+     * @Groups({"module_get"})
      */
     private $ects;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Matiere/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Matiere/properties/nom"
+     *          )
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
-     * @Groups("module_get")
+     * @Groups({"module_get"})
      */
     private $matieres;
 
     /**
-     * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Semestre/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Semestre/properties/nom"
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("module_get")
+     * @Groups({"module_get"})
      */
     private $semestre;
 

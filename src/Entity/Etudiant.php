@@ -6,32 +6,59 @@ use App\Repository\EtudiantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=EtudiantRepository::class)
  */
 class Etudiant
 {
     /**
+     * @OA\Property(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_etudiant"})
      */
     private $id;
 
     /**
+     * @OA\Property(
+     *      property="Personne",
+     *      allOf={@OA\Property(ref="#/components/schemas/Personne")}
+     * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_etudiant"})
+     * @var Personne
      */
     private $Personne;
 
     /**
+     * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
+     * @Groups({"get_etudiant"})
      */
     private $isAlternant;
 
     /**
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Note/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="note",
+     *              ref="#/components/schemas/Note/properties/note"
+     *          )
+     *      )
+     * )
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Etudiant")
+     * @Groups({"get_etudiant"})
+     * @var Note[] | ArrayCollection
      */
     private $Notes;
 
