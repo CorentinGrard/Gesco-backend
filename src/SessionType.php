@@ -20,5 +20,4 @@ abstract class SessionType
         self::EXAMEN,
         self::AUTRE
     ];
-
 }

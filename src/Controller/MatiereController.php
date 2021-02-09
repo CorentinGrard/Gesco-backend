@@ -27,6 +27,7 @@ class MatiereController extends AbstractController
      *      path="/matieres",
      *      @OA\Response(
      *          response="200",
+     *          description ="Matieres",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Matiere"))
      *      )
      * )
@@ -56,6 +57,7 @@ class MatiereController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
+     *          description ="Matiere",
      *          @OA\JsonContent(ref="#/components/schemas/Matiere")
      *      )
      * )
@@ -135,6 +137,7 @@ class MatiereController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
+     *          description ="Matieres",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Matiere"))
      *      )
      * )

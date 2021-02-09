@@ -34,5 +34,4 @@ abstract class SessionSerializer
         }
         return self::$serializer->normalize($obj, 'json', $groups);
     }
-
 }

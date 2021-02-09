@@ -76,6 +76,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matieres",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -173,6 +174,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matiere",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -215,6 +217,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matieres",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -359,6 +362,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Notes",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -403,6 +407,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Session",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -647,6 +652,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Sessions",
                         "content": {
                             "application/json": {
                                 "schema": {

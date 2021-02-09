@@ -4,6 +4,9 @@ namespace App\DataFixtures;
 
 use App\Entity\Assistant;
 use App\Entity\Formation;
+use App\Entity\Site;
+use App\Entity\Batiment;
+use App\Entity\Salle;
 use App\Entity\Matiere;
 use App\Entity\Module;
 use App\Entity\Personne;
@@ -27,6 +30,7 @@ class AppFixtures extends Fixture
          * php bin/console doctrine:fixtures:load
          */
 
+        //Ajout formations
         $formations = [];
 
         $formation = new Formation();
@@ -44,8 +48,57 @@ class AppFixtures extends Fixture
         $manager->persist($formation);
         array_push($formations, $formation);
 
+        //Ajout des sites
+        $sites = [];
+
+        $site = new Site();
+
+        $site   ->setNomSite("Croupillac");
+        $site   ->setAdress("7 rue Jules Renard, 30100 Alès");
+        $manager->persist($site);
+        array_push($sites,$site);
+
+        $site = new Site();
+
+        $site   ->setNomSite("Clavière");
+        $site   ->setAdress("6 Avenue de Clavières, 30100 Alès");
+        $manager->persist($site);
+        array_push($sites,$site);
+
+        //Ajout batiments
+
+        $batimentValue = 'ABCDEF';
+        $batiments = [];
+
+        for ($i = 0; $i < strlen($batimentValue); $i++)
+        {
+            $batiment = new Batiment();
+
+            $batiment->setNomBatiment($batimentValue[$i]);
+            $batiment->setBatimentSite($sites[rand(0,count($sites) - 1 )]);
+            $manager ->persist($batiment);
+            array_push($batiments, $batiment);
+        }
+
+        //Ajout des salles
+
+        $nbSalleParBatiment = 10;
+        $salles = [];
+
+        foreach ($batiments as $value)
+        {
+            for ($j = 0; $j < $nbSalleParBatiment; $j++)
+            {
+                $salle = new Salle();
+                $salle  ->setBatiment($value);
+                $salle  ->setNomSalle($value->getNomBatiment().'.'.$j);
+                $manager->persist($salle);
+                array_push($salles, $salle);
+            }
+        }
+
         $assistants = [];
-        for($i = 0; $i < 3;$i++){
+        for($i = 0; $i < 3; $i++){
             $faker = Factory::create();
             $personne = new Personne();
 
@@ -64,7 +117,7 @@ class AppFixtures extends Fixture
         $promotions = [];
         for ($i = 0; $i < 5; $i++) {
             for ($j = 0; $j < 3; $j++) {
-                $promotion = new Promotion();
+                $promotion = new Promotion();;
                 $promotion->setNom($i + 11);
                 $promotion->setFormation($formations[$j]);
                 $promotion->setAssistant($assistants[$j]);
