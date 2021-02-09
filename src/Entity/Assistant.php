@@ -5,28 +5,56 @@ namespace App\Entity;
 use App\Repository\AssistantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
+ * @OA\Schema(
+ *      schema="Assistant",
+ * )
  * @ORM\Entity(repositoryClass=AssistantRepository::class)
  */
 class Assistant
 {
     /**
+     * @OA\Property(type="integer",
+     *      readOnly="true")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_assistant", "get_promotion"})
      */
     private $id;
 
     /**
+     * @OA\Property(
+     *      property="personne",
+     *      allOf={@OA\Schema(ref="#/components/schemas/Personne")}
+     * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_assistant"})
      */
     private $Personne;
 
     /**
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Promotion/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nomPromotion",
+     *              ref="#/components/schemas/Promotion/properties/nomPromotion"
+     *          )
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="assistant")
+     * @Groups({"get_assistant"})
      */
     private $promotions;
 

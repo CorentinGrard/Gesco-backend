@@ -6,13 +6,19 @@ use App\Repository\PromotionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=PromotionRepository::class)
  */
 class Promotion
 {
     /**
+     * @OA\Property(type="integer",
+     *      readOnly="true")
+     * @Groups({"get_promotion", "get_assistant"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,24 +26,60 @@ class Promotion
     private $id;
 
     /**
+     * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get_promotion"})
      */
     private $nom;
 
     /**
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Semestre/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Semestre/properties/nom"
+     *          )
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\OneToMany(targetEntity=Semestre::class, mappedBy="promotion")
+     * @Groups({"get_promotion"})
      */
     private $semestres;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Formation/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nom",
+     *          ref="#/components/schemas/Formation/properties/nom"
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_promotion"})
      */
     private $formation;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Assistant/properties/id"
+     *      ),
+     *      readOnly="true"
+     * )
      * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_promotion"})
      */
     private $assistant;
 
@@ -155,6 +197,16 @@ class Promotion
         $this->assistant = $assistant;
 
         return $this;
+    }
+
+    /**
+     * @OA\Property(property="nomPromotion", type="string",
+     *      readOnly="true")
+     * @Groups({"get_promotion", "get_assistant"})
+     */
+    public function getNomPromotion(): string
+    {
+        return $this->getFormation()->getNom() . " " . $this->getNom();
     }
 
     public function getArray(){

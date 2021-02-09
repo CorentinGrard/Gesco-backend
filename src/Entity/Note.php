@@ -4,13 +4,16 @@ namespace App\Entity;
 
 use App\Repository\NoteRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=NoteRepository::class)
  */
 class Note
 {
     /**
+     * @OA\Property(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -18,18 +21,22 @@ class Note
     private $id;
 
     /**
-     * @ORM\Column(type="float")
+     * @OA\Property(type="number",format="float")
+     * @ORM\Column(type="float", scale=2)
      */
     private $note;
 
     /**
+     * @OA\Property(property="etudiant",@OA\Property(property = "id",type="integer"))
      * @ORM\ManyToOne(targetEntity=Etudiant::class, inversedBy="Notes")
      * @ORM\JoinColumn(nullable=false)
      */
     private $Etudiant;
 
     /**
+     * @OA\Property(property="matiere",@OA\Property(property = "id",type="integer"))
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="notes")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $Matiere;
 

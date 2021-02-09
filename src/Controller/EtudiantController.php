@@ -3,45 +3,37 @@
 namespace App\Controller;
 
 use App\Repository\EtudiantRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Serializers\EtudiantSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 class EtudiantController extends AbstractController
 {
     /**
-     * @Route("/etudiant", name="etudiant")
-     */
-    public function index(): Response
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/EtudiantController.php',
-        ]);
-    }
-
-    /**
-     * @Route("/etudiants/{idEtudiant}/matieres/{idMatiere}/note/{note}", methods={"POST"}, requirements={"idEtudiant"="\d+", "idMatiere"="\d+"})
+     * @OA\Get(
+     *      tags={"Etudiants"},
+     *      path="/etudiants",
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(ref="#/components/schemas/Etudiant")
+     *      )
+     * )
+     * @Route("/etudiants", name="etudiant_list")
      * @param EtudiantRepository $etudiantRepository
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
-     * @return JsonResponse
+     * @return Response
      */
-    public function ajoutNoteAEtudiantDansUneMatiere(EtudiantRepository $etudiantRepository, int $idEtudiant, int $idMatiere, Request $request, EntityManagerInterface $entityManager): Response
+    public function list(EtudiantRepository $etudiantRepository): Response
     {
+        $etudiants = $etudiantRepository->findAll();
 
-        $data = json_decode($request->getContent(), true);
-        $note = $data['note'];
+        $json = EtudiantSerializer::serializeJson($etudiants,['groups'=>'get_etudiant']);
 
+        return new JsonResponse($json, Response::HTTP_OK);
 
-
-        $etudiantRepository->ajoutNoteEtudiant($idEtudiant,$idMatiere,$note);
-
-        return $this->json([
-
-        ]);
     }
+
+
 }
