@@ -126,11 +126,60 @@ class EtudiantController extends AbstractController
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
-
-
-
     }
 
+    /**
+     * @OA\Put(
+     *      tags={"Promotions"},
+     *      path="/promotion/{newIdPromotion}/etudiant/{idEtudiant}",
+     *      @OA\Parameter(
+     *          name="newIdPromotion",
+     *          in="path",
+     *          required=true,
+     *          description="newIdPromotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Parameter(
+     *          name="idEtudiant",
+     *          in="path",
+     *          required=true,
+     *          description="idEtudiant",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="401",
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *     )
+     *
+     * )
+     * @Route("/promotion/{newIdPromotion}/etudiant/{idEtudiant}", name="update_etudiant_promotion", methods={"PUT"})
+     * @param EntityManagerInterface $entityManager
+     * @param EtudiantRepository $etudiantRepository
+     * @param PromotionRepository $promotionRepository
+     * @param int $idEtudiant
+     * @param int $newIdPromotion
+     * @return JsonResponse
+     */
+    public function updateEtudiantPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository,int $idEtudiant, int $newIdPromotion) {
+
+        $repoResponse = $promotionRepository->updateEtudiantPromotion($entityManager,$etudiantRepository,$promotionRepository,$idEtudiant,$newIdPromotion);
+
+        switch ($repoResponse["status"]) {
+            case 201:
+                return new JsonResponse("Ok",Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
 
     /**
      * @OA\Get(
@@ -173,7 +222,7 @@ class EtudiantController extends AbstractController
      *     )
      *
      * )
-     * @Route("/promotion/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"POST"})
+     * @Route("/promotion/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository

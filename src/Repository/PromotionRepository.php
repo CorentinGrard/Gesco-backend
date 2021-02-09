@@ -123,4 +123,38 @@ class PromotionRepository extends ServiceEntityRepository
 
         }
     }
+
+    public function updateEtudiantPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository,int $idEtudiant, int $newIdPromotion)
+    {
+        $currentEtudiant = $etudiantRepository->find($idEtudiant);
+
+        if($currentEtudiant == null) {
+            return [
+                "status" => 404,
+                "error" => "L'étudiant d'ID ".$idEtudiant." n'existe pas"
+            ];
+        }
+
+        $currentPromotion = $promotionRepository->find($newIdPromotion);
+
+        if($currentPromotion == null) {
+            return [
+                "status" => 404,
+                "error" => "La promotion d'ID ".$newIdPromotion." n'existe pas"
+            ];
+        }
+
+        $currentEtudiant->setPromotion($currentPromotion);
+
+        $entityManager->persist($currentEtudiant);
+
+        $entityManager->flush();
+
+        return [
+            "status"=>201,
+            "error"=>null
+        ];
+
+
+    }
 }

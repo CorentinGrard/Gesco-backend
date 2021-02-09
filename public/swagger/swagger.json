@@ -123,6 +123,39 @@
                 }
             }
         },
+        "/promotion/{newIdPromotion}/etudiant/{idEtudiant}": {
+            "put": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::updateEtudiantPromotion",
+                "parameters": [
+                    {
+                        "name": "newIdPromotion",
+                        "in": "path",
+                        "description": "newIdPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "idEtudiant",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {}
+                }
+            }
+        },
         "/promotions/etudiants": {
             "get": {
                 "tags": [
