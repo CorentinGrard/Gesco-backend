@@ -51,7 +51,45 @@ class PromotionRepository extends ServiceEntityRepository
     */
 
 
-    public function addEtudiantInPromotion(int $idEtudiant, int $idPromotion) {
+    public function addEtudiantInPromotion(EntityManager $entityManager, EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository, int $idEtudiant, int $idPromotion) {
+
+        $currentEtudiant = $etudiantRepository->find($idEtudiant);
+
+        if($currentEtudiant == null) {
+            return [
+                "status" => 404,
+                "error" => "L'étudiant d'ID ".$idEtudiant." n'existe pas"
+            ];
+        };
+
+
+        if($currentEtudiant->getPromotion() == Null) {
+
+            $currentPromotion = $promotionRepository->find($idPromotion);
+
+            if($currentPromotion == null) {
+                return [
+                    "status" => 404,
+                    "error" => "La promotion d'ID ".$idPromotion." n'existe pas"
+                ];
+            }
+
+            $currentEtudiant->setPromotion($currentPromotion);
+
+            $entityManager->persist($currentEtudiant);
+
+            $entityManager->flush();
+            return [
+                "status"=>201,
+                "error"=>null
+            ];
+        }
+        else {
+            return [
+                "status"=>406,
+                "error"=>"L'étudiant d'ID ".$idEtudiant." possède déjà une promotion"
+            ];
+        }
 
 
 

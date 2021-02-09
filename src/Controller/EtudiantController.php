@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PromotionRepository;
 use App\Serializers\EtudiantSerializer;
 use App\Serializers\PromotionSerializer;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
@@ -68,12 +72,62 @@ class EtudiantController extends AbstractController
 
     }
 
+    /**
+     * @OA\Post(
+     *      tags={"Promotions"},
+     *      path="/promotion/{idPromotion}/etudiant/{idEtudiant}",
+     *      @OA\Parameter(
+     *          name="idPromotion",
+     *          in="path",
+     *          required=true,
+     *          description="idPromotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Parameter(
+     *          name="idEtudiant",
+     *          in="path",
+     *          required=true,
+     *          description="idEtudiant",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="401",
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *     )
+     *
+     * )
+     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"POST"})
+     * @param EntityManager $entityManager
+     * @param EtudiantRepository $etudiantRepository
+     * @param PromotionRepository $promotionRepository
+     * @param int $idEtudiant
+     * @param int $idPromotion
+     * @return JsonResponse
+     */
+    public function addEtudiantInPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository,int $idEtudiant, int $idPromotion) {
 
-    public function addEtudiantInPromotion(PromotionRepository $promotionRepository,int $idEtudiant, int $idPromotion) {
+        $repoResponse = $promotionRepository->addEtudiantInPromotion($entityManager,$etudiantRepository,$promotionRepository,$idEtudiant,$idPromotion);
 
-        $trullyAdded = $promotionRepository->addEtudiantInPromotion($idEtudiant,$idPromotion);
+        switch ($repoResponse["status"]) {
+            case 201:
+                return new JsonResponse("Ok",Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 406:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_ACCEPTABLE);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
 
-        return new JsonResponse(Response::HTTP_CREATED);
+
 
     }
 

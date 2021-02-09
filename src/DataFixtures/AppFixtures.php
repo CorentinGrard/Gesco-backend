@@ -170,7 +170,6 @@ class AppFixtures extends Fixture
         $etudiant = new Etudiant();
         $etudiant->setPersonne($personne);
         $etudiant->setIsAlternant(true);
-        $etudiant->setPromotion($promotions[1]);
 
         $manager->persist($personne);
         $manager->persist($etudiant);
