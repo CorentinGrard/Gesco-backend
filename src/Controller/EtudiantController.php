@@ -154,8 +154,46 @@ class EtudiantController extends AbstractController
 
     }
 
-    public function deleteEtudiantFromPromotion($idPromotion) {
+    /**
+     * @OA\Delete(
+     *      tags={"Etudiants"},
+     *      path="/promotion/etudiant/{idEtudiant}",
+     *     @OA\Parameter(
+     *          name="idEtudiant",
+     *          in="path",
+     *          required=true,
+     *          description="",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="202",
+     *      ),
+     *     @OA\Response(
+     *         response="404",
+     *     )
+     *
+     * )
+     * @Route("/promotion/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"POST"})
+     * @param EntityManagerInterface $entityManager
+     * @param EtudiantRepository $etudiantRepository
+     * @param PromotionRepository $promotionRepository
+     * @param int $idEtudiant
+     * @return JsonResponse
+     */
+    public function deleteEtudiantFromPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository,int $idEtudiant) {
 
+        $repoResponse = $promotionRepository->deleteEtudiantFromPromotion($entityManager,$etudiantRepository,$idEtudiant);
+
+        switch ($repoResponse["status"]) {
+            case 202:
+                return new JsonResponse("Ok",Response::HTTP_ACCEPTED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
     }
 
 }

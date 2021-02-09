@@ -28,7 +28,7 @@ class Promotion
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_promotion","get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
+     * @Groups({"get_promotion","get_etudiants_by_promotion"})
      */
     private $nom;
 
@@ -209,7 +209,7 @@ class Promotion
     /**
      * @OA\Property(property="nomPromotion", type="string",
      *      readOnly="true")
-     * @Groups({"get_promotion", "get_assistant", "get_etudiants_by_promotion"})
+     * @Groups({"get_promotion", "get_assistant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
      */
     public function getNomPromotion(): string
     {

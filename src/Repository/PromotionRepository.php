@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Promotion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -90,8 +91,36 @@ class PromotionRepository extends ServiceEntityRepository
                 "error"=>"L'étudiant d'ID ".$idEtudiant." possède déjà une promotion"
             ];
         }
+    }
 
+    public function deleteEtudiantFromPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository, int $idEtudiant)
+    {
+        $currentEtudiant = $etudiantRepository->find($idEtudiant);
 
+        if($currentEtudiant == null) {
+            return [
+                "status" => 404,
+                "error" => "L'étudiant d'ID ".$idEtudiant." n'existe pas"
+            ];
+        }
 
+        if($currentEtudiant->getPromotion() == null) {
+            return [
+                "status" => 404,
+                "error" => "L'étudiant d'ID ".$idEtudiant." ne possède pas de promotion"
+            ];
+        }
+        else {
+            $currentEtudiant->setPromotion(null);
+
+            $entityManager->persist($currentEtudiant);
+
+            $entityManager->flush();
+            return [
+                "status"=>202,
+                "error"=>null
+            ];
+
+        }
     }
 }

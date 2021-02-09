@@ -134,6 +134,29 @@
                 }
             }
         },
+        "/promotion/etudiant/{idEtudiant}": {
+            "delete": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::deleteEtudiantFromPromotion",
+                "parameters": [
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {}
+                }
+            }
+        },
         "/matieres": {
             "get": {
                 "tags": [
