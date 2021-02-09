@@ -69,6 +69,38 @@
                 }
             }
         },
+        "/promotions/{id}/etudiants": {
+            "get": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::getEtudiantsByPromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
+        "/promotions/etudiants": {
+            "get": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::getEtudiantsOfAllPromotions",
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
         "/matieres": {
             "get": {
                 "tags": [

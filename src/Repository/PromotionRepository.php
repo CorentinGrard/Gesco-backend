@@ -49,4 +49,11 @@ class PromotionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    public function addEtudiantInPromotion(int $idEtudiant, int $idPromotion) {
+
+
+
+    }
 }
