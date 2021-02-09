@@ -9,10 +9,10 @@ RUN apk --update --no-cache add git && \
     php composer-setup.php --install-dir=/usr/bin/ --filename=composer && \
     php -r "unlink('composer-setup.php');" && \
     wget https://get.symfony.com/cli/installer -O - | bash && \
-    mv /root/.symfony/bin/symfony /usr/local/bin/symfony
-    RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip && docker-php-ext-install zip
+    mv /root/.symfony/bin/symfony /usr/local/bin/symfony 
+
 WORKDIR /var/www
 COPY . .
-CMD  ./wait-for-it.sh database ; composer req symfony/panther; composer require --dev symfony/phpunit-bridge; composer require twig annotations; composer require --dev maker tests; composer install ; bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
+CMD  ./wait-for-it.sh database ; composer install ; bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
 
 EXPOSE 8000
