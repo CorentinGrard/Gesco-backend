@@ -154,4 +154,8 @@ class EtudiantController extends AbstractController
 
     }
 
+    public function deleteEtudiantFromPromotion($idPromotion) {
+
+    }
+
 }
