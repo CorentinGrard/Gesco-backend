@@ -15,6 +15,6 @@ job:deploy:
   stage: deploy 
   script: 
     - sudo docker-compose up -d
-    - sudo chown -R gitlab-runner ./database && sudo chmod 775 -R ./database
+    - sudo chgrp -hR gitlab-runner ./database && sudo chmod 770 -R ./database
   only:
     - master
