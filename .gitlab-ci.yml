@@ -14,7 +14,7 @@ job:build:
 job:deploy:
   stage: deploy 
   script: 
-    - sudo docker-compose up -d
     - sudo chgrp -hR gitlab-runner ./database && sudo chmod 770 -R ./database
+    - sudo docker-compose up
   only:
     - master
