@@ -25,7 +25,7 @@ class MatiereRepository extends ServiceEntityRepository
     {
 
 
-        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\"".
+        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", MA.coefficient as \"coefficient\"".
             " FROM Promotion P".
             " JOIN semestre S ON P.id=S.promotion_id".
             " JOIN module MO ON MO.semestre_id=S.id".
@@ -93,7 +93,8 @@ class MatiereRepository extends ServiceEntityRepository
 
             array_push($resultFormatted[$semestreKey]["modules"][$moduleKey]["matieres"],[
                 "idMatiere" => $result["idMatiere"],
-                "nomMatiere" => $result["nomMatiere"]
+                "nomMatiere" => $result["nomMatiere"],
+                "coefficient" => $result["coefficient"]
             ]);
 
         }
