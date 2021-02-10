@@ -38,20 +38,11 @@ class Tools
             $day = substr($dateString, 6,2);
             $unixtimestamp = strtotime($year ."-". $month ."-". $day);
             $date->setTimestamp($unixtimestamp);
+            return $date;
         }
         else {
             return null;
         }
-
-        if($date->format('D') == "Mon") {
-            $dateDebut->setTime(0, 0);
-        }else{
-            $dateDebut->setTimestamp(strtotime("previous monday", $date->getTimestamp()));
-        }
-
-        $dateFin->setTimestamp(strtotime("+5 days", $dateDebut->getTimestamp()));
-
-        return ["debut"=>$dateDebut,"fin"=>$dateFin];
     }
 
 

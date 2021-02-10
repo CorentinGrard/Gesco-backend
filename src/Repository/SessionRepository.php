@@ -34,20 +34,19 @@ class SessionRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function allSessionsBetweenStartDateAndEndDateForPromotion(Promotion $promotion, string $startDateString, string $endDateString)
+    public function allSessionsBetweenStartDateAndEndDateForPromotion(Promotion $promotion, $startDate, $endDate)
     {
         $sessions = $promotion->getSessions();
 
         $sessionArray = [];
-        foreach($sessions as $session){
-            if($session->getDateDebut() >= $dates["debut"] && $session->getDateFin() <= $dates["fin"]){
+        foreach($sessions as $session) {
+            if($session->getDateDebut() >= $startDate && $session->getDateFin() <= $endDate){
                 array_push($sessionArray, $session);//->getArray());
             }
         }
 
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'session_get']);
 
-        return new JsonResponse($json, Response::HTTP_OK);
+        return $sessionArray;
     }
 
 
