@@ -22,20 +22,36 @@ class Salle
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_salle"})
+     * @Groups({"get_salle","get_session_by_startDate_and_endDate"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=64)
-     * @Groups({"get_salle"})
+     * @Groups({"get_salle","get_session_by_startDate_and_endDate"})
      */
     private $nomSalle;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Batiment/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nomBatiment",
+     *          ref="#/components/schemas/Batiment/properties/nomBatiment"
+     *      ),
+     *     @OA\Property(
+     *          property="batimentSite",
+     *          ref="#/components/schemas/Batiment/properties/batimentSite"
+     *      ),
+     *     readOnly="true"
+     * )
      * @OA\Property(type="array", @OA\Items(@OA\Property(property="id", type="integer")))
      * @ORM\ManyToOne(targetEntity=Batiment::class, inversedBy="salles")
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $batiment;
 

@@ -35,6 +35,10 @@ class Session
      *          property="nom",
      *          ref="#/components/schemas/Matiere/properties/nom"
      *      ),
+     *     @OA\Property(
+     *          property="coefficient",
+     *          ref="#/components/schemas/Matiere/properties/coefficient"
+     *      ),
      *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
@@ -71,7 +75,23 @@ class Session
     private $dateFin;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Salle/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nomSalle",
+     *          ref="#/components/schemas/Salle/properties/nomSalle"
+     *      ),
+     *     @OA\Property(
+     *          property="batiment",
+     *          ref="#/components/schemas/Salle/properties/batiment"
+     *      ),
+     *     readOnly="true"
+     * )
      * @ORM\ManyToMany(targetEntity=Salle::class, inversedBy="sessions")
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $sessionSalle;
 
