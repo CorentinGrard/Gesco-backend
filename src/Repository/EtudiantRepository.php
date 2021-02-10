@@ -81,4 +81,26 @@ class EtudiantRepository extends ServiceEntityRepository
         ];
 
     }
+
+    public function updateEtudiant(EntityManagerInterface $entityManager, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel, $isAlternant)
+    {
+        $personne = $etudiant->getPersonne();
+        $personne->setNom($nom);
+        $personne->setPrenom($prenom);
+        $personne->generateEmail(true);
+        $personne->setAdresse($adresse);
+        $personne->setNumeroTel($numeroTel);
+
+        $entityManager->persist($personne);
+
+        $etudiant->setIsAlternant($isAlternant);
+        $etudiant->setPersonne($personne);
+        $entityManager->persist($etudiant);
+        $entityManager->flush();
+
+        return [
+            "status" => 201,
+            "error" => "Etudiant correctement modifié en base de données"
+        ];
+    }
 }
