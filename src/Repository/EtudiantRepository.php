@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Etudiant;
+use App\Entity\Personne;
+use App\Entity\Promotion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -50,4 +53,38 @@ class EtudiantRepository extends ServiceEntityRepository
 
     public function ajoutNoteEtudiant($idEtudiant,$idMatiere,$note): bool
     {}
+
+    public function createEtudiantInPromotion(EntityManagerInterface $entityManager, PromotionRepository $promotionRepository, Promotion $promotion, string $nom, string $prenom, string $adresse, string $numeroTel, bool $isAlternant)
+    {
+        $personne = new Personne();
+        $personne->setNom($nom);
+        $personne->setPrenom($prenom);
+        $personne->setAdresse($adresse);
+        $personne->setNumeroTel($numeroTel);
+
+        $entityManager->persist($personne);
+
+        $etudiant = new Etudiant();
+        $etudiant->setIsAlternant($isAlternant);
+        $etudiant->setPersonne($personne);
+        $etudiant->setPromotion($promotion);
+
+        $entityManager->persist($etudiant);
+        try {
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return [
+                "status" => 500,
+                "error" => "Problème d'insertion des données en base de données"
+            ];
+        }
+
+
+
+        return [
+            "status" => 201,
+            "error" => "Etudiant correctement créé en base de données"
+        ];
+
+    }
 }

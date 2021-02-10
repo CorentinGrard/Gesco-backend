@@ -129,6 +129,79 @@ class EtudiantController extends AbstractController
     }
 
     /**
+     * @OA\Post(
+     *      tags={"Etudiants"},
+     *      path="/promotion/{id}/etudiant",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="idPromotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          request="etudiant",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="prenom",type="string"),
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="adresse",type="string"),
+     *              @OA\Property(property="numeroTel",type="string"),
+     *              @OA\Property(property="isAlternant",type="boolean")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="401",
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="La promotion renseignée n'existe pas",
+     *     )
+     *
+     * )
+     * @Route("/promotion/{id}/etudiant", name="create_etudiant_to_promotion", methods={"POST"})
+     * @param EntityManagerInterface $entityManager
+     * @param EtudiantRepository $etudiantRepository
+     * @param PromotionRepository $promotionRepository
+     * @param Promotion $promotion
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function createEtudiantInPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository,Promotion $promotion, Request $request) :JsonResponse
+    {
+
+        if ($promotion == null) {
+            return new JsonResponse("La promotion renseignée n'existe pas",Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $nom = $data["nom"];
+        $prenom = $data["prenom"];
+        $adresse = $data["adresse"];
+        $numeroTel = $data["numeroTel"];
+        $isAlternant = $data["isAlternant"];
+
+        $repoResponse = $etudiantRepository->createEtudiantInPromotion($entityManager,$promotionRepository,$promotion,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
+
+        switch ($repoResponse["status"]) {
+            case 201:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 406:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_ACCEPTABLE);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
+
+
+    /**
      * @OA\Put(
      *      tags={"Promotions"},
      *      path="/promotion/{newIdPromotion}/etudiant/{idEtudiant}",
