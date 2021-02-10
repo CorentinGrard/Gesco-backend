@@ -23,21 +23,21 @@ class Matiere
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"matiere_get", "session_get", "get_notes_etudiant"})
+     * @Groups({"matiere_get", "session_get","get_session_by_startDate_and_endDate", "get_notes_etudiant"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"matiere_get", "matiere_post", "session_get", "get_notes_etudiant"})
+     * @Groups({"matiere_get", "matiere_post", "session_get","get_session_by_startDate_and_endDate", "get_notes_etudiant"})
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer")
      * @ORM\Column(type="smallint")
-     * @Groups({"matiere_get", "matiere_post", "get_notes_etudiant"})
+     * @Groups({"matiere_get", "matiere_post","get_session_by_startDate_and_endDate", "get_notes_etudiant"})
      */
     private $coefficient;
 

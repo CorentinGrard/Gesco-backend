@@ -73,7 +73,7 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      tags={"Promotions"},
      *      path="/promotion/{idPromotion}/etudiant/{idEtudiant}",
      *      @OA\Parameter(
@@ -101,8 +101,8 @@ class EtudiantController extends AbstractController
      *     )
      *
      * )
-     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"POST"})
-     * @param EntityManager $entityManager
+     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"PUT"})
+     * @param EntityManagerInterface $entityManager
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository
      * @param int $idEtudiant
@@ -127,6 +127,152 @@ class EtudiantController extends AbstractController
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * @OA\Post(
+     *      tags={"Etudiants"},
+     *      path="/promotion/{idPromotion}/etudiant",
+     *      @OA\Parameter(
+     *          name="idPromotion",
+     *          in="path",
+     *          required=true,
+     *          description="idPromotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          request="etudiant",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="prenom",type="string"),
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="adresse",type="string"),
+     *              @OA\Property(property="numeroTel",type="string"),
+     *              @OA\Property(property="isAlternant",type="boolean")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="401",
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="La promotion renseignée n'existe pas",
+     *     )
+     * )
+     * @Route("/promotion/{idPromotion}/etudiant", name="create_etudiant_to_promotion", methods={"POST"})
+     * @param int $idPromotion
+     * @param PromotionRepository $promotionRepository
+     * @param EntityManagerInterface $entityManager
+     * @param EtudiantRepository $etudiantRepository
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function createEtudiantInPromotion(int $idPromotion, PromotionRepository $promotionRepository,EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository, Request $request): JsonResponse
+    {
+
+        $promotion = $promotionRepository->find($idPromotion);
+
+        if ($promotion == null) {
+            return new JsonResponse("La promotion d'ID ".$idPromotion." renseignée n'existe pas",Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $nom = $data["nom"];
+        $prenom = $data["prenom"];
+        $adresse = $data["adresse"];
+        $numeroTel = $data["numeroTel"];
+        $isAlternant = $data["isAlternant"];
+
+        $repoResponse = $etudiantRepository->createEtudiantInPromotion($entityManager,$promotion,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
+
+        switch ($repoResponse["status"]) {
+            case 201:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 406:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_ACCEPTABLE);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * @OA\Put(
+     *      tags={"Etudiants"},
+     *      path="/etudiant/{idEtudiant}",
+     *      @OA\Parameter(
+     *          name="idEtudiant",
+     *          in="path",
+     *          required=true,
+     *          description="idPromotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          request="etudiant",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="prenom",type="string"),
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="adresse",type="string"),
+     *              @OA\Property(property="numeroTel",type="string"),
+     *              @OA\Property(property="isAlternant",type="boolean")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="401",
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="L'étudiant n'existe pas en base'",
+     *     )
+     * )
+     * @Route("/etudiant/{idEtudiant}", name="update_etudiant", methods={"PUT"})
+     * @param int $idEtudiant
+     * @param EtudiantRepository $etudiantRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateEtudiant(int $idEtudiant, EtudiantRepository $etudiantRepository,EntityManagerInterface $entityManager, Request $request): JsonResponse
+    {
+
+        $etudiant = $etudiantRepository->find($idEtudiant);
+
+        if ($etudiant == null) {
+            return new JsonResponse("L'étudiant d'ID ".$etudiant." renseignée n'existe pas",Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $nom = $data["nom"];
+        $prenom = $data["prenom"];
+        $adresse = $data["adresse"];
+        $numeroTel = $data["numeroTel"];
+        $isAlternant = $data["isAlternant"];
+
+        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$etudiant,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
+
+        switch ($repoResponse["status"]) {
+            case 201:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 406:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_ACCEPTABLE);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
+
 
     /**
      * @OA\Put(

@@ -6,27 +6,50 @@ use App\Repository\BatimentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=BatimentRepository::class)
  */
 class Batiment
 {
     /**
+     * @OA\Property(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $id;
 
     /**
+     * @OA\Property(type="string")
      * @ORM\Column(type="string", length=64)
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $nomBatiment;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Site/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nomSite",
+     *          ref="#/components/schemas/Site/properties/nomSite"
+     *      ),
+     *     @OA\Property(
+     *          property="adress",
+     *          ref="#/components/schemas/Site/properties/adress"
+     *      ),
+     *     readOnly="true"
+     * )
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="batiments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $batimentSite;
 

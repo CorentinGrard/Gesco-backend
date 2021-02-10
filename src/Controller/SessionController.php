@@ -7,6 +7,7 @@ use App\Entity\Promotion;
 use App\Entity\Session;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
+use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
 use App\Serializers\SessionSerializer;
 use App\Tools;
@@ -112,9 +113,9 @@ class SessionController extends AbstractController
     /**
      * @OA\Get(
      *      tags={"Sessions"},
-     *      path="/promotions/{id}/start/{startDateString}/end/{endDateString}/sessions",
+     *      path="/promotions/{idPromotion}/start/{startDateString}/end/{endDateString}/sessions",
      *      @OA\Parameter(
-     *          name="id",
+     *          name="idPromotion",
      *          in="path",
      *          required=true,
      *          description="id Promotion",
@@ -136,7 +137,7 @@ class SessionController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response="200",
-     *          description ="Les sessions pour pour cette promotion aux dates demandées sont trouvées",
+     *          description ="Les sessions pour cette promotion aux dates demandées sont trouvées (Attention, example incomplet)",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
      *      ),
      *     @OA\Response(
@@ -148,15 +149,18 @@ class SessionController extends AbstractController
      *          description ="La date de début ou de fin n'est pas valide"
      *      ),
      * )
-     * @Route("/promotions/{id}/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
+     * @Route("/promotions/{idPromotion}/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
      * @param SessionRepository $sessionRepository
-     * @param Promotion $promotion
+     * @param PromotionRepository $promotionRepository
+     * @param int $idPromotion
      * @param string $startDateString
      * @param string $endDateString
      * @return Response
      */
-    public function allSessionsBetweenStartDateAndEndDateForPromotion(SessionRepository $sessionRepository, Promotion $promotion, string $startDateString, string $endDateString): Response
+    public function allSessionsBetweenStartDateAndEndDateForPromotion(SessionRepository $sessionRepository, PromotionRepository $promotionRepository, int $idPromotion, string $startDateString, string $endDateString): Response
     {
+        $promotion = $promotionRepository->find($idPromotion);
+
         if ($promotion == null) {
             return new JsonResponse("La promotion n'existe pas", Response::HTTP_NOT_FOUND);
         }

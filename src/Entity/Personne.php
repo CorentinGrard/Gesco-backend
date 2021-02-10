@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PersonneRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -66,10 +68,21 @@ class Personne implements UserInterface
     private $numeroTel;
 
     /**
+
      * @ORM\Column(type="array")
      */
     private $roles = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity=Formation::class, mappedBy="Responsable")
+     */
+    private $formations;
+
+    public function __construct()
+    {
+        $this->formations = new ArrayCollection();
+    }
++
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +168,7 @@ class Personne implements UserInterface
         ];
     }
 
+
     public function getRoles(): ?array
     {
         return $this->roles;
@@ -163,6 +177,21 @@ class Personne implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+    /**
+     * @return Collection|Formation[]
+     */
+    public function getFormations(): Collection
+    {
+        return $this->formations;
+    }
+
+    public function addFormation(Formation $formation): self
+    {
+        if (!$this->formations->contains($formation)) {
+            $this->formations[] = $formation;
+            $formation->setResponsable($this);
+        }
 
         return $this;
     }
@@ -185,5 +214,17 @@ class Personne implements UserInterface
     public function eraseCredentials()
     {
         return null;// TODO: Implement eraseCredentials() method.
+    }
+
+    public function removeFormation(Formation $formation): self
+    {
+        if ($this->formations->removeElement($formation)) {
+            // set the owning side to null (unless already changed)
+            if ($formation->getResponsable() === $this) {
+                $formation->setResponsable(null);
+            }
+        }
+
+        return $this;
     }
 }

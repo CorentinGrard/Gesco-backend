@@ -35,6 +35,10 @@ class Session
      *          property="nom",
      *          ref="#/components/schemas/Matiere/properties/nom"
      *      ),
+     *     @OA\Property(
+     *          property="coefficient",
+     *          ref="#/components/schemas/Matiere/properties/coefficient"
+     *      ),
      *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
@@ -71,9 +75,32 @@ class Session
     private $dateFin;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Salle/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nomSalle",
+     *          ref="#/components/schemas/Salle/properties/nomSalle"
+     *      ),
+     *     @OA\Property(
+     *          property="batiment",
+     *          ref="#/components/schemas/Salle/properties/batiment"
+     *      ),
+     *     readOnly="true"
+     * )
      * @ORM\ManyToMany(targetEntity=Salle::class, inversedBy="sessions")
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $sessionSalle;
+
+    /**
+     * @OA\Property(type="string")
+     * @ORM\Column(type="string", length=1024, nullable=true)
+     * @Groups({"session_get","get_session_by_startDate_and_endDate"})
+     */
+    private $detail;
 
     public function __construct()
     {
@@ -212,6 +239,18 @@ class Session
     public function removeSessionSalle(Salle $sessionSalle): self
     {
         $this->sessionSalle->removeElement($sessionSalle);
+
+        return $this;
+    }
+
+    public function getDetail(): ?string
+    {
+        return $this->detail;
+    }
+
+    public function setDetail(?string $detail): self
+    {
+        $this->detail = $detail;
 
         return $this;
     }

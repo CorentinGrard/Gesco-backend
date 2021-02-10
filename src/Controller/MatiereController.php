@@ -70,7 +70,7 @@ class MatiereController extends AbstractController
      */
     public function deleteMatiereById(EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
     {
-        $repoResponse = $matiereRepository->deleteMatiereById($entityManager,$matiereRepository, $idMatiere);
+        $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
 
         switch ($repoResponse["status"]){
             case 202:
