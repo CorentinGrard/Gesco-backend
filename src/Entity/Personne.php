@@ -82,7 +82,7 @@ class Personne implements UserInterface
     {
         $this->formations = new ArrayCollection();
     }
-+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -177,6 +177,9 @@ class Personne implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
 
     /**
      * @return Collection|Formation[]

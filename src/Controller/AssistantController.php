@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Assistant;
 use App\Repository\AssistantRepository;
 use App\Serializers\AssistantSerializer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,7 +29,7 @@ class AssistantController extends AbstractController
      * @Route("/assistants", name="assistant_list")
      * @param AssistantRepository $assistantRepository
      * @return Response
-     * @IsGranted("ROLE_ADMIN")
+     * Security("is_granted('ROLE_ADMIN')")
      */
     public function list(AssistantRepository $assistantRepository): Response
     {
