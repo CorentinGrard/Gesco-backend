@@ -6,7 +6,6 @@ job:build:
   stage: build 
   script:
     - sudo docker-compose down
-    - mkdir -p ./database/data
     - sudo docker-compose build
   only:
     - master
@@ -14,7 +13,6 @@ job:build:
 job:deploy:
   stage: deploy 
   script: 
-    - sudo chgrp -hR gitlab-runner ./database && sudo chmod 770 -R ./database
     - sudo docker-compose up -d
   only:
     - master
