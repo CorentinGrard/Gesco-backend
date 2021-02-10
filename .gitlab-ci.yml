@@ -6,6 +6,7 @@ job:build:
   stage: build 
   script:
     - sudo docker-compose down
+    - mkdir ./database/data
     - sudo docker-compose build
   only:
     - master
