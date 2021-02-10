@@ -6,7 +6,7 @@ job:build:
   stage: build 
   script:
     - sudo docker-compose down
-    - mkdir ./database/data && chown -R gitlab-runner ./database && chmod 775 -R ./database
+    - mkdir -p ./database/data && chown -R gitlab-runner ./database && chmod 775 -R ./database
     - sudo docker-compose build
   only:
     - master
