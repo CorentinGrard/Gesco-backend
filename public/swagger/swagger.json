@@ -749,6 +749,61 @@
                 }
             }
         },
+        "/etudiants/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "App\\Controller\\NoteController::notesEtudiantConnected",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "$ref": "#/components/schemas/Etudiant/properties/id"
+                                        },
+                                        "notes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "$ref": "#/components/schemas/Note/properties/id"
+                                                    },
+                                                    "note": {
+                                                        "$ref": "#/components/schemas/Note/properties/note"
+                                                    },
+                                                    "matiere": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/id"
+                                                            },
+                                                            "nom": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/nom"
+                                                            },
+                                                            "coefficient": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/coefficient"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
         "/personnes": {
             "get": {
                 "tags": [

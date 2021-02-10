@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Assistant;
 use App\Entity\Etudiant;
 use App\Entity\Formation;
+use App\Entity\Note;
 use App\Entity\Site;
 use App\Entity\Batiment;
 use App\Entity\Salle;
@@ -234,13 +235,13 @@ class AppFixtures extends Fixture
         $personne->setRoles(["ROLE_ETUDIANT"]);
 
 
-        $etudiant = new Etudiant();
-        $etudiant->setPersonne($personne);
-        $etudiant->setIsAlternant(true);
-        $etudiant->setPromotion($promotions[0]);
+        $etudiant1 = new Etudiant();
+        $etudiant1->setPersonne($personne);
+        $etudiant1->setIsAlternant(true);
+        $etudiant1->setPromotion($promotions[0]);
 
         $manager->persist($personne);
-        $manager->persist($etudiant);
+        $manager->persist($etudiant1);
 
         ///////
 
@@ -254,12 +255,12 @@ class AppFixtures extends Fixture
         $personne->setNumeroTel("0668327467");
         $personne->setRoles(["ROLE_ETUDIANT"]);
 
-        $etudiant = new Etudiant();
-        $etudiant->setPersonne($personne);
-        $etudiant->setIsAlternant(true);
+        $etudiant2 = new Etudiant();
+        $etudiant2->setPersonne($personne);
+        $etudiant2->setIsAlternant(true);
 
         $manager->persist($personne);
-        $manager->persist($etudiant);
+        $manager->persist($etudiant2);
 
         //////
 
@@ -271,12 +272,20 @@ class AppFixtures extends Fixture
         $personne->setNumeroTel("07XXXXXXXX");
         $personne->setRoles(["ROLE_ETUDIANT"]);
 
-        $etudiant = new Etudiant();
-        $etudiant->setPersonne($personne);
-        $etudiant->setIsAlternant(true);
+        $etudiant3 = new Etudiant();
+        $etudiant3->setPersonne($personne);
+        $etudiant3->setIsAlternant(true);
 
         $manager->persist($personne);
-        $manager->persist($etudiant);
+        $manager->persist($etudiant3);
+
+        foreach($matieres as $mat){
+            $note = new Note();
+            $note->setEtudiant($etudiant3);
+            $note->setMatiere($mat);
+            $note->setNote($faker->randomElement([10,11,12,13.5,15,16.7,17.1]));
+            $manager->persist($note);
+        }
 
 
         $manager->flush();
