@@ -50,6 +50,12 @@ class Formation
      */
     private $promotions;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $responsable;
+
     public function __construct()
     {
         $this->promotions = new ArrayCollection();
@@ -98,6 +104,18 @@ class Formation
                 $promotion->setFormation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getResponsable(): ?Personne
+    {
+        return $this->responsable;
+    }
+
+    public function setResponsable(?Personne $responsable): self
+    {
+        $this->responsable = $responsable;
 
         return $this;
     }
