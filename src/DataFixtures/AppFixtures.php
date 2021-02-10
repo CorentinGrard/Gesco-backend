@@ -31,21 +31,43 @@ class AppFixtures extends Fixture
          * php bin/console doctrine:fixtures:load
          */
 
+        //Ajout Responsable TODO : prévoir changement en fonction du changement des rôles
+
+        $responsable = [];
+
+        for($i = 0; $i < 3; $i++){
+            $faker = Factory::create();
+            $personne = new Personne();
+
+            $personne->setNom($faker->lastName);
+            $personne->setPrenom($faker->firstName);
+            $personne->setAdresse($faker->address);
+            $personne->generateEmail(false);
+            $personne->setNumeroTel($faker->phoneNumber);
+
+            $manager->persist($personne);
+            array_push($responsable, $personne);
+        }
+
+
         //Ajout formations
         $formations = [];
 
         $formation = new Formation();
         $formation->setNom("INFRES");
+        $formation->setResponsable($responsable[0]);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("MKX");
+        $formation->setResponsable($responsable[1]);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("CMC");
+        $formation->setResponsable($responsable[2]);
         $manager->persist($formation);
         array_push($formations, $formation);
 

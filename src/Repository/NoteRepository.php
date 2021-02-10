@@ -40,7 +40,6 @@ class NoteRepository extends ServiceEntityRepository
         $note = new Note();
         $etudiant = $etudiantRepository->find($idEtudiant);
         $matiere = $matiereRepository->find($idMatiere);
-
         
         $note->setEtudiant($etudiant);
         $note->setMatiere($matiere);

@@ -22,9 +22,9 @@ class MatiereRepository extends ServiceEntityRepository
         parent::__construct($registry, Matiere::class);
     }
 
-    public function deleteMatiereById(EntityManagerInterface $entityManager,MatiereRepository $matiereRepository,int $matiereId)
+    public function deleteMatiereById(EntityManagerInterface $entityManager, int $matiereId)
     {
-        $currentMatiere = $matiereRepository->find($matiereId);
+        $currentMatiere = $this->find($matiereId);
 
         if($currentMatiere == null){
             return[
