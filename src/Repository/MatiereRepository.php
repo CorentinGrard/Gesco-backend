@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Matiere;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,6 +22,25 @@ class MatiereRepository extends ServiceEntityRepository
         parent::__construct($registry, Matiere::class);
     }
 
+    public function deleteMatiereById(EntityManagerInterface $entityManager,MatiereRepository $matiereRepository,int $matiereId)
+    {
+        $currentMatiere = $matiereRepository->find($matiereId);
+
+        if($currentMatiere == null){
+            return[
+                "status" => 404,
+                "error"  => "La matière d'ID ".$matiereId." n'existe pas"
+            ];
+        }
+
+        $entityManager->remove($currentMatiere);
+        $entityManager->flush();
+
+        return [
+            "status" => 202,
+            "error"  => null
+        ];
+    }
 
     public function getMatieresByPromotion(int $idPromotion)
     {
@@ -46,13 +67,9 @@ class MatiereRepository extends ServiceEntityRepository
 
         $sqlResults = $stmt->fetchAll();
 
-
         $resultFormatted = [];
         $semestreAllreadyUsed = false;
         $moduleAllreadyUsed = false;
-
-
-
 
         foreach ($sqlResults as $result) {
 
@@ -72,7 +89,6 @@ class MatiereRepository extends ServiceEntityRepository
 
             $semestreKey = array_search($result["idSemestre"],array_column($resultFormatted,"idSemestre"));
 
-
             foreach ($resultFormatted[$semestreKey]["modules"] as $module) {
                 if ($result["idModule"] == $module["idModule"]) {
                     $moduleAllreadyUsed = true;
@@ -88,7 +104,6 @@ class MatiereRepository extends ServiceEntityRepository
                 ]);
             }
 
-
             $moduleKey = array_search($result["idModule"],array_column($resultFormatted[$semestreKey]["modules"],"idModule"));
 
             array_push($resultFormatted[$semestreKey]["modules"][$moduleKey]["matieres"],[
@@ -96,12 +111,8 @@ class MatiereRepository extends ServiceEntityRepository
                 "nomMatiere" => $result["nomMatiere"],
                 "coefficient" => $result["coefficient"]
             ]);
-
         }
-
-
         return $resultFormatted;
-
     }
 
 
