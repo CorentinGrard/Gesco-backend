@@ -31,7 +31,7 @@ class Etudiant
      * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_etudiant"})
+     * @Groups({"get_etudiant","get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
      * @var Personne
      */
     private $Personne;
@@ -61,6 +61,11 @@ class Etudiant
      * @var Note[] | ArrayCollection
      */
     private $Notes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="Etudiants")
+     */
+    private $Promotion;
 
     public function __construct()
     {
@@ -122,6 +127,18 @@ class Etudiant
                 $note->setEtudiant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPromotion(): ?Promotion
+    {
+        return $this->Promotion;
+    }
+
+    public function setPromotion(?Promotion $Promotion): self
+    {
+        $this->Promotion = $Promotion;
 
         return $this;
     }

@@ -55,7 +55,7 @@ class Matiere
      *      ),
      *      readOnly="true"
      * )
-     * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere")
+     * @ORM\OneToMany(targetEntity=Session::class, mappedBy="matiere", cascade={"remove"})
      * @Groups("matiere_get")
      */
     private $sessions;
@@ -72,7 +72,7 @@ class Matiere
      *      ),
      *      readOnly="true"
      * )
-     * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres")
+     * @ORM\ManyToOne(targetEntity=Module::class, inversedBy="matieres",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"matiere_get", "matiere_post"})
      */
@@ -242,6 +242,4 @@ class Matiere
     }
 
     /* TODO getNombreHeuresPlacees() + serialization */
-
-
 }

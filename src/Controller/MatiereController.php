@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Matiere;
 use App\Entity\Module;
 use App\Entity\Promotion;
@@ -46,6 +45,46 @@ class MatiereController extends AbstractController
     }
 
     /**
+     * @OA\Delete(
+     *      tags={"Matieres"},
+     *      path="/matieres/{idMatiere}",
+     *      @OA\Parameter(
+     *          name="idMatiere",
+     *          in="path",
+     *          required=true,
+     *          description ="",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="202",
+     *      ),
+     *      @OA\Response(
+     *          response="404",
+     *      )
+     * )
+     * @Route("/matieres/{idMatiere}", name="delete_matiere", methods={"DELETE"})
+     * @param EntityManagerInterface $entityManager
+     * @param MatiereRepository $matiereRepository
+     * @param int $idMatiere
+     * @return JsonResponse
+     */
+    public function deleteMatiereById(EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
+    {
+        $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
+
+        switch ($repoResponse["status"]){
+            case 202:
+                return new JsonResponse("Ok",Response::HTTP_ACCEPTED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
      * @OA\Get(
      *      tags={"Matieres"},
      *      path="/matieres/{id}",
@@ -61,7 +100,7 @@ class MatiereController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Matiere")
      *      )
      * )
-     * @Route("/matieres/{id}", name="matiere")
+     * @Route("/matieres/{id}", name="matiere", methods={"GET"})
      * @param Matiere $matiere
      * @return Response
      */

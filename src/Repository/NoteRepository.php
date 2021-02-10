@@ -40,7 +40,6 @@ class NoteRepository extends ServiceEntityRepository
         $note = new Note();
         $etudiant = $etudiantRepository->find($idEtudiant);
         $matiere = $matiereRepository->find($idMatiere);
-
         
         $note->setEtudiant($etudiant);
         $note->setMatiere($matiere);
@@ -186,13 +185,6 @@ class NoteRepository extends ServiceEntityRepository
 
         $result = $stmt->fetchAll();
 
-        # "IDSEMESTRE": "1",
-        # "NOMSEMESTRE": "Semestre 1",
-        # "IDMODULE": "1",
-        # "NOMMODULE": "8n4BfmIzFJ",
-        # "IDMATIERE": "1",
-        # "NOMMATIERE": "oqsQatqRL6VQ",
-        # "note": "19",#"coefficient": "1"
 
         $resultFormatted = [];
 

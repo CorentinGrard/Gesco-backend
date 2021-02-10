@@ -74,4 +74,9 @@ class PromotionController extends AbstractController
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
+
+
+
+
+
 }

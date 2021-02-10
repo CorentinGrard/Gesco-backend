@@ -4,7 +4,9 @@ stages: # Ici on déclare toutes nos étapes
 
 job:build:
   stage: build 
-  script: 
+  script:
+    - sudo docker-compose down
+    - mkdir -p ./database/data && chown -R gitlab-runner ./database && chmod 775 -R ./database
     - sudo docker-compose build
   only:
     - master

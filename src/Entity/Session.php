@@ -18,7 +18,7 @@ class Session
     /**
      * @OA\Property(type="integer",
      *     readOnly="true")
-     * @Groups({"matiere_get", "session_get"})
+     * @Groups({"matiere_get", "session_get","get_session_by_startDate_and_endDate"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -38,35 +38,35 @@ class Session
      *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
-     * @Groups({"session_get"})
+     * @Groups({"session_get","get_session_by_startDate_and_endDate"})
      */
     private $matiere;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $type;
 
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $obligatoire;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $dateDebut;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $dateFin;
 

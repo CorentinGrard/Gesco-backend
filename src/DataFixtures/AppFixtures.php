@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Assistant;
+use App\Entity\Etudiant;
 use App\Entity\Formation;
 use App\Entity\Site;
 use App\Entity\Batiment;
@@ -30,21 +31,43 @@ class AppFixtures extends Fixture
          * php bin/console doctrine:fixtures:load
          */
 
+        //Ajout Responsable TODO : prévoir changement en fonction du changement des rôles
+
+        $responsable = [];
+
+        for($i = 0; $i < 3; $i++){
+            $faker = Factory::create();
+            $personne = new Personne();
+
+            $personne->setNom($faker->lastName);
+            $personne->setPrenom($faker->firstName);
+            $personne->setAdresse($faker->address);
+            $personne->generateEmail(false);
+            $personne->setNumeroTel($faker->phoneNumber);
+
+            $manager->persist($personne);
+            array_push($responsable, $personne);
+        }
+
+
         //Ajout formations
         $formations = [];
 
         $formation = new Formation();
         $formation->setNom("INFRES");
+        $formation->setResponsable($responsable[0]);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("MKX");
+        $formation->setResponsable($responsable[1]);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("CMC");
+        $formation->setResponsable($responsable[2]);
         $manager->persist($formation);
         array_push($formations, $formation);
 
@@ -129,6 +152,8 @@ class AppFixtures extends Fixture
         $k = 0;
         $semestres = [];
         foreach ($promotions as $promotion) {
+
+
             $semestre = new Semestre();
             $semestre->setNom("Semestre " . ($k + 1));
             $semestre->setPromotion($promotion);
@@ -185,6 +210,45 @@ class AppFixtures extends Fixture
 
             $manager->persist($session);
         }
+
+
+        // Ajout de personnes et d'étudiants
+
+        $personne = new Personne();
+        $personne->setPrenom("Antonin");
+        $personne->setNom("CABANE");
+        $personne->setAdresse("479 Avenue des euzières\n34190 Brissac");
+        //$personne->set Email("antonin.cabane@gmail.com");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("0750214383");
+
+
+        $etudiant = new Etudiant();
+        $etudiant->setPersonne($personne);
+        $etudiant->setIsAlternant(true);
+        $etudiant->setPromotion($promotions[0]);
+
+        $manager->persist($personne);
+        $manager->persist($etudiant);
+
+        ///////
+
+        // Création des étudiants
+
+        $personne = new Personne();
+        $personne->setPrenom("Guillaume");
+        $personne->setNom("de Maleprade");
+        $personne->setAdresse("40 Chemin des Pins\n30100 Alès");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("0668327467");
+
+        $etudiant = new Etudiant();
+        $etudiant->setPersonne($personne);
+        $etudiant->setIsAlternant(true);
+
+        $manager->persist($personne);
+        $manager->persist($etudiant);
+
 
         $manager->flush();
     }
