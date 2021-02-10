@@ -6,7 +6,12 @@ use App\Entity\Etudiant;
 use App\Entity\Personne;
 use App\Entity\Promotion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\ResultSetMapping;
+
 use Doctrine\ORM\EntityManagerInterface;
+
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +26,36 @@ class EtudiantRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Etudiant::class);
     }
+
+    /**
+     * @return Etudiant Returns an array of Personne objects
+     */
+    public function findOneByUsername($username)
+    {
+/*
+        $sql = "SELECT * FROM etudiant e " .
+            "INNER JOIN personne p ON (p.id = e.personne_id) ".
+            "WHERE p.email = :email";
+
+        $rsm = new ResultSetMapping();
+
+        $query = $this->_em->createNativeQuery($sql, $rsm);
+        $query->setParameter('email', $username);
+
+        return $query->getOneOrNullResult();
+*/
+        try {
+            return $this->createQueryBuilder('e')
+                ->innerJoin('e.Personne', 'p', 'WITH', 'p.id = e.Personne')
+                ->where('p.email = :email')
+                ->setParameter('email', $username)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            var_dump($e->getMessage());
+        }
+    }
+
 
     // /**
     //  * @return Etudiant[] Returns an array of Etudiant objects

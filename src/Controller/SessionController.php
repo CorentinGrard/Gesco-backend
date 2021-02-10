@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
+use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
@@ -12,6 +13,8 @@ use App\Serializers\SessionSerializer;
 use App\Tools;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,10 +39,22 @@ class SessionController extends AbstractController
      * @Route("/sessions", name="session_list", methods={"GET"})
      * @param SessionRepository $sessionRepository
      * @return Response
+     * @Security("is_granted('ROLE_ETUDIANT')")
      */
-    public function list(SessionRepository $sessionRepository): Response
+    public function list(SessionRepository $sessionRepository, LoggerInterface $logger, EtudiantRepository $etudiantRepository): Response
     {
         $sessions = $sessionRepository->findAll();
+
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username)){
+                $etudiant = $etudiantRepository->findOneByUsername($username);
+                if($etudiant != null){
+                    $logger->debug("Etudiant trouvé !!! => " . $etudiant->getPersonne()->getEmail());
+                }
+            }
+        }
 
         $json = SessionSerializer::serializeJson($sessions, ['groups'=>'session_get']);
 

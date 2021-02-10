@@ -203,9 +203,16 @@ class AppFixtures extends Fixture
             $session->setMatiere($matieres[$i % $mat]);
             $session->setType(SessionType::values[$i % 6 + 1]);
             $session->setObligatoire($bool);
-            $dateDebut = $faker->dateTimeThisMonth();
+            $dateDebut = $faker->dateTimeBetween($startDate = '-5 days', $endDate = '+5 days');
+            if(date('H', $dateDebut->getTimestamp()) < 8) {
+                $dateDebut->setTime(8,0);
+            }elseif(date('H', $dateDebut->getTimestamp()) > 18) {
+                $dateDebut->setTime(18,0);
+            }
             $dateFin = clone $dateDebut;
-            $dateFin->add(new \DateInterval('PT3H30M'));
+            $heure = $faker->numberBetween(1,3);
+            $min = $faker->randomElement([0,15,30,45]);
+            $dateFin->add(new \DateInterval('PT'.$heure.'H'.$min.'M'));
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
             $session->addSessionSalle($salles[$i]);
@@ -224,6 +231,7 @@ class AppFixtures extends Fixture
         //$personne->set Email("antonin.cabane@gmail.com");
         $personne->generateEmail(true);
         $personne->setNumeroTel("0750214383");
+        $personne->setRoles(["ROLE_ETUDIANT"]);
 
 
         $etudiant = new Etudiant();
@@ -244,6 +252,24 @@ class AppFixtures extends Fixture
         $personne->setAdresse("40 Chemin des Pins\n30100 Alès");
         $personne->generateEmail(true);
         $personne->setNumeroTel("0668327467");
+        $personne->setRoles(["ROLE_ETUDIANT"]);
+
+        $etudiant = new Etudiant();
+        $etudiant->setPersonne($personne);
+        $etudiant->setIsAlternant(true);
+
+        $manager->persist($personne);
+        $manager->persist($etudiant);
+
+        //////
+
+        $personne = new Personne();
+        $personne->setPrenom("Matthieu");
+        $personne->setNom("Tinnes");
+        $personne->setAdresse("40 Chemin du Viget\n30100 Alès");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("07XXXXXXXX");
+        $personne->setRoles(["ROLE_ETUDIANT"]);
 
         $etudiant = new Etudiant();
         $etudiant->setPersonne($personne);
