@@ -7,6 +7,7 @@ namespace App\Security;
 use App\Entity\Personne;
 use App\Repository\PersonneRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,17 +25,20 @@ class KeycloakAuthenticator extends AbstractGuardAuthenticator
 
     private $entityManager;
 
+    private $logger;
+
     /**
      * KeycloakAuthenticator constructor.
      * @param KeycloakUserProvider $provider
      * @param PersonneRepository $personneRepository
      * @param EntityManagerInterface $em
      */
-    public function __construct(KeycloakUserProvider $provider, PersonneRepository $personneRepository, EntityManagerInterface $em)
+    public function __construct(KeycloakUserProvider $provider, PersonneRepository $personneRepository, EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->provider = $provider;
         $this->personneRepository = $personneRepository;
         $this->entityManager = $em;
+        $this->logger = $logger;
     }
 
     // Should we call auth process
@@ -72,24 +76,22 @@ class KeycloakAuthenticator extends AbstractGuardAuthenticator
     {
         $response = $this->provider->loadUserFromKeycloak($credentials);
         $email = $response->toArray()['email'];
-        $prenom = $response->toArray()['prenom'];
-        $nom = $response->toArray()['nom'];
+        //$prenom = $response->toArray()['prenom'];
+        //$nom = $response->toArray()['nom'];
 
 
-        $personne = $this->personneRepository->findOneBy(array('email' => $email));
-        if($personne != null) {
-            // $user->setRoles(['ROLE_ADMIN']);
-            return $personne;
-        } else {
-            // créer user en bdd
+        $personne = $this->personneRepository->findOneBy(['email' => $email]);
+        /*if($personne == null) {
             $personne = new Personne();
             $personne->setPrenom($prenom);
             $personne->setNom($nom)->generateEmail();
 
             $this->entityManager->persist($personne);
             $this->entityManager->flush();
-            return $personne;
-        }
+        }*/
+        $this->logger->info("ROLES : " . implode(";", $personne->getRoles()));
+
+        return $personne;
     }
 
     public function checkCredentials($credentials, UserInterface $user)

@@ -180,6 +180,9 @@
     "symfony/event-dispatcher-contracts": {
         "version": "v2.2.0"
     },
+    "symfony/expression-language": {
+        "version": "v5.1.11"
+    },
     "symfony/filesystem": {
         "version": "v5.1.8"
     },
@@ -217,6 +220,9 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
+    },
+    "symfony/http-client": {
+        "version": "v5.1.11"
     },
     "symfony/http-client-contracts": {
         "version": "v2.3.1"
@@ -273,6 +279,30 @@
             "config/packages/routing.yaml",
             "config/routes.yaml"
         ]
+    },
+    "symfony/security-bundle": {
+        "version": "5.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.1",
+            "ref": "0a4bae19389d3b9cba1ca0102e3b2bccea724603"
+        },
+        "files": [
+            "./config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v5.1.11"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.1.11"
+    },
+    "symfony/security-guard": {
+        "version": "v5.1.11"
+    },
+    "symfony/security-http": {
+        "version": "v5.1.11"
     },
     "symfony/serializer": {
         "version": "v5.1.8"

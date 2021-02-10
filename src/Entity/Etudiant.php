@@ -57,7 +57,7 @@ class Etudiant
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Etudiant")
-     * @Groups({"get_etudiant"})
+     * @Groups({"get_etudiant", "get_notes_etudiant"})
      * @var Note[] | ArrayCollection
      */
     private $Notes;

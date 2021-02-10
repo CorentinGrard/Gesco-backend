@@ -23,7 +23,7 @@ class KeycloakUserProvider
      * @param $keycloakClientSecret
      * @param HttpClientInterface $http
      */
-    public function __construct($keycloakClientId, $keycloakClientSecret, HttpClientInterface $http)
+    public function __construct(string $keycloakClientId, string $keycloakClientSecret, HttpClientInterface $http)
     {
         $this->keycloakClientId = $keycloakClientId;
         $this->keycloakClientSecret = $keycloakClientSecret;
@@ -31,7 +31,7 @@ class KeycloakUserProvider
     }
 
     public function loadUserFromKeycloak($token) {
-        $url = "http://localhost:8080/auth/realms/imt-mines-ales/protocol/openid-connect/userinfo";
+        $url = "http://10.8.0.1:8080/auth/realms/imt-mines-ales/protocol/openid-connect/userinfo";
         $response = $this->http->request('POST', $url, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
@@ -39,6 +39,7 @@ class KeycloakUserProvider
         ]);
 
         if($response->getStatusCode() == Response::HTTP_OK) {
+            return $response;
 
         } else {
             // Error zebi

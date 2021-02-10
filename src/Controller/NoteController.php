@@ -5,9 +5,13 @@ namespace App\Controller;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\NoteRepository;
+use App\Repository\PersonneRepository;
+use App\Serializers\EtudiantSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -173,13 +177,72 @@ class NoteController extends AbstractController
      * )
      * @Route("/etudiants/{idEtudiant}/notes")
      * @param NoteRepository $noteRepository
+     * @param EtudiantRepository $etudiantRepository
      * @param integer $idEtudiant
+     * @param LoggerInterface $logger
      * @return JsonResponse
+     * Security("is_granted('ROLE_ETUDIANT')")
      */
-    public function notesEtudiant(NoteRepository $noteRepository, int $idEtudiant)
+    public function notesEtudiant(NoteRepository $noteRepository, EtudiantRepository $etudiantRepository, int $idEtudiant, LoggerInterface $logger)
     {
+            $user = $this->getUser();
+            if($user != null){
+                $username = $user->getUsername();
+                if(!empty($username))
+                    $etudiant = $etudiantRepository->findOneByUsername($username);
+            }
+
+
         $notes = $noteRepository->getAllNotes($idEtudiant);
         return new JsonResponse($notes, Response::HTTP_OK);
+    }
+
+
+    /**
+     * @OA\Get(
+     *      tags={"Notes"},
+     *      path="/etudiants/notes",
+     *      @OA\Response(response="200",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="id", ref="#/components/schemas/Etudiant/properties/id"),
+     *              @OA\Property(property="notes", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="id", ref="#/components/schemas/Note/properties/id"),
+     *                      @OA\Property(property="note", ref="#/components/schemas/Note/properties/note"),
+     *                      @OA\Property(property="matiere",
+     *                          @OA\Property(property="id", ref="#/components/schemas/Matiere/properties/id"),
+     *                          @OA\Property(property="nom", ref="#/components/schemas/Matiere/properties/nom"),
+     *                          @OA\Property(property="coefficient", ref="#/components/schemas/Matiere/properties/coefficient")
+     *                      )
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(response="404", description="Non trouvé...")
+     * )
+     * @Route("/etudiants/notes")
+     * @param NoteRepository $noteRepository
+     * @param EtudiantRepository $etudiantRepository
+     * @param integer $idEtudiant
+     * @param LoggerInterface $logger
+     * @return JsonResponse
+     * @Security("is_granted('ROLE_ETUDIANT')")
+     */
+    public function notesEtudiantConnected(NoteRepository $noteRepository, EtudiantRepository $etudiantRepository, LoggerInterface $logger)
+    {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+            {
+                $etudiant = $etudiantRepository->findOneByUsername($username);
+                $json = EtudiantSerializer::serializeJson($etudiant, ["groups"=> "get_notes_etudiant"]);
+                return new JsonResponse($json, Response::HTTP_OK);
+            }
+
+        }
+        return new JsonResponse("Étudiant ou notes non trouvés", Response::HTTP_NOT_FOUND);
+
     }
 
 

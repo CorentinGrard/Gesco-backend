@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PersonneRepository;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -16,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorMap({"personne" = "Personne", "etudiant" = "Etudiant"})
  */
-class Personne
+class Personne implements UserInterface
 {
     /**
      * @OA\Property(type="integer",
@@ -63,6 +64,11 @@ class Personne
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $numeroTel;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $roles = [];
 
     public function getId(): ?int
     {
@@ -147,5 +153,37 @@ class Personne
             "adresse" => $this->getAdresse(),
             "numeroTel" => $this->getNumeroTel()
         ];
+    }
+
+    public function getRoles(): ?array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function getPassword()
+    {
+        return null;// TODO: Implement getPassword() method.
+    }
+
+    public function getSalt()
+    {
+        return null;// TODO: Implement getSalt() method.
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+        return null;// TODO: Implement eraseCredentials() method.
     }
 }

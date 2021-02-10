@@ -20,21 +20,21 @@ class Module
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"module_get", "matiere_get", "semestre_get"})
+     * @Groups({"module_get", "matiere_get", "semestre_get", "get_notes_etudiant"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string"))
      * @ORM\Column(type="string", length=255)
-     * @Groups({"module_get", "matiere_get", "semestre_get"})
+     * @Groups({"module_get", "matiere_get", "semestre_get", "get_notes_etudiant"})
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer"))
      * @ORM\Column(type="smallint")
-     * @Groups({"module_get"})
+     * @Groups({"module_get", "get_notes_etudiant"})
      */
     private $ects;
 
