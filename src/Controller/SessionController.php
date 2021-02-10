@@ -94,6 +94,75 @@ class SessionController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK);
     }
 
+    /**
+     * @OA\Get(
+     *      tags={"Sessions"},
+     *      path="/promotions/{id}/start/{startDateString}/end/{endDateString}/sessions",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Promotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="startDateString",
+     *          description="format AAAAMMJJ",
+     *          in="path",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Parameter(
+     *          name="endDateString",
+     *          description="format AAAAMMJJ",
+     *          in="path",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description ="Les sessions pour pour cette promotion aux dates demandées sont trouvées",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
+     *      ),
+     *     @OA\Response(
+     *          response="404",
+     *          description ="L'ID Promotion demandé n'existe pas"
+     *      ),
+     *     @OA\Response(
+     *          response="406",
+     *          description ="La date de début ou de fin n'est pas valide"
+     *      ),
+     * )
+     * @Route("/promotions/{id}/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
+     * @param SessionRepository $sessionRepository
+     * @param Promotion $promotion
+     * @param string $startDateString
+     * @param string $endDateString
+     * @return Response
+     */
+    public function allSessionsBetweenStartDateAndEndDateForPromotion(SessionRepository $sessionRepository, Promotion $promotion, string $startDateString, string $endDateString): Response
+    {
+        if ($promotion == null) {
+            return new JsonResponse("La promotion n'existe pas", Response::HTTP_NOT_FOUND);
+        }
+
+        $startDate = Tools::getDateByStringDate($startDateString);
+        if ($startDate == null) {
+            return new JsonResponse("La date de début n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $endDate = Tools::getDateByStringDate($endDateString);
+        if ($startDate == null) {
+            return new JsonResponse("La date de fin n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion,$startDate,$endDate);
+
+        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
+    }
+
 
     /**
      * @OA\Get(
