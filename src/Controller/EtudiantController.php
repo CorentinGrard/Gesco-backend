@@ -222,7 +222,7 @@ class EtudiantController extends AbstractController
      *     )
      *
      * )
-     * @Route("/promotion/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"DELETE"})
+     * @Route("/promotion/etudiant/{idEtudiant}", name="delete_etudiant_promotion", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository

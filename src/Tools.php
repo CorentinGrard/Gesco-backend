@@ -28,4 +28,31 @@ class Tools
 
         return ["debut"=>$dateDebut,"fin"=>$dateFin];
     }
+
+    static function getDateByStringDate($dateString = '')
+    {
+        $date = new \DateTime();
+        if(!empty($dateString)){
+            $year = substr($dateString, 0,4);
+            $month = substr($dateString, 4,2);
+            $day = substr($dateString, 6,2);
+            $unixtimestamp = strtotime($year ."-". $month ."-". $day);
+            $date->setTimestamp($unixtimestamp);
+        }
+        else {
+            return null;
+        }
+
+        if($date->format('D') == "Mon") {
+            $dateDebut->setTime(0, 0);
+        }else{
+            $dateDebut->setTimestamp(strtotime("previous monday", $date->getTimestamp()));
+        }
+
+        $dateFin->setTimestamp(strtotime("+5 days", $dateDebut->getTimestamp()));
+
+        return ["debut"=>$dateDebut,"fin"=>$dateFin];
+    }
+
+
 }
