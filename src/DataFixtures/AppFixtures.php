@@ -71,6 +71,7 @@ class AppFixtures extends Fixture
         $manager->persist($formation);
         array_push($formations, $formation);
 
+
         //Ajout des sites
         $sites = [];
 
@@ -207,6 +208,7 @@ class AppFixtures extends Fixture
             $dateFin->add(new \DateInterval('PT3H30M'));
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
+            $session->addSessionSalle($salles[$i]);
 
             $manager->persist($session);
         }
