@@ -1542,6 +1542,9 @@
                         "type": "object",
                         "readOnly": "true"
                     },
+                    "detail": {
+                        "type": "string"
+                    },
                     "duree": {
                         "type": "number",
                         "readOnly": "true"

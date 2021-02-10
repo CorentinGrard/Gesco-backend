@@ -95,6 +95,13 @@ class Session
      */
     private $sessionSalle;
 
+    /**
+     * @OA\Property(type="string")
+     * @ORM\Column(type="string", length=1024, nullable=true)
+     * @Groups({"session_get","get_session_by_startDate_and_endDate"})
+     */
+    private $detail;
+
     public function __construct()
     {
         $this->sessionSalle = new ArrayCollection();
@@ -232,6 +239,18 @@ class Session
     public function removeSessionSalle(Salle $sessionSalle): self
     {
         $this->sessionSalle->removeElement($sessionSalle);
+
+        return $this;
+    }
+
+    public function getDetail(): ?string
+    {
+        return $this->detail;
+    }
+
+    public function setDetail(?string $detail): self
+    {
+        $this->detail = $detail;
 
         return $this;
     }

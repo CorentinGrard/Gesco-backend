@@ -209,6 +209,7 @@ class AppFixtures extends Fixture
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
             $session->addSessionSalle($salles[$i]);
+            $session->setDetail($faker->randomAscii);
 
             $manager->persist($session);
         }
