@@ -91,7 +91,7 @@
             }
         },
         "/promotion/{idPromotion}/etudiant/{idEtudiant}": {
-            "post": {
+            "put": {
                 "tags": [
                     "Promotions"
                 ],
@@ -120,6 +120,112 @@
                     "200": {},
                     "401": {},
                     "404": {}
+                }
+            }
+        },
+        "/promotion/{idPromotion}/etudiant": {
+            "post": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::createEtudiantInPromotion",
+                "parameters": [
+                    {
+                        "name": "idPromotion",
+                        "in": "path",
+                        "description": "idPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "etudiant",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "prenom": {
+                                        "type": "string"
+                                    },
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    },
+                                    "numeroTel": {
+                                        "type": "string"
+                                    },
+                                    "isAlternant": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {
+                        "description": "La promotion renseignée n'existe pas"
+                    }
+                }
+            }
+        },
+        "/etudiant/{idEtudiant}": {
+            "put": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::updateEtudiant",
+                "parameters": [
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "idPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "etudiant",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "prenom": {
+                                        "type": "string"
+                                    },
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    },
+                                    "numeroTel": {
+                                        "type": "string"
+                                    },
+                                    "isAlternant": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {
+                        "description": "L'étudiant n'existe pas en base'"
+                    }
                 }
             }
         },
@@ -209,6 +315,29 @@
                             }
                         }
                     }
+                }
+            }
+        },
+        "/matieres/{idMatiere}": {
+            "delete": {
+                "tags": [
+                    "Matieres"
+                ],
+                "operationId": "App\\Controller\\MatiereController::deleteMatiereById",
+                "parameters": [
+                    {
+                        "name": "idMatiere",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {}
                 }
             }
         },
@@ -860,30 +989,10 @@
                         }
                     },
                     "404": {
-                        "description": "L'ID Promotion demandé n'existe pas",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Session"
-                                    }
-                                }
-                            }
-                        }
+                        "description": "L'ID Promotion demandé n'existe pas"
                     },
                     "406": {
-                        "description": "La date de début ou de fin n'est pas valide",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Session"
-                                    }
-                                }
-                            }
-                        }
+                        "description": "La date de début ou de fin n'est pas valide"
                     }
                 }
             }
