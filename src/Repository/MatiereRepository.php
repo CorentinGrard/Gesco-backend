@@ -46,7 +46,7 @@ class MatiereRepository extends ServiceEntityRepository
     {
 
 
-        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", MA.coefficient as \"coefficient\"".
+        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", MA.coefficient as \"coefficient\", MA.nombre_heures_aplacer as \"nombreHeuresAPlacer\"".
             " FROM Promotion P".
             " JOIN semestre S ON P.id=S.promotion_id".
             " JOIN module MO ON MO.semestre_id=S.id".
@@ -109,39 +109,11 @@ class MatiereRepository extends ServiceEntityRepository
             array_push($resultFormatted[$semestreKey]["modules"][$moduleKey]["matieres"],[
                 "idMatiere" => $result["idMatiere"],
                 "nomMatiere" => $result["nomMatiere"],
-                "coefficient" => $result["coefficient"]
+                "coefficient" => $result["coefficient"],
+                "nombreHeuresAPlacer"=>$result["nombreHeuresAPlacer"]
             ]);
         }
         return $resultFormatted;
     }
 
-
-    // /**
-    //  * @return Matiere[] Returns an array of Matiere objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Matiere
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
