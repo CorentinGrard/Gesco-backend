@@ -91,7 +91,7 @@
             }
         },
         "/promotion/{idPromotion}/etudiant/{idEtudiant}": {
-            "post": {
+            "put": {
                 "tags": [
                     "Promotions"
                 ],
@@ -123,7 +123,7 @@
                 }
             }
         },
-        "/promotion/{id}/etudiant": {
+        "/promotion/{idPromotion}/etudiant": {
             "post": {
                 "tags": [
                     "Etudiants"
@@ -131,7 +131,7 @@
                 "operationId": "App\\Controller\\EtudiantController::createEtudiantInPromotion",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "idPromotion",
                         "in": "path",
                         "description": "idPromotion",
                         "required": true,

@@ -54,11 +54,12 @@ class EtudiantRepository extends ServiceEntityRepository
     public function ajoutNoteEtudiant($idEtudiant,$idMatiere,$note): bool
     {}
 
-    public function createEtudiantInPromotion(EntityManagerInterface $entityManager, PromotionRepository $promotionRepository, Promotion $promotion, string $nom, string $prenom, string $adresse, string $numeroTel, bool $isAlternant)
+    public function createEtudiantInPromotion(EntityManagerInterface $entityManager, Promotion $promotion, string $nom, string $prenom, string $adresse, string $numeroTel, bool $isAlternant)
     {
         $personne = new Personne();
         $personne->setNom($nom);
         $personne->setPrenom($prenom);
+        $personne->generateEmail(true);
         $personne->setAdresse($adresse);
         $personne->setNumeroTel($numeroTel);
 
@@ -70,14 +71,7 @@ class EtudiantRepository extends ServiceEntityRepository
         $etudiant->setPromotion($promotion);
 
         $entityManager->persist($etudiant);
-        try {
-            $entityManager->flush();
-        } catch (\Exception $e) {
-            return [
-                "status" => 500,
-                "error" => "Problème d'insertion des données en base de données"
-            ];
-        }
+        $entityManager->flush();
 
 
 

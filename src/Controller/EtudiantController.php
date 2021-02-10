@@ -73,7 +73,7 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      tags={"Promotions"},
      *      path="/promotion/{idPromotion}/etudiant/{idEtudiant}",
      *      @OA\Parameter(
@@ -101,8 +101,8 @@ class EtudiantController extends AbstractController
      *     )
      *
      * )
-     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"POST"})
-     * @param EntityManager $entityManager
+     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"PUT"})
+     * @param EntityManagerInterface $entityManager
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository
      * @param int $idEtudiant
@@ -131,9 +131,9 @@ class EtudiantController extends AbstractController
     /**
      * @OA\Post(
      *      tags={"Etudiants"},
-     *      path="/promotion/{id}/etudiant",
+     *      path="/promotion/{idPromotion}/etudiant",
      *      @OA\Parameter(
-     *          name="id",
+     *          name="idPromotion",
      *          in="path",
      *          required=true,
      *          description="idPromotion",
@@ -159,21 +159,22 @@ class EtudiantController extends AbstractController
      *         response="404",
      *         description="La promotion renseignée n'existe pas",
      *     )
-     *
      * )
-     * @Route("/promotion/{id}/etudiant", name="create_etudiant_to_promotion", methods={"POST"})
+     * @Route("/promotion/{idPromotion}/etudiant", name="create_etudiant_to_promotion", methods={"POST"})
+     * @param int $idPromotion
+     * @param PromotionRepository $promotionRepository
      * @param EntityManagerInterface $entityManager
      * @param EtudiantRepository $etudiantRepository
-     * @param PromotionRepository $promotionRepository
-     * @param Promotion $promotion
      * @param Request $request
      * @return JsonResponse
      */
-    public function createEtudiantInPromotion(EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository,Promotion $promotion, Request $request) :JsonResponse
+    public function createEtudiantInPromotion(int $idPromotion, PromotionRepository $promotionRepository,EntityManagerInterface $entityManager,EtudiantRepository $etudiantRepository, Request $request): JsonResponse
     {
 
+        $promotion = $promotionRepository->find($idPromotion);
+
         if ($promotion == null) {
-            return new JsonResponse("La promotion renseignée n'existe pas",Response::HTTP_NOT_FOUND);
+            return new JsonResponse("La promotion d'ID ".$idPromotion." renseignée n'existe pas",Response::HTTP_NOT_FOUND);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -183,7 +184,7 @@ class EtudiantController extends AbstractController
         $numeroTel = $data["numeroTel"];
         $isAlternant = $data["isAlternant"];
 
-        $repoResponse = $etudiantRepository->createEtudiantInPromotion($entityManager,$promotionRepository,$promotion,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
+        $repoResponse = $etudiantRepository->createEtudiantInPromotion($entityManager,$promotion,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
 
         switch ($repoResponse["status"]) {
             case 201:
