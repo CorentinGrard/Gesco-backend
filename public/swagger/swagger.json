@@ -291,11 +291,32 @@
             }
         },
         "/formations": {
+            "get": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::getAllFormation",
+                "responses": {
+                    "200": {
+                        "description": "get all formations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Formation"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Formations"
                 ],
-                "operationId": "App\\Controller\\FormationController::ajoutNoteAEtudiantDansUneMatiere",
+                "operationId": "App\\Controller\\FormationController::AddFormation",
                 "requestBody": {
                     "request": "formation",
                     "content": {

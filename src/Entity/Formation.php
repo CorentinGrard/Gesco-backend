@@ -46,12 +46,12 @@ class Formation
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation")
-     * @Groups({"get_formation"})
      */
     private $promotions;
 
     /**
      * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations")
+     * @Groups({"get_formation"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $responsable;
