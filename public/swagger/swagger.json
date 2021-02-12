@@ -1166,6 +1166,78 @@
                     }
                 }
             }
+        },
+        "/session/{id}": {
+            "put": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::modifySession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Session",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "sessions",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Session"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Session modifiée !"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::deleteSession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Session",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "sessions",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Session"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Session supprimée !"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
+                    }
+                }
+            }
         }
     },
     "components": {
