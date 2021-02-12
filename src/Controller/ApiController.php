@@ -9,6 +9,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use OpenApi\Annotations as OA;
+
+/**
+ * Class ApiController
+ * @package App\Controller
+ * @OA\SecurityScheme(
+ *      type="http",
+ *      scheme="bearer",
+ *      bearerFormat: "JWT"
+ *      description="Authentication"
+ * )
+ */
 
 class ApiController extends AbstractController
 {
