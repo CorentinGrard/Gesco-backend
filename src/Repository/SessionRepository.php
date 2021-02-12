@@ -6,6 +6,7 @@ use App\Entity\Promotion;
 use App\Entity\Session;
 use App\Serializers\SessionSerializer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,6 +48,23 @@ class SessionRepository extends ServiceEntityRepository
 
 
         return $sessionArray;
+    }
+
+    public function updateSession(EntityManagerInterface $entityManager, Session $session, string $type, bool $obligatoire, $dateDebut, $dateFin, $detail)
+    {
+        $session->setDetail($detail);
+        $session->setType($type);
+        $session->setObligatoire($obligatoire);
+        try {
+            $session->setDateDebut(new \DateTime($dateDebut));
+        } catch (\Exception $e) {
+        }
+        $session->setDateFin(new \DateTime($dateFin));
+
+        $entityManager->persist($session);
+        $entityManager->flush();
+
+        return $session;
     }
 
 
