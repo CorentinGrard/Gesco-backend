@@ -340,12 +340,10 @@ class SessionController extends AbstractController
      */
     public function deleteSession(Request $request, SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session): JsonResponse
     {
-
         $repoResponse = $sessionRepository->deleteSession($entityManager,$session);
 
         $json = SessionSerializer::serializeJson($session, ['groups'=>'delete_session']);
         return new JsonResponse($json, Response::HTTP_CREATED);
-
     }
 
 }

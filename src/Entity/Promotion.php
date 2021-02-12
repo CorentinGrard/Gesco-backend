@@ -18,7 +18,7 @@ class Promotion
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_promotion", "get_assistant","get_etudiant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
+     * @Groups({"get_promotion", "get_assistant","get_etudiant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions","add_semestre_by_promotion"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -213,7 +213,7 @@ class Promotion
     /**
      * @OA\Property(property="nomPromotion", type="string",
      *      readOnly="true")
-     * @Groups({"get_promotion", "get_assistant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
+     * @Groups({"get_promotion", "get_assistant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions","add_semestre_by_promotion"})
      */
     public function getNomPromotion(): string
     {

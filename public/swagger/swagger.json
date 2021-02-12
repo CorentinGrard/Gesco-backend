@@ -141,7 +141,6 @@
                     }
                 ],
                 "requestBody": {
-                    "request": "etudiant",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -859,10 +858,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Personne"
-                                    }
+                                    "$ref": "#/components/schemas/Personne"
                                 }
                             }
                         }
@@ -967,13 +963,54 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/Semestre"
-                                    }
+                                    },
+                                    "request": "semestre"
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/promotions/{id}/semestre": {
+            "post": {
+                "tags": [
+                    "Semestres"
+                ],
+                "operationId": "App\\Controller\\SemestreController::add",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Promotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Semestre ajouté !"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
                     }
                 }
             }
@@ -1522,7 +1559,7 @@
                         "type": "string"
                     },
                     "roles": {
-                        "type": "string"
+                        "type": "array"
                     }
                 },
                 "type": "object"

@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Promotion;
 use App\Entity\Semestre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,4 +49,19 @@ class SemestreRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function add(EntityManagerInterface $entityManager, Promotion $promotion,string $nom)
+    {
+        $semestre = new Semestre();
+        $semestre->setNom($nom);
+        $semestre->setPromotion($promotion);
+
+        $entityManager->persist($semestre);
+        $entityManager->flush();
+
+        return [
+            "status" => 201,
+            "data" => $semestre,
+            "error"  => null
+        ];
+    }
 }
