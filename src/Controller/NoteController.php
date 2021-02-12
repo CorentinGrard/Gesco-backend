@@ -230,7 +230,7 @@ class NoteController extends AbstractController
      */
     public function notesEtudiantConnected(NoteRepository $noteRepository, EtudiantRepository $etudiantRepository, LoggerInterface $logger)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
         if($user != null){
