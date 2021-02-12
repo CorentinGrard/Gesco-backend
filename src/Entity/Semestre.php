@@ -17,7 +17,7 @@ class Semestre
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant"})
+     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant","add_semestre_by_promotion"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -26,7 +26,7 @@ class Semestre
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant"})
+     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant","add_semestre_by_promotion"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
@@ -62,7 +62,7 @@ class Semestre
      * )
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="semestres")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"semestre_get"})
+     * @Groups({"semestre_get","add_semestre_by_promotion"})
      */
     private $promotion;
 

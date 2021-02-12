@@ -140,7 +140,6 @@ class EtudiantController extends AbstractController
      *          @OA\Schema(type="integer")
      *      ),
      *     @OA\RequestBody(
-     *          request="etudiant",
      *          @OA\JsonContent(type="object",
      *              @OA\Property(property="prenom",type="string"),
      *              @OA\Property(property="nom",type="string"),
