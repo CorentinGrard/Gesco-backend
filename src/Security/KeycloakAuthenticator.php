@@ -89,7 +89,9 @@ class KeycloakAuthenticator extends AbstractGuardAuthenticator
             $this->entityManager->persist($personne);
             $this->entityManager->flush();
         }*/
-        $this->logger->info("ROLES : " . implode(";", $personne->getRoles()));
+        if($personne != null){
+            $this->logger->info("ROLES : " . implode(";", $personne->getRoles()));
+        }
 
         return $personne;
     }

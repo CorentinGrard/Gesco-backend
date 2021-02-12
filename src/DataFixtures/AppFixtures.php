@@ -45,10 +45,22 @@ class AppFixtures extends Fixture
             $personne->setAdresse($faker->address);
             $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
+            $personne->setRoles(["ROLE_RESPO"]);
 
             $manager->persist($personne);
             array_push($responsable, $personne);
         }
+
+
+        // AJOUT ADMIN //
+        $personne = new Personne();
+        $personne->setPrenom("Corentin");
+        $personne->setNom("Grard");
+        $personne->setAdresse("");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("07XXXXXXXX");
+        $personne->setRoles(["ROLE_ADMIN"]);
+        $manager->persist($personne);
 
 
         //Ajout formations
@@ -135,6 +147,7 @@ class AppFixtures extends Fixture
             $personne->setAdresse($faker->address);
             $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
+            $personne->setRoles(["ROLE_ASSISTANT"]);
 
             $assistant = new Assistant();
             $assistant->setPersonne($personne);
@@ -142,9 +155,24 @@ class AppFixtures extends Fixture
             array_push($assistants, $assistant);
         }
 
+        $personne = new Personne();
+
+        $personne->setNom("Lecompere");
+        $personne->setPrenom("Catherine");
+        $personne->setAdresse("Quelque part");
+        $personne->generateEmail(false);
+        $personne->setNumeroTel("04XXXXXXXX");
+        $personne->setRoles(["ROLE_ASSISTANT"]);
+
+        $assistant = new Assistant();
+        $assistant->setPersonne($personne);
+        $manager->persist($assistant);
+        array_push($assistants, $assistant);
+
+
         $promotions = [];
         for ($i = 0; $i < 5; $i++) {
-            for ($j = 0; $j < 3; $j++) {
+            for ($j = 0; $j < 4; $j++) {
                 $promotion = new Promotion();;
                 $promotion->setNom($i + 11);
                 $promotion->setFormation($formations[$j]);
