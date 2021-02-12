@@ -20,7 +20,7 @@ RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip && docker-php-
 ENV PANTHER_NO_SANDBOX=1 PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage'
 USER $USER
 WORKDIR /var/www
-#COPY . .
+COPY . .
 CMD  ./wait-for-it.sh database ; composer req symfony/panther; composer require --dev symfony/phpunit-bridge; composer require twig annotations; composer require --dev maker tests; composer install ; bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
 
 EXPOSE 8000
