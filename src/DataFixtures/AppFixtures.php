@@ -261,6 +261,15 @@ class AppFixtures extends Fixture
         $etudiant2->setPersonne($personne);
 
         $manager->persist($personne);
+
+        foreach($matieres as $mat){
+            $note = new Note();
+            $note->setMatiere($mat);
+            $note->setNote($faker->randomElement([10,11,12,13.5,15,16.7,17.1]));
+            $etudiant2->addNote($note);
+            $manager->persist($note);
+        }
+
         $manager->persist($etudiant2);
 
         //////
@@ -277,6 +286,15 @@ class AppFixtures extends Fixture
         $etudiant3->setPersonne($personne);
 
         $manager->persist($personne);
+
+        foreach($matieres as $mat){
+            $note = new Note();
+            $note->setMatiere($mat);
+            $note->setNote($faker->randomElement([10,11,12,13.5,15,16.7,17.1]));
+            $etudiant3->addNote($note);
+            $manager->persist($note);
+        }
+
         $manager->persist($etudiant3);
 
         foreach($matieres as $mat){
