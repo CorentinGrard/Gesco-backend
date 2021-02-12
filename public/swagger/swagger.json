@@ -840,9 +840,28 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "$ref": "#/components/schemas/Personne"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/profil": {
+            "get": {
+                "tags": [
+                    "Personnes"
+                ],
+                "operationId": "App\\Controller\\PersonneController::profil",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Semestre"
+                                        "$ref": "#/components/schemas/Personne"
                                     }
                                 }
                             }
@@ -1428,6 +1447,9 @@
                         "type": "string"
                     },
                     "numeroTel": {
+                        "type": "string"
+                    },
+                    "roles": {
                         "type": "string"
                     }
                 },
