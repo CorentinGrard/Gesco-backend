@@ -313,5 +313,39 @@ class SessionController extends AbstractController
 
     }
 
+    /**
+     * @OA\Delete(
+     *      tags={"Sessions"},
+     *      path="/session/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Session",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          request="sessions",
+     *          @OA\JsonContent(ref="#/components/schemas/Session")
+     *      ),
+     *      @OA\Response(response="201", description="Session supprimée !"),
+     *      @OA\Response(response="404", description="Non trouvée...")
+     * )
+     * @Route("/session/{id}", name="delete_session", methods={"DELETE"})
+     * @param Request $request
+     * @param SessionRepository $sessionRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Session $session
+     * @return JsonResponse
+     */
+    public function deleteSession(Request $request, SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session): JsonResponse
+    {
+
+        $repoResponse = $sessionRepository->deleteSession($entityManager,$session);
+
+        $json = SessionSerializer::serializeJson($session, ['groups'=>'delete_session']);
+        return new JsonResponse($json, Response::HTTP_CREATED);
+
+    }
 
 }

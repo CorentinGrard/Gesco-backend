@@ -68,4 +68,17 @@ class SessionRepository extends ServiceEntityRepository
     }
 
 
+    public function deleteSession(EntityManagerInterface $entityManager, Session $session)
+    {
+        $entityManager->remove($session);
+        $entityManager->flush();
+
+        return [
+            "status" => 200,
+            "error" => "Etudiant correctement supprimé"
+        ];
+
+    }
+
+
 }

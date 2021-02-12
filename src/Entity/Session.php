@@ -49,28 +49,28 @@ class Session
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
      */
     private $type;
 
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
      */
     private $obligatoire;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
      */
     private $dateDebut;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
      */
     private $dateFin;
 
@@ -98,7 +98,7 @@ class Session
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=1024, nullable=true)
-     * @Groups({"session_get","get_session_by_startDate_and_endDate","update_session","create_session"})
+     * @Groups({"session_get","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
      */
     private $detail;
 
