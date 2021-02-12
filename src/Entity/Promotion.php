@@ -18,7 +18,7 @@ class Promotion
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_promotion", "get_assistant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
+     * @Groups({"get_promotion", "get_assistant","get_etudiant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -28,7 +28,7 @@ class Promotion
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_promotion","get_etudiants_by_promotion"})
+     * @Groups({"get_etudiant","get_promotion","get_etudiants_by_promotion"})
      */
     private $nom;
 
@@ -61,11 +61,15 @@ class Promotion
      *          property="nom",
      *          ref="#/components/schemas/Formation/properties/nom"
      *      ),
+     *     @OA\Property(
+     *          property="isAlternance",
+     *          ref="#/components/schemas/Formation/properties/isAlternance"
+     *      ),
      *      readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_promotion"})
+     * @Groups({"get_promotion","get_etudiant"})
      */
     private $formation;
 

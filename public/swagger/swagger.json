@@ -157,9 +157,6 @@
                                     },
                                     "numeroTel": {
                                         "type": "string"
-                                    },
-                                    "isAlternant": {
-                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -210,9 +207,6 @@
                                     },
                                     "numeroTel": {
                                         "type": "string"
-                                    },
-                                    "isAlternant": {
-                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -1222,9 +1216,6 @@
                     "Personne": {
                         "$ref": "#/components/schemas/Personne"
                     },
-                    "isAlternant": {
-                        "type": "boolean"
-                    },
                     "Notes": {
                         "description": "| ArrayCollection",
                         "type": "array",
@@ -1235,6 +1226,23 @@
                                 },
                                 "note": {
                                     "$ref": "#/components/schemas/Note/properties/note"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "Promotion": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Promotion/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nom"
+                                },
+                                "formation": {
+                                    "$ref": "#/components/schemas/Promotion/properties/formation"
                                 }
                             },
                             "type": "object"
@@ -1264,6 +1272,9 @@
                             },
                             "type": "object"
                         }
+                    },
+                    "isAlternance": {
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
@@ -1453,6 +1464,9 @@
                             },
                             "nom": {
                                 "$ref": "#/components/schemas/Formation/properties/nom"
+                            },
+                            "isAlternance": {
+                                "$ref": "#/components/schemas/Formation/properties/isAlternance"
                             }
                         },
                         "type": "object",
