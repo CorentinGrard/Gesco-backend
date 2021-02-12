@@ -984,10 +984,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/Semestre"
-                                    },
-                                    "request": "semestre"
+                                    }
                                 }
                             }
                         }
@@ -1029,6 +1029,47 @@
                 "responses": {
                     "201": {
                         "description": "Semestre ajouté !"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
+                    }
+                }
+            }
+        },
+        "/semestre/{id}": {
+            "put": {
+                "tags": [
+                    "Semestres"
+                ],
+                "operationId": "App\\Controller\\SemestreController::updateSemestre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Semestre",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Semestre modifié !"
                     },
                     "404": {
                         "description": "Non trouvée..."

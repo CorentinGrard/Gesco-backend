@@ -24,7 +24,7 @@ class Personne implements UserInterface
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_promotion","get_etudiants_for_all_promotions", "get_formation"})
+     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_promotion", "get_formation"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")

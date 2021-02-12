@@ -20,7 +20,7 @@ class Etudiant
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_etudiant","post_etudiant_in_promotion","get_etudiants_by_promotion","update_etudiant"})
+     * @Groups({"get_etudiant","post_etudiant_in_promotion","get_etudiants_by_promotion","update_etudiant","get_etudiants_for_all_promotions"})
      */
     private $id;
 
