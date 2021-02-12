@@ -73,7 +73,7 @@ class EtudiantController extends AbstractController
     }
 
     /**
-     * @OA\Put(
+     * @OA\Post(
      *      tags={"Promotions"},
      *      path="/promotion/{idPromotion}/etudiant/{idEtudiant}",
      *      @OA\Parameter(
@@ -101,7 +101,7 @@ class EtudiantController extends AbstractController
      *     )
      *
      * )
-     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"PUT"})
+     * @Route("/promotion/{idPromotion}/etudiant/{idEtudiant}", name="add_etudiant_to_promotion", methods={"POST"})
      * @param EntityManagerInterface $entityManager
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository
