@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Personne;
 use App\Repository\PersonneRepository;
 use App\Serializers\PersonneSerializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,9 +76,10 @@ class PersonneController extends AbstractController
      * @Route("/profil", name="profil")
      * @param PersonneRepository $personneRepository
      * @return Response
+     * @Security("is_granted('ROLE_USER')")
      */
     public function profil(PersonneRepository $personneRepository):Response {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
         if($user != null){
