@@ -157,7 +157,7 @@ class AppFixtures extends Fixture
 
         $personne = new Personne();
 
-        $personne->setNom("Lecompere");
+        $personne->setNom("Lecompère");
         $personne->setPrenom("Catherine");
         $personne->setAdresse("Quelque part");
         $personne->generateEmail(false);
