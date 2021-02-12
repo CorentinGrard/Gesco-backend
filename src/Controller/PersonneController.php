@@ -69,10 +69,10 @@ class PersonneController extends AbstractController
      *      path="/profil",
      *      @OA\Response(
      *          response="200",
-     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Personne"))
+     *          @OA\JsonContent(ref="#/components/schemas/Personne")
      *      )
      * )
-     * @Route("/profil", name="personne")
+     * @Route("/profil", name="profil")
      * @param PersonneRepository $personneRepository
      * @return Response
      */
