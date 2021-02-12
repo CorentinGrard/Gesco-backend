@@ -18,7 +18,7 @@ class Formation
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"get_formation", "get_promotion"})
+     * @Groups({"get_etudiant","get_formation", "get_promotion"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -27,7 +27,7 @@ class Formation
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_formation", "get_promotion"})
+     * @Groups({"get_etudiant","get_formation", "get_promotion"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
@@ -55,6 +55,13 @@ class Formation
      * @ORM\JoinColumn(nullable=false)
      */
     private $responsable;
+
+    /**
+     * @OA\Property(type="boolean")
+     * @ORM\Column(type="boolean")
+     * @Groups("get_etudiant")
+     */
+    private $isAlternance;
 
     public function __construct()
     {
@@ -116,6 +123,18 @@ class Formation
     public function setResponsable(?Personne $responsable): self
     {
         $this->responsable = $responsable;
+
+        return $this;
+    }
+
+    public function getIsAlternance(): ?bool
+    {
+        return $this->isAlternance;
+    }
+
+    public function setIsAlternance(bool $isAlternance): self
+    {
+        $this->isAlternance = $isAlternance;
 
         return $this;
     }

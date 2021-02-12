@@ -145,8 +145,7 @@ class EtudiantController extends AbstractController
      *              @OA\Property(property="prenom",type="string"),
      *              @OA\Property(property="nom",type="string"),
      *              @OA\Property(property="adresse",type="string"),
-     *              @OA\Property(property="numeroTel",type="string"),
-     *              @OA\Property(property="isAlternant",type="boolean")
+     *              @OA\Property(property="numeroTel",type="string")
      *          )
      *      ),
      *      @OA\Response(
@@ -182,13 +181,13 @@ class EtudiantController extends AbstractController
         $prenom = $data["prenom"];
         $adresse = $data["adresse"];
         $numeroTel = $data["numeroTel"];
-        $isAlternant = $data["isAlternant"];
 
-        $repoResponse = $etudiantRepository->createEtudiantInPromotion($entityManager,$promotion,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
+        $repoResponse = $etudiantRepository->createEtudiantInPromotion($entityManager,$promotion,$nom,$prenom,$adresse,$numeroTel);
 
         switch ($repoResponse["status"]) {
             case 201:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_CREATED);
+                $json = PromotionSerializer::serializeJson($repoResponse["data"], ["groups" => "post_etudiant_in_promotion"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
@@ -218,8 +217,7 @@ class EtudiantController extends AbstractController
      *              @OA\Property(property="prenom",type="string"),
      *              @OA\Property(property="nom",type="string"),
      *              @OA\Property(property="adresse",type="string"),
-     *              @OA\Property(property="numeroTel",type="string"),
-     *              @OA\Property(property="isAlternant",type="boolean")
+     *              @OA\Property(property="numeroTel",type="string")
      *          )
      *      ),
      *      @OA\Response(
@@ -254,13 +252,13 @@ class EtudiantController extends AbstractController
         $prenom = $data["prenom"];
         $adresse = $data["adresse"];
         $numeroTel = $data["numeroTel"];
-        $isAlternant = $data["isAlternant"];
 
-        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$etudiant,$nom,$prenom,$adresse,$numeroTel,$isAlternant);
+        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$etudiant,$nom,$prenom,$adresse,$numeroTel);
 
         switch ($repoResponse["status"]) {
             case 201:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_CREATED);
+                $json = PromotionSerializer::serializeJson($repoResponse["data"], ["groups" => "update_etudiant"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);

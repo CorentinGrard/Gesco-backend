@@ -87,9 +87,11 @@ class EtudiantRepository extends ServiceEntityRepository
     */
 
     public function ajoutNoteEtudiant($idEtudiant,$idMatiere,$note): bool
-    {}
+    {
 
-    public function createEtudiantInPromotion(EntityManagerInterface $entityManager, Promotion $promotion, string $nom, string $prenom, string $adresse, string $numeroTel, bool $isAlternant)
+    }
+
+    public function createEtudiantInPromotion(EntityManagerInterface $entityManager, Promotion $promotion, string $nom, string $prenom, string $adresse, string $numeroTel)
     {
         $personne = new Personne();
         $personne->setNom($nom);
@@ -101,23 +103,19 @@ class EtudiantRepository extends ServiceEntityRepository
         $entityManager->persist($personne);
 
         $etudiant = new Etudiant();
-        $etudiant->setIsAlternant($isAlternant);
         $etudiant->setPersonne($personne);
         $etudiant->setPromotion($promotion);
-
         $entityManager->persist($etudiant);
         $entityManager->flush();
 
-
-
         return [
             "status" => 201,
+            "data"=>$etudiant,
             "error" => "Etudiant correctement créé en base de données"
         ];
-
     }
 
-    public function updateEtudiant(EntityManagerInterface $entityManager, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel, $isAlternant)
+    public function updateEtudiant(EntityManagerInterface $entityManager, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel)
     {
         $personne = $etudiant->getPersonne();
         $personne->setNom($nom);
@@ -128,13 +126,13 @@ class EtudiantRepository extends ServiceEntityRepository
 
         $entityManager->persist($personne);
 
-        $etudiant->setIsAlternant($isAlternant);
         $etudiant->setPersonne($personne);
         $entityManager->persist($etudiant);
         $entityManager->flush();
 
         return [
             "status" => 201,
+            "data" => $etudiant,
             "error" => "Etudiant correctement modifié en base de données"
         ];
     }

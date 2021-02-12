@@ -57,18 +57,21 @@ class AppFixtures extends Fixture
         $formation = new Formation();
         $formation->setNom("INFRES");
         $formation->setResponsable($responsable[0]);
+        $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("MKX");
         $formation->setResponsable($responsable[1]);
+        $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("CMC");
         $formation->setResponsable($responsable[2]);
+        $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
@@ -237,7 +240,6 @@ class AppFixtures extends Fixture
 
         $etudiant1 = new Etudiant();
         $etudiant1->setPersonne($personne);
-        $etudiant1->setIsAlternant(true);
         $etudiant1->setPromotion($promotions[0]);
 
         $manager->persist($personne);
@@ -257,7 +259,6 @@ class AppFixtures extends Fixture
 
         $etudiant2 = new Etudiant();
         $etudiant2->setPersonne($personne);
-        $etudiant2->setIsAlternant(true);
 
         $manager->persist($personne);
         $manager->persist($etudiant2);
@@ -274,7 +275,6 @@ class AppFixtures extends Fixture
 
         $etudiant3 = new Etudiant();
         $etudiant3->setPersonne($personne);
-        $etudiant3->setIsAlternant(true);
 
         $manager->persist($personne);
         $manager->persist($etudiant3);
@@ -286,7 +286,6 @@ class AppFixtures extends Fixture
             $note->setNote($faker->randomElement([10,11,12,13.5,15,16.7,17.1]));
             $manager->persist($note);
         }
-
 
         $manager->flush();
     }
