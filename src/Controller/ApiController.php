@@ -11,17 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use OpenApi\Annotations as OA;
 
-/**
- * Class ApiController
- * @package App\Controller
- * @OA\SecurityScheme(
- *      type="http",
- *      scheme="bearer",
- *      bearerFormat: "JWT"
- *      description="Authentication"
- * )
- */
-
 class ApiController extends AbstractController
 {
 
@@ -51,12 +40,4 @@ class ApiController extends AbstractController
             Response::HTTP_OK);
     }
 
-    /**
-     * @Route("/profil", name="profile")
-     */
-    public function profil() {
-        // dd($this->security->getUser());
-        return new JsonResponse([$this->security->getUser()],
-            Response::HTTP_OK);
-    }
 }
