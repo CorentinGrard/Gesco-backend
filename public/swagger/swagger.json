@@ -69,6 +69,263 @@
                 }
             }
         },
+        "/promotions/{id}/etudiants": {
+            "get": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::getEtudiantsByPromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
+        "/promotion/{idPromotion}/etudiant/{idEtudiant}": {
+            "post": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::addEtudiantInPromotion",
+                "parameters": [
+                    {
+                        "name": "idPromotion",
+                        "in": "path",
+                        "description": "idPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "idEtudiant",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {}
+                }
+            }
+        },
+        "/promotion/{idPromotion}/etudiant": {
+            "post": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::createEtudiantInPromotion",
+                "parameters": [
+                    {
+                        "name": "idPromotion",
+                        "in": "path",
+                        "description": "idPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "etudiant",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "prenom": {
+                                        "type": "string"
+                                    },
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    },
+                                    "numeroTel": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {
+                        "description": "La promotion renseignée n'existe pas"
+                    }
+                }
+            }
+        },
+        "/etudiant/{idEtudiant}": {
+            "put": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::updateEtudiant",
+                "parameters": [
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "idPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "etudiant",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "prenom": {
+                                        "type": "string"
+                                    },
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    },
+                                    "numeroTel": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {
+                        "description": "L'étudiant n'existe pas en base'"
+                    }
+                }
+            }
+        },
+        "/promotion/{newIdPromotion}/etudiant/{idEtudiant}": {
+            "put": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::updateEtudiantPromotion",
+                "parameters": [
+                    {
+                        "name": "newIdPromotion",
+                        "in": "path",
+                        "description": "newIdPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "idEtudiant",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "401": {},
+                    "404": {}
+                }
+            }
+        },
+        "/promotions/etudiants": {
+            "get": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::getEtudiantsOfAllPromotions",
+                "responses": {
+                    "200": {}
+                }
+            }
+        },
+        "/promotion/etudiant/{idEtudiant}": {
+            "delete": {
+                "tags": [
+                    "Etudiants"
+                ],
+                "operationId": "App\\Controller\\EtudiantController::deleteEtudiantFromPromotion",
+                "parameters": [
+                    {
+                        "name": "idEtudiant",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {}
+                }
+            }
+        },
+        "/formations": {
+            "post": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::ajoutNoteAEtudiantDansUneMatiere",
+                "requestBody": {
+                    "request": "formation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nameFormation": {
+                                        "required": true,
+                                        "type": "string"
+                                    },
+                                    "idResponsable": {
+                                        "required": true,
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Formation ajoutée"
+                    },
+                    "404": {
+                        "description": "Erreur"
+                    }
+                }
+            }
+        },
         "/matieres": {
             "get": {
                 "tags": [
@@ -88,6 +345,29 @@
                             }
                         }
                     }
+                }
+            }
+        },
+        "/matieres/{idMatiere}": {
+            "delete": {
+                "tags": [
+                    "Matieres"
+                ],
+                "operationId": "App\\Controller\\MatiereController::deleteMatiereById",
+                "parameters": [
+                    {
+                        "name": "idMatiere",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {}
                 }
             }
         },
@@ -129,7 +409,7 @@
                 "operationId": "App\\Controller\\MatiereController::add",
                 "parameters": [
                     {
-                        "name": "idModule",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -463,6 +743,61 @@
                 }
             }
         },
+        "/etudiants/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "App\\Controller\\NoteController::notesEtudiantConnected",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "$ref": "#/components/schemas/Etudiant/properties/id"
+                                        },
+                                        "notes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "$ref": "#/components/schemas/Note/properties/id"
+                                                    },
+                                                    "note": {
+                                                        "$ref": "#/components/schemas/Note/properties/note"
+                                                    },
+                                                    "matiere": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/id"
+                                                            },
+                                                            "nom": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/nom"
+                                                            },
+                                                            "coefficient": {
+                                                                "$ref": "#/components/schemas/Matiere/properties/coefficient"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
         "/personnes": {
             "get": {
                 "tags": [
@@ -689,6 +1024,64 @@
                 }
             }
         },
+        "/promotions/{idPromotion}/start/{startDateString}/end/{endDateString}/sessions": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::allSessionsBetweenStartDateAndEndDateForPromotion",
+                "parameters": [
+                    {
+                        "name": "idPromotion",
+                        "in": "path",
+                        "description": "id Promotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "startDateString",
+                        "in": "path",
+                        "description": "format AAAAMMJJ",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "endDateString",
+                        "in": "path",
+                        "description": "format AAAAMMJJ",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Les sessions pour cette promotion aux dates demandées sont trouvées (Attention, example incomplet)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Session"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "L'ID Promotion demandé n'existe pas"
+                    },
+                    "406": {
+                        "description": "La date de début ou de fin n'est pas valide"
+                    }
+                }
+            }
+        },
         "/sessions/{id}": {
             "get": {
                 "tags": [
@@ -789,6 +1182,32 @@
                 },
                 "type": "object"
             },
+            "Batiment": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nomBatiment": {
+                        "type": "string"
+                    },
+                    "batimentSite": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Site/properties/id"
+                            },
+                            "nomSite": {
+                                "$ref": "#/components/schemas/Site/properties/nomSite"
+                            },
+                            "adress": {
+                                "$ref": "#/components/schemas/Site/properties/adress"
+                            }
+                        },
+                        "type": "object",
+                        "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
             "Etudiant": {
                 "properties": {
                     "id": {
@@ -796,9 +1215,6 @@
                     },
                     "Personne": {
                         "$ref": "#/components/schemas/Personne"
-                    },
-                    "isAlternant": {
-                        "type": "boolean"
                     },
                     "Notes": {
                         "description": "| ArrayCollection",
@@ -810,6 +1226,23 @@
                                 },
                                 "note": {
                                     "$ref": "#/components/schemas/Note/properties/note"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "Promotion": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "$ref": "#/components/schemas/Promotion/properties/id"
+                                },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nom"
+                                },
+                                "formation": {
+                                    "$ref": "#/components/schemas/Promotion/properties/formation"
                                 }
                             },
                             "type": "object"
@@ -839,6 +1272,9 @@
                             },
                             "type": "object"
                         }
+                    },
+                    "isAlternance": {
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
@@ -1028,6 +1464,9 @@
                             },
                             "nom": {
                                 "$ref": "#/components/schemas/Formation/properties/nom"
+                            },
+                            "isAlternance": {
+                                "$ref": "#/components/schemas/Formation/properties/isAlternance"
                             }
                         },
                         "type": "object",
@@ -1058,15 +1497,19 @@
                         "type": "string"
                     },
                     "batiment": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                }
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Batiment/properties/id"
                             },
-                            "type": "object"
-                        }
+                            "nomBatiment": {
+                                "$ref": "#/components/schemas/Batiment/properties/nomBatiment"
+                            },
+                            "batimentSite": {
+                                "$ref": "#/components/schemas/Batiment/properties/batimentSite"
+                            }
+                        },
+                        "type": "object",
+                        "readOnly": "true"
                     },
                     "sessions": {
                         "type": "array",
@@ -1131,6 +1574,9 @@
                             },
                             "nom": {
                                 "$ref": "#/components/schemas/Matiere/properties/nom"
+                            },
+                            "coefficient": {
+                                "$ref": "#/components/schemas/Matiere/properties/coefficient"
                             }
                         },
                         "type": "object",
@@ -1150,9 +1596,41 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "sessionSalle": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Salle/properties/id"
+                            },
+                            "nomSalle": {
+                                "$ref": "#/components/schemas/Salle/properties/nomSalle"
+                            },
+                            "batiment": {
+                                "$ref": "#/components/schemas/Salle/properties/batiment"
+                            }
+                        },
+                        "type": "object",
+                        "readOnly": "true"
+                    },
+                    "detail": {
+                        "type": "string"
+                    },
                     "duree": {
                         "type": "number",
                         "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "Site": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nomSite": {
+                        "type": "string"
+                    },
+                    "adress": {
+                        "type": "string"
                     }
                 },
                 "type": "object"

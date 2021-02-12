@@ -18,7 +18,7 @@ class Session
     /**
      * @OA\Property(type="integer",
      *     readOnly="true")
-     * @Groups({"matiere_get", "session_get"})
+     * @Groups({"matiere_get", "session_get","get_session_by_startDate_and_endDate"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -35,45 +35,72 @@ class Session
      *          property="nom",
      *          ref="#/components/schemas/Matiere/properties/nom"
      *      ),
+     *     @OA\Property(
+     *          property="coefficient",
+     *          ref="#/components/schemas/Matiere/properties/coefficient"
+     *      ),
      *     readOnly="true"
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
-     * @Groups({"session_get"})
+     * @Groups({"session_get","get_session_by_startDate_and_endDate"})
      */
     private $matiere;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $type;
 
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $obligatoire;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $dateDebut;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post"})
+     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate"})
      */
     private $dateFin;
 
     /**
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Salle/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="nomSalle",
+     *          ref="#/components/schemas/Salle/properties/nomSalle"
+     *      ),
+     *     @OA\Property(
+     *          property="batiment",
+     *          ref="#/components/schemas/Salle/properties/batiment"
+     *      ),
+     *     readOnly="true"
+     * )
      * @ORM\ManyToMany(targetEntity=Salle::class, inversedBy="sessions")
+     * @Groups({"get_session_by_startDate_and_endDate"})
      */
     private $sessionSalle;
+
+    /**
+     * @OA\Property(type="string")
+     * @ORM\Column(type="string", length=1024, nullable=true)
+     * @Groups({"session_get","get_session_by_startDate_and_endDate"})
+     */
+    private $detail;
 
     public function __construct()
     {
@@ -212,6 +239,18 @@ class Session
     public function removeSessionSalle(Salle $sessionSalle): self
     {
         $this->sessionSalle->removeElement($sessionSalle);
+
+        return $this;
+    }
+
+    public function getDetail(): ?string
+    {
+        return $this->detail;
+    }
+
+    public function setDetail(?string $detail): self
+    {
+        $this->detail = $detail;
 
         return $this;
     }

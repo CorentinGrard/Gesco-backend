@@ -3,7 +3,9 @@
 namespace App\DataFixtures;
 
 use App\Entity\Assistant;
+use App\Entity\Etudiant;
 use App\Entity\Formation;
+use App\Entity\Note;
 use App\Entity\Site;
 use App\Entity\Batiment;
 use App\Entity\Salle;
@@ -30,23 +32,49 @@ class AppFixtures extends Fixture
          * php bin/console doctrine:fixtures:load
          */
 
+        //Ajout Responsable TODO : prévoir changement en fonction du changement des rôles
+
+        $responsable = [];
+
+        for($i = 0; $i < 3; $i++){
+            $faker = Factory::create();
+            $personne = new Personne();
+
+            $personne->setNom($faker->lastName);
+            $personne->setPrenom($faker->firstName);
+            $personne->setAdresse($faker->address);
+            $personne->generateEmail(false);
+            $personne->setNumeroTel($faker->phoneNumber);
+
+            $manager->persist($personne);
+            array_push($responsable, $personne);
+        }
+
+
         //Ajout formations
         $formations = [];
 
         $formation = new Formation();
         $formation->setNom("INFRES");
+        $formation->setResponsable($responsable[0]);
+        $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("MKX");
+        $formation->setResponsable($responsable[1]);
+        $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("CMC");
+        $formation->setResponsable($responsable[2]);
+        $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
+
 
         //Ajout des sites
         $sites = [];
@@ -129,6 +157,8 @@ class AppFixtures extends Fixture
         $k = 0;
         $semestres = [];
         foreach ($promotions as $promotion) {
+
+
             $semestre = new Semestre();
             $semestre->setNom("Semestre " . ($k + 1));
             $semestre->setPromotion($promotion);
@@ -177,13 +207,84 @@ class AppFixtures extends Fixture
             $session->setMatiere($matieres[$i % $mat]);
             $session->setType(SessionType::values[$i % 6 + 1]);
             $session->setObligatoire($bool);
-            $dateDebut = $faker->dateTimeThisMonth();
+            $dateDebut = $faker->dateTimeBetween($startDate = '-5 days', $endDate = '+5 days');
+            if(date('H', $dateDebut->getTimestamp()) < 8) {
+                $dateDebut->setTime(8,0);
+            }elseif(date('H', $dateDebut->getTimestamp()) > 18) {
+                $dateDebut->setTime(18,0);
+            }
             $dateFin = clone $dateDebut;
-            $dateFin->add(new \DateInterval('PT3H30M'));
+            $heure = $faker->numberBetween(1,3);
+            $min = $faker->randomElement([0,15,30,45]);
+            $dateFin->add(new \DateInterval('PT'.$heure.'H'.$min.'M'));
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
+            $session->addSessionSalle($salles[$i]);
+            $session->setDetail($faker->randomAscii);
 
             $manager->persist($session);
+        }
+
+
+        // Ajout de personnes et d'étudiants
+
+        $personne = new Personne();
+        $personne->setPrenom("Antonin");
+        $personne->setNom("CABANE");
+        $personne->setAdresse("479 Avenue des euzières\n34190 Brissac");
+        //$personne->set Email("antonin.cabane@gmail.com");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("0750214383");
+        $personne->setRoles(["ROLE_ETUDIANT"]);
+
+
+        $etudiant1 = new Etudiant();
+        $etudiant1->setPersonne($personne);
+        $etudiant1->setPromotion($promotions[0]);
+
+        $manager->persist($personne);
+        $manager->persist($etudiant1);
+
+        ///////
+
+        // Création des étudiants
+
+        $personne = new Personne();
+        $personne->setPrenom("Guillaume");
+        $personne->setNom("de Maleprade");
+        $personne->setAdresse("40 Chemin des Pins\n30100 Alès");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("0668327467");
+        $personne->setRoles(["ROLE_ETUDIANT"]);
+
+        $etudiant2 = new Etudiant();
+        $etudiant2->setPersonne($personne);
+
+        $manager->persist($personne);
+        $manager->persist($etudiant2);
+
+        //////
+
+        $personne = new Personne();
+        $personne->setPrenom("Matthieu");
+        $personne->setNom("Tinnes");
+        $personne->setAdresse("40 Chemin du Viget\n30100 Alès");
+        $personne->generateEmail(true);
+        $personne->setNumeroTel("07XXXXXXXX");
+        $personne->setRoles(["ROLE_ETUDIANT"]);
+
+        $etudiant3 = new Etudiant();
+        $etudiant3->setPersonne($personne);
+
+        $manager->persist($personne);
+        $manager->persist($etudiant3);
+
+        foreach($matieres as $mat){
+            $note = new Note();
+            $note->setEtudiant($etudiant3);
+            $note->setMatiere($mat);
+            $note->setNote($faker->randomElement([10,11,12,13.5,15,16.7,17.1]));
+            $manager->persist($note);
         }
 
         $manager->flush();

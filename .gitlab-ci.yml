@@ -4,7 +4,8 @@ stages: # Ici on déclare toutes nos étapes
 
 job:build:
   stage: build 
-  script: 
+  script:
+    - sudo docker-compose down
     - sudo docker-compose build
   only:
     - master

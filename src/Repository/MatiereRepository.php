@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Matiere;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,12 +22,31 @@ class MatiereRepository extends ServiceEntityRepository
         parent::__construct($registry, Matiere::class);
     }
 
+    public function deleteMatiereById(EntityManagerInterface $entityManager, int $matiereId)
+    {
+        $currentMatiere = $this->find($matiereId);
+
+        if($currentMatiere == null){
+            return[
+                "status" => 404,
+                "error"  => "La matière d'ID ".$matiereId." n'existe pas"
+            ];
+        }
+
+        $entityManager->remove($currentMatiere);
+        $entityManager->flush();
+
+        return [
+            "status" => 202,
+            "error"  => null
+        ];
+    }
 
     public function getMatieresByPromotion(int $idPromotion)
     {
 
 
-        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\"".
+        $sql = "SELECT S.id as \"idSemestre\", S.nom as \"nomSemestre\", MO.id as \"idModule\", MO.nom as \"nomModule\", MA.id as \"idMatiere\", MA.nom as \"nomMatiere\", MA.coefficient as \"coefficient\", MA.nombre_heures_aplacer as \"nombreHeuresAPlacer\"".
             " FROM Promotion P".
             " JOIN semestre S ON P.id=S.promotion_id".
             " JOIN module MO ON MO.semestre_id=S.id".
@@ -46,13 +67,9 @@ class MatiereRepository extends ServiceEntityRepository
 
         $sqlResults = $stmt->fetchAll();
 
-
         $resultFormatted = [];
         $semestreAllreadyUsed = false;
         $moduleAllreadyUsed = false;
-
-
-
 
         foreach ($sqlResults as $result) {
 
@@ -72,7 +89,6 @@ class MatiereRepository extends ServiceEntityRepository
 
             $semestreKey = array_search($result["idSemestre"],array_column($resultFormatted,"idSemestre"));
 
-
             foreach ($resultFormatted[$semestreKey]["modules"] as $module) {
                 if ($result["idModule"] == $module["idModule"]) {
                     $moduleAllreadyUsed = true;
@@ -88,48 +104,16 @@ class MatiereRepository extends ServiceEntityRepository
                 ]);
             }
 
-
             $moduleKey = array_search($result["idModule"],array_column($resultFormatted[$semestreKey]["modules"],"idModule"));
 
             array_push($resultFormatted[$semestreKey]["modules"][$moduleKey]["matieres"],[
                 "idMatiere" => $result["idMatiere"],
-                "nomMatiere" => $result["nomMatiere"]
+                "nomMatiere" => $result["nomMatiere"],
+                "coefficient" => $result["coefficient"],
+                "nombreHeuresAPlacer"=>$result["nombreHeuresAPlacer"]
             ]);
-
         }
-
-
         return $resultFormatted;
-
     }
 
-
-    // /**
-    //  * @return Matiere[] Returns an array of Matiere objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Matiere
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

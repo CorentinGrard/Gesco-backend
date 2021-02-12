@@ -5,12 +5,16 @@ namespace App\Controller;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
+use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
+use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
 use App\Serializers\SessionSerializer;
 use App\Tools;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,10 +39,22 @@ class SessionController extends AbstractController
      * @Route("/sessions", name="session_list", methods={"GET"})
      * @param SessionRepository $sessionRepository
      * @return Response
+     * @Security("is_granted('ROLE_ETUDIANT')")
      */
-    public function list(SessionRepository $sessionRepository): Response
+    public function list(SessionRepository $sessionRepository, LoggerInterface $logger, EtudiantRepository $etudiantRepository): Response
     {
         $sessions = $sessionRepository->findAll();
+
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username)){
+                $etudiant = $etudiantRepository->findOneByUsername($username);
+                if($etudiant != null){
+                    $logger->debug("Etudiant trouvé !!! => " . $etudiant->getPersonne()->getEmail());
+                }
+            }
+        }
 
         $json = SessionSerializer::serializeJson($sessions, ['groups'=>'session_get']);
 
@@ -90,6 +106,78 @@ class SessionController extends AbstractController
         }
 
         $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'session_get']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *      tags={"Sessions"},
+     *      path="/promotions/{idPromotion}/start/{startDateString}/end/{endDateString}/sessions",
+     *      @OA\Parameter(
+     *          name="idPromotion",
+     *          in="path",
+     *          required=true,
+     *          description="id Promotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="startDateString",
+     *          description="format AAAAMMJJ",
+     *          in="path",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Parameter(
+     *          name="endDateString",
+     *          description="format AAAAMMJJ",
+     *          in="path",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description ="Les sessions pour cette promotion aux dates demandées sont trouvées (Attention, example incomplet)",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
+     *      ),
+     *     @OA\Response(
+     *          response="404",
+     *          description ="L'ID Promotion demandé n'existe pas"
+     *      ),
+     *     @OA\Response(
+     *          response="406",
+     *          description ="La date de début ou de fin n'est pas valide"
+     *      ),
+     * )
+     * @Route("/promotions/{idPromotion}/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
+     * @param SessionRepository $sessionRepository
+     * @param PromotionRepository $promotionRepository
+     * @param int $idPromotion
+     * @param string $startDateString
+     * @param string $endDateString
+     * @return Response
+     */
+    public function allSessionsBetweenStartDateAndEndDateForPromotion(SessionRepository $sessionRepository, PromotionRepository $promotionRepository, int $idPromotion, string $startDateString, string $endDateString): Response
+    {
+        $promotion = $promotionRepository->find($idPromotion);
+
+        if ($promotion == null) {
+            return new JsonResponse("La promotion n'existe pas", Response::HTTP_NOT_FOUND);
+        }
+
+        $startDate = Tools::getDateByStringDate($startDateString);
+        if ($startDate == null) {
+            return new JsonResponse("La date de début n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $endDate = Tools::getDateByStringDate($endDateString);
+        if ($startDate == null) {
+            return new JsonResponse("La date de fin n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion,$startDate,$endDate);
+
+        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
