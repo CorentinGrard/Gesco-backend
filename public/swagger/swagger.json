@@ -409,7 +409,7 @@
                 "operationId": "App\\Controller\\MatiereController::add",
                 "parameters": [
                     {
-                        "name": "idModule",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
