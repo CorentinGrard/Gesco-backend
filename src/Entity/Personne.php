@@ -68,6 +68,8 @@ class Personne implements UserInterface
     private $numeroTel;
 
     /**
+     * @OA\Property(type="array")
+     * @Groups({"get_personne"})
      * @ORM\Column(type="array")
      */
     private $roles = [];

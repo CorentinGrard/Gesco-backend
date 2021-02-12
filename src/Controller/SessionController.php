@@ -227,7 +227,7 @@ class SessionController extends AbstractController
      *      @OA\Response(response="201", description="Session ajoutée !"),
      *      @OA\Response(response="404", description="Non trouvée...")
      * )
-     * @Route("/matiere/{id}/sessions", name="add_session", methods={"POST"})
+     * @Route("/matieres/{id}/sessions", name="add_session", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Matiere $matiere
@@ -241,15 +241,13 @@ class SessionController extends AbstractController
 
         $type = $data['type'];
         $obligatoire = $data['obligatoire'];
-        //$idMatiere = $data['matiere'];
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
+        $detail = $data['detail'];
 
-        if (empty($type) || empty($obligatoire) || empty($idMatiere) || empty($dateDebut) || empty($dateFin) ) {
+        if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
-
-        //$matiere = $matiereRepository->find($idMatiere);
 
         $session = new Session();
         $session->setType($type);
@@ -257,14 +255,97 @@ class SessionController extends AbstractController
         $session->setMatiere($matiere);
         $session->setDateDebut(new \DateTime($dateDebut));
         $session->setDateFin(new \DateTime($dateFin));
+        $session->setDetail($detail);
 
 
         $entityManager->persist($session);
         $entityManager->flush();
 
-        return new JsonResponse(['status' => 'Session ajoutée !'], Response::HTTP_CREATED); //TODO
+        $json = SessionSerializer::serializeJson($session, ['groups'=>'create_session']);
+        return new JsonResponse($json, Response::HTTP_CREATED);
 
     }
 
+    /**
+     * @OA\Put(
+     *      tags={"Sessions"},
+     *      path="/session/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Session",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          request="sessions",
+     *          @OA\JsonContent(ref="#/components/schemas/Session")
+     *      ),
+     *      @OA\Response(response="201", description="Session modifiée !"),
+     *      @OA\Response(response="404", description="Non trouvée...")
+     * )
+     * @Route("/session/{id}", name="update_session", methods={"PUT"})
+     * @param Request $request
+     * @param SessionRepository $sessionRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Session $session
+     * @return JsonResponse
+     */
+    public function modifySession(Request $request, SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session): JsonResponse
+    {
+        //TODO Deserialize json posté !
+        $data = json_decode($request->getContent(), true);
+
+        $type = $data['type'];
+        $obligatoire = $data['obligatoire'];
+        $dateDebut = $data['dateDebut'];
+        $dateFin = $data['dateFin'];
+        $detail = $data['detail'];
+
+        if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
+            throw new NotFoundHttpException('Expecting mandatory parameters!');
+        }
+
+        $repoResponse = $sessionRepository->updateSession($entityManager,$session, $type,  $obligatoire, $dateDebut, $dateFin, $detail);
+
+        $json = SessionSerializer::serializeJson($repoResponse, ['groups'=>'update_session']);
+        return new JsonResponse($json, Response::HTTP_CREATED); //TODO
+
+    }
+
+    /**
+     * @OA\Delete(
+     *      tags={"Sessions"},
+     *      path="/session/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Session",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          request="sessions",
+     *          @OA\JsonContent(ref="#/components/schemas/Session")
+     *      ),
+     *      @OA\Response(response="201", description="Session supprimée !"),
+     *      @OA\Response(response="404", description="Non trouvée...")
+     * )
+     * @Route("/session/{id}", name="delete_session", methods={"DELETE"})
+     * @param Request $request
+     * @param SessionRepository $sessionRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Session $session
+     * @return JsonResponse
+     */
+    public function deleteSession(Request $request, SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session): JsonResponse
+    {
+
+        $repoResponse = $sessionRepository->deleteSession($entityManager,$session);
+
+        $json = SessionSerializer::serializeJson($session, ['groups'=>'delete_session']);
+        return new JsonResponse($json, Response::HTTP_CREATED);
+
+    }
 
 }
