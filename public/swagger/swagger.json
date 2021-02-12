@@ -109,6 +109,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Matiere",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -174,7 +175,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Matiere",
+                        "description": "Matieres",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -217,7 +218,6 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Matieres",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -407,7 +407,6 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Session",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -571,6 +570,28 @@
                 }
             }
         },
+        "/salles": {
+            "get": {
+                "tags": [
+                    "Salles"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Salles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Salle"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/promotions/{id}/semestres": {
             "get": {
                 "tags": [
@@ -610,6 +631,7 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Session",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1023,6 +1045,39 @@
                     "nomPromotion": {
                         "type": "string",
                         "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "Salle": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nomSalle": {
+                        "type": "string"
+                    },
+                    "batiment": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "sessions": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
