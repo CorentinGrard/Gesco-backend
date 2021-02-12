@@ -1,5 +1,5 @@
-
-
+docker-compose.yml
+Dockerfile
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -12,3 +12,8 @@
 ###< symfony/framework-bundle ###
 
 /database/
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
