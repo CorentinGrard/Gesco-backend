@@ -12,13 +12,13 @@ RUN apk add --no-cache libzip-dev && docker-php-ext-configure zip && docker-php-
     php composer-setup.php --install-dir=/usr/bin/ --filename=composer && \
     php -r "unlink('composer-setup.php');" && \
     wget https://get.symfony.com/cli/installer -O - | bash && \
-    mv /root/.symfony/bin/symfony /usr/local/bin/symfony && \
-    apk add --update sudo && \
-    adduser -D $USER && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER && \
-    apk add --no-cache chromium chromium-chromedriver
+    mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+    # apk add --update sudo && \
+    # adduser -D $USER && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER && chmod 0440 /etc/sudoers.d/$USER && \
+    # apk add --no-cache chromium chromium-chromedriver
 # Chromium and ChromeDriver
-ENV PANTHER_NO_SANDBOX=1 PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage'
-USER $USER
+# ENV PANTHER_NO_SANDBOX=1 PANTHER_CHROME_ARGUMENTS='--disable-dev-shm-usage'
+# USER $USER
 WORKDIR /var/www
 COPY . .
 CMD  ./wait-for-it.sh database ; composer req symfony/panther; composer require --dev symfony/phpunit-bridge; composer require twig annotations; composer require --dev maker tests; composer install ; bin/console doctrine:database:drop --force ; bin/console doctrine:database:create ; bin/console doctrine:schema:update --force ; bin/console doctrine:fixtures:load -n; symfony server:start --no-tls
