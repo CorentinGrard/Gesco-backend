@@ -91,7 +91,7 @@
             }
         },
         "/promotion/{idPromotion}/etudiant/{idEtudiant}": {
-            "put": {
+            "post": {
                 "tags": [
                     "Promotions"
                 ],
