@@ -116,7 +116,7 @@ class MatiereController extends AbstractController
      *      tags={"Matieres"},
      *      path="/modules/{id}/matieres",
      *      @OA\Parameter(
-     *          name="idModule",
+     *          name="id",
      *          in="path",
      *          required=true,
      *          @OA\Schema(type="integer")
@@ -134,20 +134,17 @@ class MatiereController extends AbstractController
      * @param Module $module
      * @return JsonResponse
      */
-    public function add(Request $request, EntityManagerInterface $entityManager /*, ModuleRepository $moduleRepository*/, Module $module): JsonResponse
+    public function add(Request $request, EntityManagerInterface $entityManager, Module $module): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        $nom = $data['nom'];
-        $coeff = $data['coefficient'];
-        //$idModule = $data['idModule'];
-        $nbhp = $data['nombreHeuresAPlacer'];
+        $nom = $data["nom"];
+        $coeff = $data["coefficient"];
+        $nbhp = $data["nombreHeuresAPlacer"];
 
-        if (empty($nom) || empty($coeff) || empty($idModule) || empty($idModule)) {
+        if (empty($nom) || empty($coeff) || empty($nbhp)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
-
-        //$module = $moduleRepository->find($idModule);
 
         $matiere = new Matiere();
         $matiere->setNom($nom);
@@ -159,7 +156,8 @@ class MatiereController extends AbstractController
         $entityManager->persist($matiere);
         $entityManager->flush();
 
-        return new JsonResponse(['status' => 'Matière ajoutée !'], Response::HTTP_CREATED);
+        $json = MatiereSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
+        return new JsonResponse($json, Response::HTTP_CREATED);
 
     }
 
