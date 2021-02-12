@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\FormationRepository;
 use App\Repository\PersonneRepository;
+use App\Serializers\MatiereSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +27,29 @@ class FormationController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *      tags={"Formations"},
+     *      path="/formations",
+     *      @OA\Response(
+     *          response="200",
+     *          description ="get all formations",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Formation"))
+     *      )
+     * )
+     * @Route("/formations", name="formation_list", methods={"GET"})
+     * @param FormationRepository $formationRepository
+     * @return Response
+     */
+    public function getAllFormation(FormationRepository $formationRepository) : Response
+    {
+        $formations = $formationRepository->findAll();
+
+        $json = MatiereSerializer::serializeJson($formations,['groups'=>'get_formation']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
+    }
+
+    /**
      * @OA\Post(tags={"Formations"},
      *      path="/formations",
      *      @OA\RequestBody(
@@ -45,7 +69,7 @@ class FormationController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function ajoutNoteAEtudiantDansUneMatiere(FormationRepository $formationRepository,PersonneRepository $personneRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function AddFormation(FormationRepository $formationRepository,PersonneRepository $personneRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
         $nameFormation = $data['nameFormation'];
