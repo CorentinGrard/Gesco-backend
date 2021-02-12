@@ -20,7 +20,7 @@ class Etudiant
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_etudiant"})
+     * @Groups({"get_etudiant","post_etudiant_in_promotion","get_etudiants_by_promotion","update_etudiant"})
      */
     private $id;
 
@@ -31,17 +31,10 @@ class Etudiant
      * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_etudiant","get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
+     * @Groups({"get_etudiant","get_etudiants_by_promotion","get_etudiants_for_all_promotions","post_etudiant_in_promotion","update_etudiant"})
      * @var Personne
      */
     private $Personne;
-
-    /**
-     * @OA\Property(type="boolean")
-     * @ORM\Column(type="boolean")
-     * @Groups({"get_etudiant"})
-     */
-    private $isAlternant;
 
     /**
      * @OA\Property(type="array",
@@ -57,13 +50,30 @@ class Etudiant
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Note::class, mappedBy="Etudiant")
-     * @Groups({"get_etudiant", "get_notes_etudiant"})
+     * @Groups({"get_notes_etudiant"})
      * @var Note[] | ArrayCollection
      */
     private $Notes;
 
     /**
+     * @OA\Property(type="array",
+     *      @OA\Items(
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Promotion/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Promotion/properties/nom"
+     *          ),
+     *          @OA\Property(
+     *              property="formation",
+     *              ref="#/components/schemas/Promotion/properties/formation"
+     *          ),
+     *      )
+     * )
      * @ORM\ManyToOne(targetEntity=Promotion::class, inversedBy="Etudiants")
+     * @Groups("get_etudiant")
      */
     private $Promotion;
 
@@ -89,17 +99,6 @@ class Etudiant
         return $this;
     }
 
-    public function getIsAlternant(): ?bool
-    {
-        return $this->isAlternant;
-    }
-
-    public function setIsAlternant(bool $isAlternant): self
-    {
-        $this->isAlternant = $isAlternant;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Note[]

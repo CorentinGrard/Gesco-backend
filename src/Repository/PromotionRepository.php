@@ -63,7 +63,6 @@ class PromotionRepository extends ServiceEntityRepository
             ];
         };
 
-
         if($currentEtudiant->getPromotion() == Null) {
 
             $currentPromotion = $promotionRepository->find($idPromotion);
