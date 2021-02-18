@@ -36,7 +36,7 @@ class AppFixtures extends Fixture
 
         $responsable = [];
 
-        for($i = 0; $i < 3; $i++){
+        for($i = 0; $i < 2; $i++){
             $faker = Factory::create();
             $personne = new Personne();
 
@@ -50,6 +50,19 @@ class AppFixtures extends Fixture
             $manager->persist($personne);
             array_push($responsable, $personne);
         }
+
+        $faker = Factory::create();
+        $personne = new Personne();
+
+        $personne->setNom("Moret");
+        $personne->setPrenom("Yan");
+        $personne->setAdresse($faker->address);
+        $personne->generateEmail(false);
+        $personne->setNumeroTel($faker->phoneNumber);
+        $personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
+
+        $manager->persist($personne);
+        array_push($responsable, $personne);
 
 
         // AJOUT ADMIN //
@@ -67,7 +80,7 @@ class AppFixtures extends Fixture
         $formations = [];
 
         $formation = new Formation();
-        $formation->setNom("INFRES");
+        $formation->setNom("CMC");
         $formation->setResponsable($responsable[0]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
@@ -81,7 +94,7 @@ class AppFixtures extends Fixture
         array_push($formations, $formation);
 
         $formation = new Formation();
-        $formation->setNom("CMC");
+        $formation->setNom("INFRES");
         $formation->setResponsable($responsable[2]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);

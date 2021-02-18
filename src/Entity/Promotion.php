@@ -18,7 +18,14 @@ class Promotion
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_promotion", "get_assistant","get_etudiant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions","add_semestre_by_promotion"})
+     * @Groups({
+     *     "get_promotion",
+     *     "get_assistant",
+     *     "get_etudiant",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "add_semestre_by_promotion"
+     * })
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -28,7 +35,11 @@ class Promotion
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_etudiant","get_promotion","get_etudiants_by_promotion"})
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_promotion",
+     *     "get_etudiants_by_promotion"
+     * })
      */
     private $nom;
 
@@ -69,7 +80,10 @@ class Promotion
      * )
      * @ORM\ManyToOne(targetEntity=Formation::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_promotion","get_etudiant"})
+     * @Groups({
+     *     "get_promotion",
+     *     "get_etudiant"
+     * })
      */
     private $formation;
 
@@ -89,7 +103,10 @@ class Promotion
 
     /**
      * @ORM\OneToMany(targetEntity=Etudiant::class, mappedBy="Promotion")
-     * @Groups({"get_promotion","get_etudiants_by_promotion","get_etudiants_for_all_promotions"})
+     * @Groups({
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions
+     * "})
      */
     private $Etudiants;
 
@@ -213,7 +230,13 @@ class Promotion
     /**
      * @OA\Property(property="nomPromotion", type="string",
      *      readOnly="true")
-     * @Groups({"get_promotion", "get_assistant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions","add_semestre_by_promotion"})
+     * @Groups({
+     *     "get_promotion",
+     *     "get_assistant",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "add_semestre_by_promotion"
+     * })
      */
     public function getNomPromotion(): string
     {
