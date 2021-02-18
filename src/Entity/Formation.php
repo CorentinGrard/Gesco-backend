@@ -45,12 +45,12 @@ class Formation
      *          )
      *      )
      * )
-     * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation")
+     * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation" , cascade={"persist"})
      */
-    private $promotions;
+        private $promotions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations")
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations" , cascade={"persist"})
      * @Groups({"get_formation"})
      * @ORM\JoinColumn(nullable=false)
      */
