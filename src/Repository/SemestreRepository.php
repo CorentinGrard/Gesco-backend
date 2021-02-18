@@ -49,7 +49,7 @@ class SemestreRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function add(EntityManagerInterface $entityManager, Promotion $promotion,string $nom)
+    public function add(EntityManagerInterface $entityManager, Promotion $promotion, string $nom)
     {
         $semestre = new Semestre();
         $semestre->setNom($nom);
@@ -61,7 +61,7 @@ class SemestreRepository extends ServiceEntityRepository
         return [
             "status" => 201,
             "data" => $semestre,
-            "error"  => null
+            "error" => null
         ];
     }
 
@@ -75,7 +75,25 @@ class SemestreRepository extends ServiceEntityRepository
         return [
             "status" => 201,
             "data" => $semestre,
-            "error"  => null
+            "error" => null
+        ];
+    }
+
+    public function deleteSemestre(EntityManagerInterface $entityManager, Semestre $semestre): array
+    {
+        if (sizeof($semestre->getModules()) > 0) {
+            return [
+                "status" => 409,
+                "data" => "Présence de module(s) dans le semestre, suppression impossible."
+            ];
+        }
+
+        $entityManager->remove($semestre);
+        $entityManager->flush();
+
+        return [
+            "status" => 202,
+            "data" => "Semestre supprimé",
         ];
     }
 }

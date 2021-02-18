@@ -44,7 +44,7 @@ class SemestreController extends AbstractController
     {
         $semestres = $promotion->getSemestres();
         $semestreArray = [];
-        foreach($semestres as $semestre){
+        foreach ($semestres as $semestre) {
             array_push($semestreArray, $semestre->getArray());
         }
 
@@ -92,9 +92,9 @@ class SemestreController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $semestreRepository->add($entityManager,$promotion,$nom);
+        $repoResponse = $semestreRepository->add($entityManager, $promotion, $nom);
 
-        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups'=>'add_semestre_by_promotion']);
+        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'add_semestre_by_promotion']);
         return new JsonResponse($json, Response::HTTP_CREATED);
 
     }
@@ -135,12 +135,39 @@ class SemestreController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $semestreRepository->updateSemestre($entityManager,$nom,$semestre);
+        $repoResponse = $semestreRepository->updateSemestre($entityManager, $nom, $semestre);
 
-        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups'=>'update_semestre']);
+        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'update_semestre']);
         return new JsonResponse($json, Response::HTTP_CREATED);
     }
 
-
+    /**
+     * @OA\Delete (
+     *      tags={"Semestres"},
+     *      path="/semestre/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Semestre",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(response="202", description="Semestre supprimé !"),
+     *      @OA\Response(response="404", description="Non trouvé..."),
+     *      @OA\Response(response="409", description="Présence de module(s) dans le semestre, suppression impossible.")
+     * )
+     * @Route("/semestre/{id}", name="delete_semestre", methods={"DELETE"})
+     * @param SemestreRepository $semestreRepository
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param Semestre $semestre
+     * @return JsonResponse
+     */
+    public function deleteSemestre(SemestreRepository $semestreRepository, Request $request, EntityManagerInterface $entityManager, Semestre $semestre): JsonResponse
+    {
+        $repoResponse = $semestreRepository->deleteSemestre($entityManager, $semestre);
+        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'delete_semestre']);
+        return new JsonResponse($json, Response::HTTP_CREATED);
+    }
 
 }
