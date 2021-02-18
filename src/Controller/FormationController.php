@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Repository\FormationRepository;
 use App\Repository\PersonneRepository;
-use App\Serializers\MatiereSerializer;
+use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -44,7 +44,7 @@ class FormationController extends AbstractController
     {
         $formations = $formationRepository->findAll();
 
-        $json = MatiereSerializer::serializeJson($formations,['groups'=>'get_formation']);
+        $json = GenericSerializer::serializeJson($formations,['groups'=>'get_formation']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }

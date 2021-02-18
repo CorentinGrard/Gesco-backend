@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Assistant;
 use App\Entity\Promotion;
 use App\Repository\PromotionRepository;
-use App\Serializers\PromotionSerializer;
+use App\Serializers\GenericSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +44,7 @@ class PromotionController extends AbstractController
             array_push($promoArray,$promo->getArray());
         }*/
 
-        $json = PromotionSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
+        $json = GenericSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -70,7 +70,7 @@ class PromotionController extends AbstractController
     {
         $promos = $promotionRepository->findAll();
 
-        $json = PromotionSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
+        $json = GenericSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }

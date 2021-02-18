@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Personne;
 use App\Repository\PersonneRepository;
-use App\Serializers\PersonneSerializer;
+use App\Serializers\GenericSerializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +32,7 @@ class PersonneController extends AbstractController
 
         $personnes = $personneRepository->findAll();
 
-        $json = PersonneSerializer::serializeJson($personnes,['groups'=>'get_personne']);
+        $json = GenericSerializer::serializeJson($personnes,['groups'=>'get_personne']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -59,7 +59,7 @@ class PersonneController extends AbstractController
      */
     public function getPersonneById(Personne $personne):Response {
 
-        $json = PersonneSerializer::serializeJson($personne, ['groups'=>'get_personne']);
+        $json = GenericSerializer::serializeJson($personne, ['groups'=>'get_personne']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -86,7 +86,7 @@ class PersonneController extends AbstractController
             $username = $user->getUsername();
             if(!empty($username)){
                 $personne = $personneRepository->findOneByUsername($username);
-                $json = PersonneSerializer::serializeJson($personne,['groups'=>'get_personne']);
+                $json = GenericSerializer::serializeJson($personne,['groups'=>'get_personne']);
                 return new JsonResponse($json, Response::HTTP_OK);
             }
         }

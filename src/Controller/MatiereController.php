@@ -8,7 +8,7 @@ use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
-use App\Serializers\MatiereSerializer;
+use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,7 +38,7 @@ class MatiereController extends AbstractController
     {
         $matieres = $matiereRepository->findAll();
 
-        $json = MatiereSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
+        $json = GenericSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -156,7 +156,7 @@ class MatiereController extends AbstractController
         $entityManager->persist($matiere);
         $entityManager->flush();
 
-        $json = MatiereSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
+        $json = GenericSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
         return new JsonResponse($json, Response::HTTP_CREATED);
 
     }
@@ -193,7 +193,7 @@ class MatiereController extends AbstractController
             }
         }
 
-        $json = MatiereSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
+        $json = GenericSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
