@@ -18,7 +18,11 @@ class Formation
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"get_etudiant","get_formation", "get_promotion"})
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_formation",
+     *     "get_promotion"
+     * })
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -27,7 +31,11 @@ class Formation
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_etudiant","get_formation", "get_promotion"})
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_formation",
+     *     "get_promotion"
+     * })
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
@@ -45,12 +53,12 @@ class Formation
      *          )
      *      )
      * )
-     * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation")
+     * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation" , cascade={"persist"})
      */
-    private $promotions;
+        private $promotions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations")
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations" , cascade={"persist"})
      * @Groups({"get_formation"})
      * @ORM\JoinColumn(nullable=false)
      */
@@ -59,7 +67,10 @@ class Formation
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups("get_etudiant")
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_promotion"
+     * })
      */
     private $isAlternance;
 
