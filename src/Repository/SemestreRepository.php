@@ -64,4 +64,18 @@ class SemestreRepository extends ServiceEntityRepository
             "error"  => null
         ];
     }
+
+    public function updateSemestre(EntityManagerInterface $entityManager, $nom, Semestre $semestre)
+    {
+        $semestre->setNom($nom);
+
+        $entityManager->persist($semestre);
+        $entityManager->flush();
+
+        return [
+            "status" => 201,
+            "data" => $semestre,
+            "error"  => null
+        ];
+    }
 }

@@ -17,7 +17,7 @@ class Semestre
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant","add_semestre_by_promotion"})
+     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant","add_semestre_by_promotion","update_semestre"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -26,7 +26,7 @@ class Semestre
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant","add_semestre_by_promotion"})
+     * @Groups({"semestre_get", "module_get", "get_promotion", "get_notes_etudiant","add_semestre_by_promotion","update_semestre"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
