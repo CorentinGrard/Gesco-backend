@@ -15,6 +15,7 @@ services:
         bind:
             $keycloakClientId: '%env(resolve:KEYCLOAK_CLIENT)%'
             $keycloakClientSecret: '%env(resolve:KEYCLOAK_SECRET)%'
+            $keycloakURL: '%env(resolve:KEYCLOAK_URL)%'
 
 
     # makes classes in src/ available to be used as services

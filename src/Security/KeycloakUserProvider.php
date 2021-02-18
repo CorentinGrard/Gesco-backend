@@ -14,25 +14,27 @@ class KeycloakUserProvider
 {
     private $keycloakClientId;
     private $keycloakClientSecret;
+    private $keycloakURL;
     private $http;
 
 
     /**
      * ApiController constructor.
-     * @param $keycloakClientId
-     * @param $keycloakClientSecret
+     * @param string $keycloakClientId
+     * @param string $keycloakClientSecret
      * @param HttpClientInterface $http
+     * @param string $keycloakURL
      */
-    public function __construct(string $keycloakClientId, string $keycloakClientSecret, HttpClientInterface $http)
+    public function __construct(string $keycloakClientId, string $keycloakClientSecret, HttpClientInterface $http, string $keycloakURL)
     {
         $this->keycloakClientId = $keycloakClientId;
         $this->keycloakClientSecret = $keycloakClientSecret;
+        $this->keycloakURL = $keycloakURL;
         $this->http = $http;
     }
 
     public function loadUserFromKeycloak($token) {
-        $url = "http://10.8.0.1:8080/auth/realms/imt-mines-ales/protocol/openid-connect/userinfo";
-        $response = $this->http->request('POST', $url, [
+        $response = $this->http->request('POST', $this->keycloakURL, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
             ],
