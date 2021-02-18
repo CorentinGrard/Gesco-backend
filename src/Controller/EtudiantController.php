@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etudiant;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Repository\EtudiantRepository;
@@ -14,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
 
@@ -201,12 +203,12 @@ class EtudiantController extends AbstractController
     /**
      * @OA\Put(
      *      tags={"Etudiants"},
-     *      path="/etudiant/{idEtudiant}",
+     *      path="/etudiant/{id}",
      *      @OA\Parameter(
-     *          name="idEtudiant",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="idPromotion",
+     *          description="idEtudiant",
      *          @OA\Schema(type="integer")
      *      ),
      *     @OA\RequestBody(
@@ -215,31 +217,33 @@ class EtudiantController extends AbstractController
      *              @OA\Property(property="prenom",type="string"),
      *              @OA\Property(property="nom",type="string"),
      *              @OA\Property(property="adresse",type="string"),
-     *              @OA\Property(property="numeroTel",type="string")
+     *              @OA\Property(property="numeroTel",type="string"),
+     *              @OA\Property(property="promotion_id",type="integer")
      *          )
      *      ),
      *      @OA\Response(
-     *          response="200",
+     *          response="201",
+     *          description="L'étudiant a été correctement modifié"
      *      ),
      *     @OA\Response(
-     *         response="401",
+     *         response="409",
+     *         description="L'id promotion présent dans le body n'existe pas"
      *     ),
      *     @OA\Response(
      *         response="404",
-     *         description="L'étudiant n'existe pas en base'",
+     *         description="L'étudiant n'existe pas en base"
      *     )
      * )
-     * @Route("/etudiant/{idEtudiant}", name="update_etudiant", methods={"PUT"})
-     * @param int $idEtudiant
+     * @Route("/etudiant/{id}", name="update_etudiant", methods={"PUT"})
+     * @param Etudiant $etudiant
      * @param EtudiantRepository $etudiantRepository
+     * @param PromotionRepository $promotionRepository
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return JsonResponse
      */
-    public function updateEtudiant(int $idEtudiant, EtudiantRepository $etudiantRepository,EntityManagerInterface $entityManager, Request $request): JsonResponse
+    public function updateEtudiant(Etudiant $etudiant, EtudiantRepository $etudiantRepository, PromotionRepository $promotionRepository, EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
-
-        $etudiant = $etudiantRepository->find($idEtudiant);
 
         if ($etudiant == null) {
             return new JsonResponse("L'étudiant d'ID ".$etudiant." renseignée n'existe pas",Response::HTTP_NOT_FOUND);
@@ -250,8 +254,13 @@ class EtudiantController extends AbstractController
         $prenom = $data["prenom"];
         $adresse = $data["adresse"];
         $numeroTel = $data["numeroTel"];
+        $promotion_id = $data["promotion_id"];
 
-        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$etudiant,$nom,$prenom,$adresse,$numeroTel);
+        if (empty($nom) || empty($prenom) || empty($adresse)|| empty($numeroTel)|| empty($promotion_id)) {
+            throw new NotFoundHttpException('Expecting mandatory parameters!');
+        }
+
+        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$promotionRepository,$etudiant,$nom,$prenom,$adresse,$numeroTel,$promotion_id);
 
         switch ($repoResponse["status"]) {
             case 201:
@@ -261,8 +270,8 @@ class EtudiantController extends AbstractController
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
                 break;
-            case 406:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_ACCEPTABLE);
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
