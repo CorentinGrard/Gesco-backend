@@ -172,7 +172,7 @@
                 }
             }
         },
-        "/etudiant/{idEtudiant}": {
+        "/etudiant/{id}": {
             "put": {
                 "tags": [
                     "Etudiants"
@@ -180,9 +180,9 @@
                 "operationId": "App\\Controller\\EtudiantController::updateEtudiant",
                 "parameters": [
                     {
-                        "name": "idEtudiant",
+                        "name": "id",
                         "in": "path",
-                        "description": "idPromotion",
+                        "description": "idEtudiant",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -206,6 +206,9 @@
                                     },
                                     "numeroTel": {
                                         "type": "string"
+                                    },
+                                    "promotion_id": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -214,10 +217,14 @@
                     }
                 },
                 "responses": {
-                    "200": {},
-                    "401": {},
+                    "201": {
+                        "description": "L'étudiant a été correctement modifié"
+                    },
+                    "409": {
+                        "description": "L'id promotion présent dans le body n'existe pas"
+                    },
                     "404": {
-                        "description": "L'étudiant n'existe pas en base'"
+                        "description": "L'étudiant n'existe pas en base"
                     }
                 }
             }
@@ -557,6 +564,31 @@
                                 }
                             }
                         }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::deleteModule",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Module",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Module supprimé !"
+                    },
+                    "409": {
+                        "description": "Le module comporte des matières"
                     }
                 }
             }
