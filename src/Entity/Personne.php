@@ -74,10 +74,10 @@ class Personne implements UserInterface
      */
     private $roles = [];
 
-    /**
+    /*
      * @ORM\OneToMany(targetEntity=Formation::class, mappedBy="Responsable")
-     */
-    private $formations;
+     *
+    private $formations;*/
 
     public function __construct()
     {
@@ -201,9 +201,9 @@ class Personne implements UserInterface
         return $this;
     }
 
-    /**
+    /*
      * @return Collection|Formation[]
-     */
+     *
     public function getFormations(): Collection
     {
         return $this->formations;
@@ -217,7 +217,7 @@ class Personne implements UserInterface
         }
 
         return $this;
-    }
+    }*/
 
     public function getPassword()
     {
@@ -239,7 +239,7 @@ class Personne implements UserInterface
         return null;// TODO: Implement eraseCredentials() method.
     }
 
-    public function removeFormation(Formation $formation): self
+    /*public function removeFormation(Formation $formation): self
     {
         if ($this->formations->removeElement($formation)) {
             // set the owning side to null (unless already changed)
@@ -249,5 +249,5 @@ class Personne implements UserInterface
         }
 
         return $this;
-    }
+    }*/
 }

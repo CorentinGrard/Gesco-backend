@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\FormationRepository;
 use App\Repository\PersonneRepository;
+use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -113,19 +114,19 @@ class FormationController extends AbstractController
      * )
      * @Route("/formations", methods={"POST"})
      * @param FormationRepository $formationRepository
-     * @param PersonneRepository $personneRepository
+     * @param ResponsableRepository $responsableRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function AddFormation(FormationRepository $formationRepository,PersonneRepository $personneRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function AddFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
         $nameFormation = $data['nameFormation'];
         $idResponsable = $data['idResponsable'];
         $isAlternant   = $data['isAlternant'];
 
-        $repoResponse = $formationRepository->AjoutFormation($entityManager, $personneRepository, $nameFormation, $idResponsable, $isAlternant);
+        $repoResponse = $formationRepository->AjoutFormation($entityManager, $responsableRepository, $nameFormation, $idResponsable, $isAlternant);
 
         switch ($repoResponse["status"])
         {

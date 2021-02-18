@@ -61,6 +61,7 @@ class Formation
      * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations" , cascade={"persist"})
      * @Groups({"get_formation"})
      * @ORM\JoinColumn(nullable=false)
+     * @var Responsable
      */
     private $responsable;
 
@@ -73,6 +74,12 @@ class Formation
      * })
      */
     private $isAlternance;
+
+    /*
+     * @ORM\ManyToOne(targetEntity=Responsable::class, inversedBy="formations")
+     * @ORM\JoinColumn(nullable=false)
+     *
+    private $respo;*/
 
     public function __construct()
     {
@@ -126,12 +133,12 @@ class Formation
         return $this;
     }
 
-    public function getResponsable(): ?Personne
+    public function getResponsable(): ?Responsable
     {
         return $this->responsable;
     }
 
-    public function setResponsable(?Personne $responsable): self
+    public function setResponsable(?Responsable $responsable): self
     {
         $this->responsable = $responsable;
 
@@ -146,6 +153,18 @@ class Formation
     public function setIsAlternance(bool $isAlternance): self
     {
         $this->isAlternance = $isAlternance;
+
+        return $this;
+    }
+
+    public function getRespo(): ?Responsable
+    {
+        return $this->respo;
+    }
+
+    public function setRespo(?Responsable $respo): self
+    {
+        $this->respo = $respo;
 
         return $this;
     }
