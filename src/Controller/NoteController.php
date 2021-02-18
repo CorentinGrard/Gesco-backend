@@ -6,7 +6,7 @@ use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\NoteRepository;
 use App\Repository\PersonneRepository;
-use App\Serializers\EtudiantSerializer;
+use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -238,7 +238,7 @@ class NoteController extends AbstractController
             if(!empty($username))
             {
                 $etudiant = $etudiantRepository->findOneByUsername($username);
-                $json = EtudiantSerializer::serializeJson($etudiant, ["groups"=> "get_notes_etudiant"]);
+                $json = GenericSerializer::serializeJson($etudiant, ["groups"=> "get_notes_etudiant"]);
                 return new JsonResponse($json, Response::HTTP_OK);
             }
 

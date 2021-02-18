@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Salle;
-use App\Serializers\MatiereSerializer;
+use App\Serializers\GenericSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +44,7 @@ class SalleController extends AbstractController
 
         $salles = $salleRepository->findAllSalle();
 
-        $json = MatiereSerializer::serializeJson($salles,['groups'=>'get_salle']);
+        $json = GenericSerializer::serializeJson($salles,['groups'=>'get_salle']);
         return new JsonResponse($json, Response::HTTP_OK);
 
     }

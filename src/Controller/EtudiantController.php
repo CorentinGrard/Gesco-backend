@@ -7,8 +7,7 @@ use App\Entity\Promotion;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PromotionRepository;
-use App\Serializers\EtudiantSerializer;
-use App\Serializers\PromotionSerializer;
+use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +36,7 @@ class EtudiantController extends AbstractController
     {
         $etudiants = $etudiantRepository->findAll();
 
-        $json = EtudiantSerializer::serializeJson($etudiants,['groups'=>'get_etudiant']);
+        $json = GenericSerializer::serializeJson($etudiants,['groups'=>'get_etudiant']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -66,7 +65,7 @@ class EtudiantController extends AbstractController
     {
         $promos = $promotionRepository->findBy(['id' => $id]);
 
-        $json = PromotionSerializer::serializeJson($promos, ["groups" => "get_etudiants_by_promotion"]);
+        $json = GenericSerializer::serializeJson($promos, ["groups" => "get_etudiants_by_promotion"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -185,7 +184,7 @@ class EtudiantController extends AbstractController
 
         switch ($repoResponse["status"]) {
             case 201:
-                $json = PromotionSerializer::serializeJson($repoResponse["data"], ["groups" => "post_etudiant_in_promotion"]);
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "post_etudiant_in_promotion"]);
                 return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             case 404:
@@ -256,7 +255,7 @@ class EtudiantController extends AbstractController
 
         switch ($repoResponse["status"]) {
             case 201:
-                $json = PromotionSerializer::serializeJson($repoResponse["data"], ["groups" => "update_etudiant"]);
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "update_etudiant"]);
                 return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             case 404:
@@ -340,7 +339,7 @@ class EtudiantController extends AbstractController
 
         $promotions = $promotionRepository->findAll();
 
-        $json = PromotionSerializer::serializeJson($promotions, ["groups" => "get_etudiants_for_all_promotions"]);
+        $json = GenericSerializer::serializeJson($promotions, ["groups" => "get_etudiants_for_all_promotions"]);
 
         return new JsonResponse($json,Response::HTTP_OK);
 
