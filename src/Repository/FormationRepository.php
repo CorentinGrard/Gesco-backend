@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Formation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\MakerBundle\Str;
 
@@ -21,16 +22,16 @@ class FormationRepository extends ServiceEntityRepository
         parent::__construct($registry, Formation::class);
     }
 
-    public function ajoutFormation(EntityManager $entityManager, PersonneRepository $personneRepository, String $nomFormation, String $idResponsable)
+    public function AjoutFormation(EntityManager $entityManager, PersonneRepository $personneRepository, String $nomFormation, String $idResponsable, bool $isAlternant)
     {
-        if (empty($nomFormation) || empty($idResponsable)) {
+        if (empty($nomFormation) || is_null($idResponsable) || empty($isAlternant)) {
             return[
-                "status" => 404,
-                "error"  => "Le nom de la formation est vide"
+                "status" => 400,
+                "error"  => "Veuillez renseigner tous les champs"
             ];
         }
 
-        if($this->checkFormationExist($nomFormation)){
+        if($this->CheckFormationExist($nomFormation)){
             return[
                 "status" => 404,
                 "error"  => "La formation existe déjà"
@@ -50,12 +51,13 @@ class FormationRepository extends ServiceEntityRepository
         $formation = new Formation();
         $formation->setNom($nomFormation);
         $formation->setResponsable($responsable);
+        $formation->setIsAlternance($isAlternant);
 
         $entityManager->persist($formation);
         $entityManager->flush();
 
         return[
-            "status" => 201,
+            "status" => 200,
             "error"  => null
         ];
     }
@@ -64,7 +66,7 @@ class FormationRepository extends ServiceEntityRepository
      * @param string $nomFormation
      * @return bool
      */
-    public function checkFormationExist($nomFormation) : bool
+    public function CheckFormationExist($nomFormation) : bool
     {
         $listFormation = $this->findAll();
 
@@ -74,6 +76,33 @@ class FormationRepository extends ServiceEntityRepository
             }
         }
         return false;
+    }
+
+    public function DeleteFormationById(EntityManagerInterface $entityManager, FormationRepository $formationRepository, int $formationId)
+    {
+        $currentFormation = $formationRepository->find($formationId);
+
+        if($currentFormation == null){
+            return[
+                "status" => 404,
+                "error"  => "La formation d'ID ".$formationId." n'existe pas"
+            ];
+        }
+
+        if(count($currentFormation->getPromotions()) > 1){
+            return[
+                "status" => 409,
+                "error"  => "Il existe des promotions dans cette formation."
+            ];
+        }
+
+        $entityManager->remove($currentFormation);
+        $entityManager->flush();
+
+        return [
+            "status" => 200,
+            "error"  => null
+        ];
     }
 
     // /**
