@@ -80,7 +80,7 @@ class KeycloakAuthenticator extends AbstractGuardAuthenticator
         //$nom = $response->toArray()['nom'];
 
 
-        $personne = $this->personneRepository->findOneBy(['email' => $email]);
+        $personne = $this->personneRepository->findOneByUsername($email);
         /*if($personne == null) {
             $personne = new Personne();
             $personne->setPrenom($prenom);
