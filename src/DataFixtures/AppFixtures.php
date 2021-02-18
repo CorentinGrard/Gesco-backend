@@ -278,12 +278,12 @@ class AppFixtures extends Fixture
         // Création des étudiants
 
         $personne = new Personne();
-        $personne->setPrenom("Guillaume");
-        $personne->setNom("de Maleprade");
-        $personne->setAdresse("40 Chemin des Pins\n30100 Alès");
+        $personne->setPrenom("Corentin");
+        $personne->setNom("Grard");
+        $personne->setAdresse("40 Chemin des Nouilles\n30100 Alès");
         $personne->generateEmail(true);
-        $personne->setNumeroTel("0668327467");
-        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
+        $personne->setNumeroTel("06XXXXXXXX");
+        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER","ROLE_ADMIN"]);
 
         $etudiant2 = new Etudiant();
         $etudiant2->setPersonne($personne);
