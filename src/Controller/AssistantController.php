@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Assistant;
 use App\Repository\AssistantRepository;
-use App\Serializers\AssistantSerializer;
+use App\Serializers\GenericSerializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,7 +42,7 @@ class AssistantController extends AbstractController
         }
 
         return new JsonResponse($assistantsArray, Response::HTTP_OK);*/
-        $json = AssistantSerializer::serializeJson($assistants, ["groups"=>"get_assistant"]);
+        $json = GenericSerializer::serializeJson($assistants, ["groups"=>"get_assistant"]);
         return new JsonResponse($json, Response::HTTP_OK);
     }
 
@@ -68,7 +68,7 @@ class AssistantController extends AbstractController
     public function read(Assistant $assistant): Response
     {
         //return new JsonResponse($assistant->getArray(), Response::HTTP_OK);
-        $json = AssistantSerializer::serializeJson($assistant, ["groups"=>"get_assistant"]);
+        $json = GenericSerializer::serializeJson($assistant, ["groups"=>"get_assistant"]);
         return new JsonResponse($json, Response::HTTP_OK);
     }
 
