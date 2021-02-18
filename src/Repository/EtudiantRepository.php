@@ -115,12 +115,21 @@ class EtudiantRepository extends ServiceEntityRepository
         ];
     }
 
-    public function updateEtudiant(EntityManagerInterface $entityManager, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel)
+    public function updateEtudiant(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel, $promotion_id)
     {
+        $promotion = $promotionRepository->find($promotion_id);
+        if(!$promotion) {
+            return [
+                "status" => 409,
+                "error" => "La promotion d'ID ".$promotion_id." n'existe pas"
+            ];
+        }
+
+        $etudiant->setPromotion($promotion);
+
         $personne = $etudiant->getPersonne();
         $personne->setNom($nom);
         $personne->setPrenom($prenom);
-        $personne->generateEmail(true);
         $personne->setAdresse($adresse);
         $personne->setNumeroTel($numeroTel);
 
