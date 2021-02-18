@@ -941,6 +941,70 @@
                 }
             }
         },
+        "/formations/{id}/promotions": {
+            "get": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::getPromotionsByFormation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Promotion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/responsables/promotions": {
+            "get": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::getPromotionsForRespo",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Promotion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/salles": {
             "get": {
                 "tags": [
