@@ -6,6 +6,7 @@ use App\Entity\Module;
 use App\Entity\Semestre;
 use App\Repository\ModuleRepository;
 use App\Repository\SemestreRepository;
+use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -121,6 +122,46 @@ class ModuleController extends AbstractController
         $entityManager->flush();
 
         return new JsonResponse(['status' => 'Module ajouté !'], Response::HTTP_CREATED);
+    }
+
+    /**
+     * @OA\Delete(
+     *      tags={"Modules"},
+     *      path="/modules/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Module",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(response="204", description="Module supprimé !"),
+     *      @OA\Response(response="409", description="Le module comporte des matières")
+     * )
+     * @Route("/modules/{id}", name="delete_module", methods={"DELETE"})
+     * @param EntityManagerInterface $entityManager
+     * @param ModuleRepository $moduleRepository
+     * @param Module $module
+     * @return Response
+     */
+    public function deleteModule(EntityManagerInterface $entityManager,ModuleRepository $moduleRepository,Module $module): Response
+    {
+
+        $repoResponse = $moduleRepository->deleteModule($entityManager,$module);
+
+        switch ($repoResponse["status"]){
+            case 204:
+                $json = GenericSerializer::serializeJson($module, ['groups'=>'delete_module']);
+                return new JsonResponse("Ok",Response::HTTP_NO_CONTENT);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($json, Response::HTTP_OK);
     }
 
 

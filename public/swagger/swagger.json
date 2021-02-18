@@ -559,6 +559,31 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::deleteModule",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Module",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Module supprimé !"
+                    },
+                    "409": {
+                        "description": "Le module comporte des matières"
+                    }
+                }
             }
         },
         "/semestres/{id}/modules": {

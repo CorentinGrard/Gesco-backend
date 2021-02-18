@@ -20,21 +20,21 @@ class Module
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"module_get", "matiere_get", "semestre_get", "get_notes_etudiant"})
+     * @Groups({"module_get", "matiere_get", "semestre_get", "get_notes_etudiant","delete_module"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string"))
      * @ORM\Column(type="string", length=255)
-     * @Groups({"module_get", "matiere_get", "semestre_get", "get_notes_etudiant"})
+     * @Groups({"module_get", "matiere_get", "semestre_get", "get_notes_etudiant","delete_module"})
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer"))
      * @ORM\Column(type="smallint")
-     * @Groups({"module_get", "get_notes_etudiant"})
+     * @Groups({"module_get", "get_notes_etudiant","delete_module"})
      */
     private $ects;
 
@@ -52,7 +52,7 @@ class Module
      *      ),
      *      readOnly="true"
      * )
-     * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module")
+     * @ORM\OneToMany(targetEntity=Matiere::class, mappedBy="module", cascade={"persist"})
      * @Groups({"module_get"})
      */
     private $matieres;

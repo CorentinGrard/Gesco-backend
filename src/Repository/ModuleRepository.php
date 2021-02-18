@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,4 +48,26 @@ class ModuleRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function deleteModule(EntityManagerInterface $entityManager, Module $module)
+    {
+        if(sizeof($module->getMatieres()) === 0) {
+
+            $entityManager->remove($module);
+            $entityManager->flush();
+
+            return [
+                "status" => 204,
+                "error" => "Etudiant correctement supprimé"
+            ];
+        }
+        else {
+            return [
+                "status" => 409,
+                "error" => "La module ne peut pas être supprimé car des matières le compose"
+            ];
+        }
+    }
+
+
 }
