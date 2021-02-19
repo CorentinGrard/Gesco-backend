@@ -22,21 +22,47 @@ class Matiere
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"matiere_get", "session_get","get_session_by_startDate_and_endDate", "get_notes_etudiant","post_matiere_in_module","update_matiere"})
+     * @Groups({
+     *     "matiere_get",
+     *     "session_get",
+     *     "get_session_by_startDate_and_endDate",
+     *     "get_notes_etudiant",
+     *     "post_matiere_in_module",
+     *     "update_matiere",
+     *     "get_intervenant",
+     *     "get_intervenant_by_matiere"
+     * })
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"matiere_get", "matiere_post", "session_get","get_session_by_startDate_and_endDate", "get_notes_etudiant","post_matiere_in_module","update_matiere"})
+     * @Groups({
+     *     "matiere_get",
+     *     "matiere_post",
+     *     "session_get",
+     *     "get_session_by_startDate_and_endDate",
+     *     "get_notes_etudiant",
+     *     "post_matiere_in_module",
+     *     "update_matiere",
+     *     "get_intervenant",
+     *     "get_intervenant_by_matiere"
+     * })
      */
     private $nom;
 
     /**
      * @OA\Property(type="integer")
      * @ORM\Column(type="smallint")
-     * @Groups({"matiere_get", "matiere_post","get_session_by_startDate_and_endDate", "get_notes_etudiant","post_matiere_in_module","update_matiere"})
+     * @Groups({
+     *     "matiere_get",
+     *     "matiere_post",
+     *     "get_session_by_startDate_and_endDate",
+     *     "get_notes_etudiant",
+     *     "post_matiere_in_module",
+     *     "update_matiere"
+     * })
      */
     private $coefficient;
 
@@ -99,14 +125,23 @@ class Matiere
     /**
      * @OA\Property(type="integer")
      * @ORM\Column(type="integer")
-     * @Groups({"matiere_get", "matiere_post","post_matiere_in_module"})
+     * @Groups({"matiere_get","matiere_post","post_matiere_in_module"})
      */
     private $nombreHeuresAPlacer;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Intervenant::class, inversedBy="matieres")
+     * @Groups({"matiere_get",
+     *     "get_intervenant_by_matiere"})
+     * @var Intervenant[]|null
+     */
+    private $intervenants;
 
     public function __construct()
     {
         $this->sessions = new ArrayCollection();
         $this->notes = new ArrayCollection();
+        $this->intervenants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -241,4 +276,28 @@ class Matiere
     }
 
     /* TODO getNombreHeuresPlacees() + serialization */
+
+    /**
+     * @return Collection|Intervenant[]
+     */
+    public function getIntervenants(): Collection
+    {
+        return $this->intervenants;
+    }
+
+    public function addIntervenant(Intervenant $intervenant): self
+    {
+        if (!$this->intervenants->contains($intervenant)) {
+            $this->intervenants[] = $intervenant;
+        }
+
+        return $this;
+    }
+
+    public function removeIntervenant(Intervenant $intervenant): self
+    {
+        $this->intervenants->removeElement($intervenant);
+
+        return $this;
+    }
 }
