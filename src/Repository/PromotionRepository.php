@@ -162,7 +162,7 @@ class PromotionRepository extends ServiceEntityRepository
         if(!$promotion) {
             return [
                 "status"=>404,
-                "error"=>"La promotion d'ID ".$promotion->getId()." n'existe pas"
+                "error"=>"La promotion n'existe pas"
             ];
         }
 
@@ -170,6 +170,54 @@ class PromotionRepository extends ServiceEntityRepository
             "status"=>200,
             "data"=>$promotion->getModules()
         ];
+
+    }
+
+    public function updatePromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, AssistantRepository $assistantRepository, $nom, $formation_id, $assistant_id, Promotion $promotion)
+    {
+        if(!$promotion) {
+            return [
+                "status"=>409,
+                "error"=>"La promotion n'existe pas"
+            ];
+        }
+
+        $formation = $formationRepository->find($formation_id);
+
+        if(!$formation) {
+            return [
+                "status"=>409,
+                "error"=>"La formation d'ID ".$formation_id." n'existe pas"
+            ];
+        }
+
+        $assistant = $assistantRepository->find($assistant_id);
+
+        if(!$assistant) {
+            return [
+                "status"=>409,
+                "error"=>"L'assistant(e) d'ID ".$assistant_id." n'existe pas"
+            ];
+        }
+
+        $promotion->setNom($nom);
+        $promotion->setFormation($formation);
+        $promotion->setAssistant($assistant);
+
+        try {
+            $entityManager->persist($promotion);
+            $entityManager->flush();
+            return [
+                "status"=>201,
+                "data"=>$promotion
+            ];
+        }
+        catch (\Exception $e) {
+            return [
+                "status"=>500,
+                "error"=>"Probleme lors de l'injection de la promotion en base de données"
+            ];
+        }
 
     }
 }

@@ -50,7 +50,8 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
-     *     "update_formation"
+     *     "update_formation",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -68,7 +69,8 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
-     *     "update_formation"
+     *     "update_formation",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -85,6 +87,7 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="text", length=255)
      */
@@ -100,6 +103,7 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=1024, nullable=true)
      */
@@ -115,6 +119,7 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=255, nullable=true)
      */
