@@ -297,6 +297,50 @@
             }
         },
         "/formations/{idFormation}": {
+            "put": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::UpdateFormation",
+                "parameters": [
+                    {
+                        "name": "idFormation",
+                        "in": "path",
+                        "description": "idPromotion",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "formation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "idResponsable": {
+                                        "type": "number"
+                                    },
+                                    "isAlternance": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {},
+                    "404": {
+                        "description": "La formation n'existe pas'"
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "Formations"
@@ -1189,6 +1233,55 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/promotion/{id}": {
+            "put": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::updateModule",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "formation_id": {
+                                        "type": "integer"
+                                    },
+                                    "assistant_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "promotion modifiée !"
+                    },
+                    "409": {
+                        "description": "La formation renseignée n'existe pas"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
                     }
                 }
             }

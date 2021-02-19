@@ -24,7 +24,8 @@ class Promotion
      *     "get_etudiants_by_promotion",
      *     "get_etudiants_for_all_promotions",
      *     "add_semestre_by_promotion",
-     *     "get_formation"
+     *     "get_formation",
+     *     "update_promotion"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -39,7 +40,8 @@ class Promotion
      *     "get_etudiant",
      *     "get_promotion",
      *     "get_etudiants_by_promotion",
-     *     "get_formation"
+     *     "get_formation",
+     *     "update_promotion"
      * })
      */
     private $nom;
@@ -83,7 +85,8 @@ class Promotion
      * @ORM\JoinColumn(nullable=false)
      * @Groups({
      *     "get_promotion",
-     *     "get_etudiant"
+     *     "get_etudiant",
+     *     "update_promotion"
      * })
      */
     private $formation;
@@ -98,7 +101,7 @@ class Promotion
      * )
      * @ORM\ManyToOne(targetEntity=Assistant::class, inversedBy="promotions")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_promotion"})
+     * @Groups({"get_promotion","update_promotion"})
      */
     private $assistant;
 
