@@ -116,4 +116,59 @@ class MatiereRepository extends ServiceEntityRepository
         return $resultFormatted;
     }
 
+    public function updateMatiere(EntityManagerInterface $entityManager, ModuleRepository $moduleRepository,Matiere $matiere, $nom, $coeff, $nbhp, $module_id)
+    {
+        if (!$matiere) {
+            return [
+                "status"=>409,
+                "error"=>"La matiere à modifier n'existe pas"
+            ];
+        }
+
+        if ($coeff < 0) {
+            return [
+                "status"=>409,
+                "error"=>"Le coefficient ne peut pas être inférieur à zéro"
+            ];
+        }
+
+        if ($nbhp < 0) {
+            return [
+                "status"=>409,
+                "error"=>"Le nombre d'heure à placer ne peut pas être inférieur à zéro"
+            ];
+        }
+
+        $module = $moduleRepository->find($module_id);
+
+        if (!$module) {
+            return [
+                "status"=>409,
+                "error"=>"Le module d'ID ".$module_id." n'existe pas"
+            ];
+        }
+
+        $matiere->setNom($nom);
+        $matiere->setCoefficient($coeff);
+        $matiere->setModule($module);
+        $matiere->setNombreHeuresAPlacer($nbhp);
+
+        try {
+            $entityManager->persist($matiere);
+            $entityManager->flush();
+            return [
+                "status"=>201,
+                "data"=>$matiere,
+                "error"=>null
+            ];
+        } catch (\Exception $e) {
+            return [
+                "status"=>500,
+                "error"=>"Problème lors de l'injection de la matière en base de données"
+            ];
+        }
+
+
+    }
+
 }
