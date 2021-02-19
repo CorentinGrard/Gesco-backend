@@ -118,7 +118,6 @@ class PromotionController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK);
     }
 
-
     /**
      * @OA\Get(
      *      tags={"Promotions"},
@@ -201,7 +200,8 @@ class PromotionController extends AbstractController
                 return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
         }
     }
-/**
+
+    /**
      * @OA\Put(
      *      tags={"Promotions"},
      *      path="/promotion/{id}",
