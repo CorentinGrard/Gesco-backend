@@ -69,5 +69,44 @@ class ModuleRepository extends ServiceEntityRepository
         }
     }
 
+    public function updateModule(EntityManagerInterface $entityManager, SemestreRepository $semestreRepository, $nom, $ects, $semestre_id, Module $module)
+    {
+        $semestre = $semestreRepository->find($semestre_id);
+
+        if (!$semestre) {
+            return [
+                "status" => 409,
+                "error" => "Le semestre d'ID ".$semestre_id." n'existe pas"
+            ];
+        }
+
+        if($ects < 0) {
+            return [
+                "status" => 409,
+                "error" => "L'ECTS doit ne peut pas être négatif"
+            ];
+        }
+
+        $module->setNom($nom);
+        $module->setEcts($ects);
+        $module->setSemestre($semestre);
+
+        try {
+            $entityManager->persist($module);
+            $entityManager->flush();
+            return [
+                "status" => 201,
+                "data" => $module
+            ];
+        } catch (\Exception $e) {
+            return [
+                "status" => 500,
+                "error" => "Probleme lors de l'injection du module dans la base de données"
+            ];
+        }
+
+
+    }
+
 
 }

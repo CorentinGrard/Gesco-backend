@@ -24,7 +24,7 @@ class FormationRepository extends ServiceEntityRepository
         parent::__construct($registry, Formation::class);
     }
 
-    public function AjoutFormation(EntityManager $entityManager, PersonneRepository $personneRepository, String $nomFormation, String $idResponsable, bool $isAlternant)
+    public function AjoutFormation(EntityManager $entityManager, ResponsableRepository $responsableRepository, String $nomFormation, String $idResponsable, bool $isAlternant)
     {
         if (empty($nomFormation) || is_null($idResponsable) || empty($isAlternant)) {
             return[
@@ -41,7 +41,7 @@ class FormationRepository extends ServiceEntityRepository
         }
 
         // TODO : ajouter une vérification du rôle du responsable ( id personne = un responsable )
-        $responsable = $personneRepository->find($idResponsable);
+        $responsable = $responsableRepository->find($idResponsable);
 
         if($responsable == null){
             return[

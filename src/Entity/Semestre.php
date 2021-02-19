@@ -44,7 +44,7 @@ class Semestre
      *          )
      *      )
      * )
-     * @Groups({"semestre_get"})
+     * @Groups({"semestre_get","get_modules_by_promotion"})
      * @ORM\OneToMany(targetEntity=Module::class, mappedBy="semestre")
      */
     private $modules;

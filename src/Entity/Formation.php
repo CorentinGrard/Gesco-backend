@@ -18,7 +18,11 @@ class Formation
 {
     /**
      * @OA\Property(type="integer")
-     * @Groups({"get_etudiant","get_formation", "get_promotion"})
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_formation",
+     *     "get_promotion"
+     * })
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -27,7 +31,11 @@ class Formation
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_etudiant","get_formation", "get_promotion" , "update_formation"})
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_formation",
+     *     "get_promotion"
+     * })
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
@@ -40,28 +48,66 @@ class Formation
      *              ref="#/components/schemas/Promotion/properties/id"
      *          ),
      *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Promotion/properties/nom"
+     *          ),
+     *          @OA\Property(
      *              property="nomPromotion",
      *              ref="#/components/schemas/Promotion/properties/nomPromotion"
      *          )
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation" , cascade={"persist"})
+     * @Groups({"get_formation"})
+     * @var Promotion
      */
         private $promotions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations" , cascade={"persist"})
-     * @Groups({"get_formation", "update_formation"})
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Responsable/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="Personne",
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Personne/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Personne/properties/nom"
+     *          ),
+     *          @OA\Property(
+     *              property="prenom",
+     *              ref="#/components/schemas/Personne/properties/prenom"
+     *          ),
+     *      ),
+     * ),
+     * @ORM\ManyToOne(targetEntity=Responsable::class, inversedBy="formations" , cascade={"persist"})
+     * @Groups({"get_formation"})
      * @ORM\JoinColumn(nullable=false)
+     * @var Responsable
      */
     private $responsable;
 
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups({"get_etudiant", "update_formation"})
+     * @Groups({
+     *     "get_etudiant",
+     *     "get_promotion",
+     *     "get_formation"
+     * })
      */
     private $isAlternance;
+
+    /*
+     * @ORM\ManyToOne(targetEntity=Responsable::class, inversedBy="formations")
+     * @ORM\JoinColumn(nullable=false)
+     *
+    private $respo;*/
 
     public function __construct()
     {
@@ -115,12 +161,12 @@ class Formation
         return $this;
     }
 
-    public function getResponsable(): ?Personne
+    public function getResponsable(): ?Responsable
     {
         return $this->responsable;
     }
 
-    public function setResponsable(?Personne $responsable): self
+    public function setResponsable(?Responsable $responsable): self
     {
         $this->responsable = $responsable;
 
@@ -135,6 +181,18 @@ class Formation
     public function setIsAlternance(bool $isAlternance): self
     {
         $this->isAlternance = $isAlternance;
+
+        return $this;
+    }
+
+    public function getRespo(): ?Responsable
+    {
+        return $this->respo;
+    }
+
+    public function setRespo(?Responsable $respo): self
+    {
+        $this->respo = $respo;
 
         return $this;
     }

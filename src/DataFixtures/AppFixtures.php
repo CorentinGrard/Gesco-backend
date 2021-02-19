@@ -6,6 +6,7 @@ use App\Entity\Assistant;
 use App\Entity\Etudiant;
 use App\Entity\Formation;
 use App\Entity\Note;
+use App\Entity\Responsable;
 use App\Entity\Site;
 use App\Entity\Batiment;
 use App\Entity\Salle;
@@ -34,9 +35,9 @@ class AppFixtures extends Fixture
 
         //Ajout Responsable TODO : prévoir changement en fonction du changement des rôles
 
-        $responsable = [];
+        $responsables = [];
 
-        for($i = 0; $i < 3; $i++){
+        for($i = 0; $i < 2; $i++){
             $faker = Factory::create();
             $personne = new Personne();
 
@@ -47,9 +48,31 @@ class AppFixtures extends Fixture
             $personne->setNumeroTel($faker->phoneNumber);
             $personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
 
+            $responsable = new Responsable();
+            $responsable->setPersonne($personne);
+
             $manager->persist($personne);
-            array_push($responsable, $personne);
+            $manager->persist($responsable);
+
+            array_push($responsables, $responsable);
         }
+
+        $faker = Factory::create();
+        $personne = new Personne();
+
+        $personne->setNom("Moret");
+        $personne->setPrenom("Yan");
+        $personne->setAdresse($faker->address);
+        $personne->generateEmail(false);
+        $personne->setNumeroTel($faker->phoneNumber);
+        $personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
+
+        $responsable = new Responsable();
+        $responsable->setPersonne($personne);
+
+        $manager->persist($personne);
+        $manager->persist($responsable);
+        array_push($responsables, $responsable);
 
 
         // AJOUT ADMIN //
@@ -67,22 +90,22 @@ class AppFixtures extends Fixture
         $formations = [];
 
         $formation = new Formation();
-        $formation->setNom("INFRES");
-        $formation->setResponsable($responsable[0]);
+        $formation->setNom("CMC");
+        $formation->setResponsable($responsables[0]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("MKX");
-        $formation->setResponsable($responsable[1]);
+        $formation->setResponsable($responsables[1]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
-        $formation->setNom("CMC");
-        $formation->setResponsable($responsable[2]);
+        $formation->setNom("INFRES");
+        $formation->setResponsable($responsables[2]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);

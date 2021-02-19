@@ -156,4 +156,20 @@ class PromotionRepository extends ServiceEntityRepository
 
 
     }
+
+    public function getModulesByPromotion(Promotion $promotion)
+    {
+        if(!$promotion) {
+            return [
+                "status"=>404,
+                "error"=>"La promotion d'ID ".$promotion->getId()." n'existe pas"
+            ];
+        }
+
+        return [
+            "status"=>200,
+            "data"=>$promotion->getModules()
+        ];
+
+    }
 }

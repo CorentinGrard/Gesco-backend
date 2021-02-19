@@ -172,7 +172,7 @@
                 }
             }
         },
-        "/etudiant/{idEtudiant}": {
+        "/etudiant/{id}": {
             "put": {
                 "tags": [
                     "Etudiants"
@@ -180,9 +180,9 @@
                 "operationId": "App\\Controller\\EtudiantController::updateEtudiant",
                 "parameters": [
                     {
-                        "name": "idEtudiant",
+                        "name": "id",
                         "in": "path",
-                        "description": "idPromotion",
+                        "description": "idEtudiant",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -206,6 +206,9 @@
                                     },
                                     "numeroTel": {
                                         "type": "string"
+                                    },
+                                    "promotion_id": {
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -214,10 +217,14 @@
                     }
                 },
                 "responses": {
-                    "200": {},
-                    "401": {},
+                    "201": {
+                        "description": "L'étudiant a été correctement modifié"
+                    },
+                    "409": {
+                        "description": "L'id promotion présent dans le body n'existe pas"
+                    },
                     "404": {
-                        "description": "L'étudiant n'existe pas en base'"
+                        "description": "L'étudiant n'existe pas en base"
                     }
                 }
             }
@@ -289,12 +296,36 @@
                 }
             }
         },
+        "/formations/{idFormation}": {
+            "delete": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::DeleteFormationById",
+                "parameters": [
+                    {
+                        "name": "idFormation",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {},
+                    "409": {}
+                }
+            }
+        },
         "/formations": {
             "get": {
                 "tags": [
                     "Formations"
                 ],
-                "operationId": "App\\Controller\\FormationController::getAllFormation",
+                "operationId": "App\\Controller\\FormationController::GetAllFormation",
                 "responses": {
                     "200": {
                         "description": "get all formations",
@@ -329,6 +360,10 @@
                                     "idResponsable": {
                                         "required": true,
                                         "type": "number"
+                                    },
+                                    "isAlternant": {
+                                        "required": true,
+                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -337,8 +372,11 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Formation ajoutée"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
                     },
                     "404": {
                         "description": "Erreur"
@@ -586,6 +624,28 @@
                 }
             }
         },
+        "/promotions/{id}/modules": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::getModulesByPromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "404": {}
+                }
+            }
+        },
         "/semestres/{id}/modules": {
             "post": {
                 "tags": [
@@ -619,6 +679,56 @@
                     },
                     "404": {
                         "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
+        "/module/{id}": {
+            "put": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::updateModule",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Module",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "ects": {
+                                        "type": "integer"
+                                    },
+                                    "semestre_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Module modifié !"
+                    },
+                    "409": {
+                        "description": "Le semestre renseigné n'existe pas"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
                     }
                 }
             }
@@ -950,6 +1060,70 @@
                     "Promotions"
                 ],
                 "operationId": "App\\Controller\\PromotionController::getAllPromotions",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Promotion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/formations/{id}/promotions": {
+            "get": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::getPromotionsByFormation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Promotion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/responsables/promotions": {
+            "get": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::getPromotionsForRespo",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -1481,12 +1655,37 @@
                                 "id": {
                                     "$ref": "#/components/schemas/Promotion/properties/id"
                                 },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nom"
+                                },
                                 "nomPromotion": {
                                     "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                                 }
                             },
                             "type": "object"
                         }
+                    },
+                    "responsable": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Responsable/properties/id"
+                            },
+                            "Personne": {
+                                "properties": {
+                                    "id": {
+                                        "$ref": "#/components/schemas/Personne/properties/id"
+                                    },
+                                    "nom": {
+                                        "$ref": "#/components/schemas/Personne/properties/nom"
+                                    },
+                                    "prenom": {
+                                        "$ref": "#/components/schemas/Personne/properties/prenom"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
                     },
                     "isAlternance": {
                         "type": "boolean"
