@@ -232,6 +232,18 @@ class AppFixtures extends Fixture
 
             array_push($modules, $module);
             $k++;
+
+            $module = new Module();
+            $module->setNom(self::generateRandomString(($k*$k)%5+10));
+            try {
+                $module->setEcts(random_int(0, 10));
+            } catch (\Exception $e) {
+            }
+            $module->setSemestre($semestre);
+            $manager->persist($module);
+
+            array_push($modules, $module);
+            $k++;
         }
 
         $intervenant = new Intervenant();
@@ -255,6 +267,14 @@ class AppFixtures extends Fixture
             $matiere->setModule($module);
             $matiere->setNombreHeuresAPlacer(($k % 5) * 1);
             $matiere->addIntervenant($intervenant);
+            $manager->persist($matiere);
+            array_push($matieres, $matiere);
+
+            $matiere = new Matiere();
+            $matiere->setNom($faker->firstName);
+            $matiere->setCoefficient(($k*$k) % 4 + 1);
+            $matiere->setModule($module);
+            $matiere->setNombreHeuresAPlacer((($k*$k) % 5) * 1);
             $manager->persist($matiere);
             array_push($matieres, $matiere);
 
