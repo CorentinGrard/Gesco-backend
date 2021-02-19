@@ -1171,6 +1171,47 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::AddFormation",
+                "requestBody": {
+                    "request": "promotion",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "idFormation": {
+                                        "required": true,
+                                        "type": "number"
+                                    },
+                                    "idAssistant": {
+                                        "required": true,
+                                        "type": "number"
+                                    },
+                                    "namePromotion": {
+                                        "required": true,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Promotion ajoutée"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
+                    },
+                    "404": {
+                        "description": "Erreur"
+                    }
+                }
             }
         },
         "/formations/{id}/promotions": {

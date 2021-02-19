@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Formation;
 use App\Entity\Promotion;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
@@ -21,36 +22,6 @@ class PromotionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Promotion::class);
     }
-
-    // /**
-    //  * @return Promotion[] Returns an array of Promotion objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Promotion
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-
 
     public function addEtudiantInPromotion(EntityManager $entityManager, EtudiantRepository $etudiantRepository,PromotionRepository $promotionRepository, int $idEtudiant, int $idPromotion) {
 
@@ -153,8 +124,6 @@ class PromotionRepository extends ServiceEntityRepository
             "status"=>201,
             "error"=>null
         ];
-
-
     }
 
     public function getModulesByPromotion(Promotion $promotion)
@@ -170,7 +139,63 @@ class PromotionRepository extends ServiceEntityRepository
             "status"=>200,
             "data"=>$promotion->getModules()
         ];
+    }
 
+    private function CheckExistPromotionByName(string $namePromotion,Formation $formation) : bool
+    {
+        $listPromotion = $this->findAll();
+
+        foreach ($listPromotion as $promotion){
+            if($promotion->getNom() == $namePromotion && $formation->getNom() == $promotion->getFormation()->getNom()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function AjoutPromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, \Symfony\Component\HttpFoundation\Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $namePromotion = $data['namePromotion'];
+        $idAssistant = $data['idAssistant'];
+        $idFormation   = $data['idFormation'];
+
+        $assistant = $assistantRepository->find($idAssistant);
+        $formation = $formationRepository->find($idFormation);
+
+        if(is_null($assistant)){
+            return[
+                "status" => 404,
+                "error"  => "L'assistant d'ID ".$idAssistant." n'existe pas."
+            ];
+        }
+
+        if(is_null($formation)){
+            return[
+                "status" => 404,
+                "error"  => "La formation d'ID ".$idFormation." n'existe pas."
+            ];
+        }
+
+        if($this->CheckExistPromotionByName($namePromotion, $formation)){
+            return[
+                "status" => 404,
+                "error"  => "La promotion de nom  ".$namePromotion." existe déjà dans cette formation."
+            ];
+        }
+
+        $promotion = new Promotion();
+        $promotion->setAssistant($assistant);
+        $promotion->setNom($namePromotion);
+        $promotion->setFormation($formation);
+
+        $entityManager->persist($promotion);
+        $entityManager->flush();
+
+        return [
+            "status" => 200,
+            "error"  => null
+        ];
     }
 
     public function updatePromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, AssistantRepository $assistantRepository, $nom, $formation_id, $assistant_id, Promotion $promotion)
