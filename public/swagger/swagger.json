@@ -1600,6 +1600,87 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "tags": [
+                    "Sessions"
+                ],
+                "description": "idMatiere : 0 => On ne change pas la matière",
+                "operationId": "App\\Controller\\SessionController::modifySession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Session",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "sessions",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "$ref": "#/components/schemas/Session/properties/type"
+                                    },
+                                    "obligatoire": {
+                                        "$ref": "#/components/schemas/Session/properties/obligatoire"
+                                    },
+                                    "dateDebut": {
+                                        "$ref": "#/components/schemas/Session/properties/dateDebut"
+                                    },
+                                    "dateFin": {
+                                        "$ref": "#/components/schemas/Session/properties/dateFin"
+                                    },
+                                    "detail": {
+                                        "$ref": "#/components/schemas/Session/properties/detail"
+                                    },
+                                    "idMatiere": {
+                                        "$ref": "#/components/schemas/Matiere/properties/id"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Session modifiée !"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::deleteSession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Session",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session correctement supprimée"
+                    },
+                    "404": {
+                        "description": "Session non trouvée..."
+                    }
+                }
             }
         },
         "/matieres/{id}/sessions": {
@@ -1633,80 +1714,8 @@
                     "201": {
                         "description": "Session ajoutée !"
                     },
-                    "404": {
-                        "description": "Non trouvée..."
-                    }
-                }
-            }
-        },
-        "/session/{id}": {
-            "put": {
-                "tags": [
-                    "Sessions"
-                ],
-                "operationId": "App\\Controller\\SessionController::modifySession",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "id Session",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "request": "sessions",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Session"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Session modifiée !"
-                    },
-                    "404": {
-                        "description": "Non trouvée..."
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Sessions"
-                ],
-                "operationId": "App\\Controller\\SessionController::deleteSession",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "id Session",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "request": "sessions",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Session"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Session supprimée !"
-                    },
-                    "404": {
-                        "description": "Non trouvée..."
+                    "409": {
+                        "description": "Erreur..."
                     }
                 }
             }
@@ -1870,8 +1879,7 @@
             "Matiere": {
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "readOnly": "true"
+                        "type": "integer"
                     },
                     "nom": {
                         "type": "string"
@@ -2019,7 +2027,10 @@
                         "type": "string"
                     },
                     "roles": {
-                        "type": "array"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "type": "object"
@@ -2075,6 +2086,23 @@
                     "nomPromotion": {
                         "type": "string",
                         "readOnly": "true"
+                    }
+                },
+                "type": "object"
+            },
+            "Responsable": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "Personne": {
+                        "$ref": "#/components/schemas/Personne"
+                    },
+                    "formations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Formation"
+                        }
                     }
                 },
                 "type": "object"
