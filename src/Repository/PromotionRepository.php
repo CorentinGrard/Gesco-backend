@@ -137,7 +137,7 @@ class PromotionRepository extends ServiceEntityRepository
 
         return [
             "status"=>200,
-            "data"=>$promotion->getModules()
+            "data"=>$promotion
         ];
     }
 
