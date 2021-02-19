@@ -161,6 +161,72 @@ class MatiereController extends AbstractController
 
     }
 
+    /**
+     * @OA\Put(
+     *      tags={"Matieres"},
+     *      path="/matiere/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          request="matiere",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="coefficient",type="integer"),
+     *              @OA\Property(property="nombreHeuresAPlacer",type="integer"),
+     *              @OA\Property(property="module_id",type="integer")
+     *          )
+     *      ),
+     *      @OA\Response(response="201", description="Matiere modifiée !"),
+     *      @OA\Response(response="409", description="Module non-existant"),
+     *      @OA\Response(response="500", description="Erreur lors de la modification en base de données"),
+     * )
+     * @Route("/matiere/{id}", name="update_matiere", methods={"PUT"})
+     * @param Request $request
+     * @param MatiereRepository $matiereRepository
+     * @param ModuleRepository $moduleRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Matiere $matiere
+     * @return JsonResponse
+     */
+    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $nom = $data["nom"];
+        $coeff = $data["coefficient"];
+        $nbhp = $data["nombreHeuresAPlacer"];
+        $module_id = $data["module_id"];
+
+        if (empty($nom) || empty($coeff) || empty($nbhp) || empty($module_id)) {
+            throw new NotFoundHttpException('Expecting mandatory parameters!');
+        }
+
+        $repoResponse = $matiereRepository->updateMatiere($entityManager,$moduleRepository,$matiere,$nom,$coeff,$nbhp,$module_id);
+
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'update_matiere']);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+
+        $json = GenericSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
+        return new JsonResponse($json, Response::HTTP_CREATED);
+
+    }
+
 
     /**
      * @OA\Get(

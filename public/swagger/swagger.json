@@ -495,6 +495,59 @@
                 }
             }
         },
+        "/matiere/{id}": {
+            "put": {
+                "tags": [
+                    "Matieres"
+                ],
+                "operationId": "App\\Controller\\MatiereController::updatematiere",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "matiere",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "coefficient": {
+                                        "type": "integer"
+                                    },
+                                    "nombreHeuresAPlacer": {
+                                        "type": "integer"
+                                    },
+                                    "module_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Matiere modifiée !"
+                    },
+                    "409": {
+                        "description": "Module non-existant"
+                    },
+                    "500": {
+                        "description": "Erreur lors de la modification en base de données"
+                    }
+                }
+            }
+        },
         "/semestres/{id}/matieres": {
             "get": {
                 "tags": [
@@ -1272,6 +1325,34 @@
                     },
                     "404": {
                         "description": "Non trouvée..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Semestres"
+                ],
+                "operationId": "App\\Controller\\SemestreController::deleteSemestre",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Semestre",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Semestre supprimé !"
+                    },
+                    "404": {
+                        "description": "Non trouvé..."
+                    },
+                    "409": {
+                        "description": "Présence de module(s) dans le semestre, suppression impossible."
                     }
                 }
             }
