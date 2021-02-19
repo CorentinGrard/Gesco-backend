@@ -493,7 +493,7 @@
                     "200": {
                         "description": "Intervenant supprimé"
                     },
-                    "304": {
+                    "404": {
                         "description": "Intervenant non supprimé"
                     }
                 }
