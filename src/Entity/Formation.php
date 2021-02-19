@@ -21,7 +21,8 @@ class Formation
      * @Groups({
      *     "get_etudiant",
      *     "get_formation",
-     *     "get_promotion"
+     *     "get_promotion",
+     *     "update_promotion"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -35,7 +36,8 @@ class Formation
      *     "get_etudiant",
      *     "get_formation",
      *     "get_promotion",
-     *     "update_formation"
+     *     "update_formation",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -105,7 +107,8 @@ class Formation
      *     "get_etudiant",
      *     "get_promotion",
      *     "get_formation",
-     *     "update_formation"
+     *     "update_formation",
+     *     "update_promotion"
      * })
      */
     private $isAlternance;

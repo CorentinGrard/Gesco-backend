@@ -11,11 +11,16 @@ use App\Repository\PersonneRepository;
 use App\Repository\PromotionRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
+<<<<<<< src/Controller/PromotionController.php
 use Symfony\Component\HttpFoundation\Request;
+=======
+>>>>>>> src/Controller/PromotionController.php
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
 
@@ -197,6 +202,107 @@ class PromotionController extends AbstractController
                 break;
             default:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+        }
+
+     * @OA\Put(
+     *      tags={"Promotions"},
+     *      path="/promotion/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="formation_id",type="integer"),
+     *              @OA\Property(property="assistant_id",type="integer")
+     *          )
+     *      ),
+     *      @OA\Response(response="201", description="promotion modifiée !"),
+     *      @OA\Response(response="409", description="La formation renseignée n'existe pas"),
+     *      @OA\Response(response="409", description="L'assistant(e) renseignée n'existe pas"),
+     *      @OA\Response(response="404", description="Non trouvée...")
+     * )
+     * @Route("/promotion/{id}", name="update_promotion", methods={"PUT"})
+     * @param PromotionRepository $promotionRepository
+     * @param FormationRepository $formationRepository
+     * @param AssistantRepository $assistantRepository
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param Promotion $promotion
+     * @return JsonResponse
+     */
+    public function updatePromotion(PromotionRepository $promotionRepository,FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $nom = $data["nom"];
+        $formation_id = $data["formation_id"];
+        $assistant_id = $data["assistant_id"];
+
+
+        if (empty($nom) || empty($formation_id) || empty($assistant_id)) {
+            throw new NotFoundHttpException('Expecting mandatory parameters!');
+        }
+
+        $repoResponse = $promotionRepository->updatePromotion($entityManager,$formationRepository,$assistantRepository,$nom,$formation_id,$assistant_id,$promotion);
+
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'update_promotion']);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * @OA\Delete(
+     *      tags={"Promotions"},
+     *      path="/promotion/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(response="204", description="Promotion supprimée !"),
+     *      @OA\Response(response="409", description="La promotion comporte des étudiants, suppression impossible"),
+     *      @OA\Response(response="409", description="La promotion comporte des semestres, suppression impossible"),
+     * )
+     * @Route("/promotion/{id}", name="delete_promotion", methods={"DELETE"})
+     * @param EntityManagerInterface $entityManager
+     * @param PromotionRepository $promotionRepository
+     * @param Promotion $promotion
+     * @return Response
+     */
+    public function deletePromotion(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository,Promotion $promotion): Response
+    {
+
+        $repoResponse = $promotionRepository->deletePromotion($entityManager,$promotion);
+
+        switch ($repoResponse["status"]){
+            case 204:
+                $json = GenericSerializer::serializeJson($promotion, ['groups'=>'delete_promotion']);
+                return new JsonResponse($json,Response::HTTP_NO_CONTENT);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
     }
 }

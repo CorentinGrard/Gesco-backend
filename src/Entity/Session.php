@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\SessionRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
+use SessionType;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -18,7 +20,13 @@ class Session
     /**
      * @OA\Property(type="integer",
      *     readOnly="true")
-     * @Groups({"matiere_get", "session_get","get_session_by_startDate_and_endDate","update_session","create_session"})
+     * @Groups({
+     *     "matiere_get",
+     *     "session_get",
+     *     "get_session_by_startDate_and_endDate",
+     *     "update_session",
+     *     "create_session"
+     * })
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -43,34 +51,67 @@ class Session
      * )
      * @ORM\ManyToOne(targetEntity=Matiere::class, inversedBy="sessions")
      * @Groups({"session_get","get_session_by_startDate_and_endDate"})
+     * @var Matiere
      */
     private $matiere;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
+     * @Groups({
+     *     "session_get",
+     *     "session_post",
+     *     "get_session_by_startDate_and_endDate",
+     *     "update_session",
+     *     "create_session",
+     *     "delete_session"
+     * })
+     * @var string
      */
     private $type;
 
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
+     * @Groups({
+     *     "session_get",
+     *     "session_post",
+     *     "get_session_by_startDate_and_endDate",
+     *     "update_session",
+     *     "create_session",
+     *     "delete_session"
+     * })
+     * @var boolean
      */
     private $obligatoire;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
+     * @Groups({
+     *     "session_get",
+     *     "session_post",
+     *     "get_session_by_startDate_and_endDate",
+     *     "update_session",
+     *     "create_session",
+     *     "delete_session"
+     * })
+     * @var DateTime
      */
     private $dateDebut;
 
     /**
      * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime")
-     * @Groups({"session_get", "session_post","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
+     * @Groups({
+     *     "session_get",
+     *     "session_post",
+     *     "get_session_by_startDate_and_endDate",
+     *     "update_session",
+     *     "create_session",
+     *     "delete_session"
+     * })
+     * @var DateTime
      */
     private $dateFin;
 
@@ -91,14 +132,25 @@ class Session
      *     readOnly="true"
      * )
      * @ORM\ManyToMany(targetEntity=Salle::class, inversedBy="sessions")
-     * @Groups({"get_session_by_startDate_and_endDate"})
+     * @Groups({
+     *     "get_session_by_startDate_and_endDate",
+     *     "create_session",
+     *     "session_get"
+     * })
+     * @var Salle
      */
     private $sessionSalle;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=1024, nullable=true)
-     * @Groups({"session_get","get_session_by_startDate_and_endDate","update_session","create_session","delete_session"})
+     * @Groups({
+     *     "session_get",
+     *     "get_session_by_startDate_and_endDate",
+     *     "update_session",
+     *     "create_session",
+     *     "delete_session"
+     * })
      */
     private $detail;
 
@@ -192,7 +244,10 @@ class Session
     /**
      * @OA\Property(property="duree", type="number",
      *     readOnly="true")
-     * @Groups({"session_get", "matiere_get"})
+     * @Groups({
+     *     "session_get",
+     *     "matiere_get"
+     * })
      */
     public function getDuree(): float
     {
@@ -216,7 +271,7 @@ class Session
 
     public function getTypes()
     {
-        return \SessionType::values;
+        return SessionType::values;
     }
 
     /**
