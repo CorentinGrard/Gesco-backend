@@ -11,14 +11,12 @@ use App\Repository\PersonneRepository;
 use App\Repository\PromotionRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
-<<<<<<< src/Controller/PromotionController.php
+
 use Symfony\Component\HttpFoundation\Request;
-=======
->>>>>>> src/Controller/PromotionController.php
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -190,20 +188,20 @@ class PromotionController extends AbstractController
     public function AddFormation(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
 
-        $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository , $request);
+        $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository, $request);
 
-        switch ($repoResponse["status"])
-        {
+        switch ($repoResponse["status"]) {
             case 404:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
                 break;
             case 200:
-                return new JsonResponse("Ok",Response::HTTP_CREATED);
+                return new JsonResponse("Ok", Response::HTTP_CREATED);
                 break;
             default:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
         }
-
+    }
+/**
      * @OA\Put(
      *      tags={"Promotions"},
      *      path="/promotion/{id}",
