@@ -191,7 +191,7 @@ class PromotionController extends AbstractController
      * @param Promotion $promotion
      * @return JsonResponse
      */
-    public function updateModule(PromotionRepository $promotionRepository,FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
+    public function updatePromotion(PromotionRepository $promotionRepository,FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -222,5 +222,45 @@ class PromotionController extends AbstractController
         }
     }
 
+    /**
+     * @OA\Delete(
+     *      tags={"Promotions"},
+     *      path="/promotion/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(response="204", description="Promotion supprimée !"),
+     *      @OA\Response(response="409", description="La promotion comporte des étudiants, suppression impossible"),
+     *      @OA\Response(response="409", description="La promotion comporte des semestres, suppression impossible"),
+     * )
+     * @Route("/promotion/{id}", name="delete_promotion", methods={"DELETE"})
+     * @param EntityManagerInterface $entityManager
+     * @param PromotionRepository $promotionRepository
+     * @param Promotion $promotion
+     * @return Response
+     */
+    public function deletePromotion(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository,Promotion $promotion): Response
+    {
 
+        $repoResponse = $promotionRepository->deletePromotion($entityManager,$promotion);
+
+        switch ($repoResponse["status"]){
+            case 204:
+                $json = GenericSerializer::serializeJson($promotion, ['groups'=>'delete_promotion']);
+                return new JsonResponse($json,Response::HTTP_NO_CONTENT);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+
+    }
 }

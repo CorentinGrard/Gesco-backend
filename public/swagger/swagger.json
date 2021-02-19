@@ -1242,7 +1242,7 @@
                 "tags": [
                     "Promotions"
                 ],
-                "operationId": "App\\Controller\\PromotionController::updateModule",
+                "operationId": "App\\Controller\\PromotionController::updatePromotion",
                 "parameters": [
                     {
                         "name": "id",
@@ -1282,6 +1282,30 @@
                     },
                     "404": {
                         "description": "Non trouvée..."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Promotions"
+                ],
+                "operationId": "App\\Controller\\PromotionController::deletePromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Promotion supprimée !"
+                    },
+                    "409": {
+                        "description": "La promotion comporte des étudiants, suppression impossible"
                     }
                 }
             }
