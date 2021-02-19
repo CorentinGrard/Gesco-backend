@@ -661,6 +661,56 @@
                 }
             }
         },
+        "/module/{id}": {
+            "put": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::updateModule",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Module",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "ects": {
+                                        "type": "integer"
+                                    },
+                                    "semestre_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Module modifié !"
+                    },
+                    "409": {
+                        "description": "Le semestre renseigné n'existe pas"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
+                    }
+                }
+            }
+        },
         "/notes": {
             "post": {
                 "tags": [
