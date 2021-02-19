@@ -48,17 +48,44 @@ class Formation
      *              ref="#/components/schemas/Promotion/properties/id"
      *          ),
      *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Promotion/properties/nom"
+     *          ),
+     *          @OA\Property(
      *              property="nomPromotion",
      *              ref="#/components/schemas/Promotion/properties/nomPromotion"
      *          )
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation" , cascade={"persist"})
+     * @Groups({"get_formation"})
+     * @var Promotion
      */
         private $promotions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations" , cascade={"persist"})
+     * @OA\Property(
+     *      @OA\Property(
+     *          property="id",
+     *          ref="#/components/schemas/Responsable/properties/id"
+     *      ),
+     *      @OA\Property(
+     *          property="Personne",
+     *          @OA\Property(
+     *              property="id",
+     *              ref="#/components/schemas/Personne/properties/id"
+     *          ),
+     *          @OA\Property(
+     *              property="nom",
+     *              ref="#/components/schemas/Personne/properties/nom"
+     *          ),
+     *          @OA\Property(
+     *              property="prenom",
+     *              ref="#/components/schemas/Personne/properties/prenom"
+     *          ),
+     *      ),
+     * ),
+     * @ORM\ManyToOne(targetEntity=Responsable::class, inversedBy="formations" , cascade={"persist"})
      * @Groups({"get_formation"})
      * @ORM\JoinColumn(nullable=false)
      * @var Responsable
@@ -70,7 +97,8 @@ class Formation
      * @ORM\Column(type="boolean")
      * @Groups({
      *     "get_etudiant",
-     *     "get_promotion"
+     *     "get_promotion",
+     *     "get_formation"
      * })
      */
     private $isAlternance;

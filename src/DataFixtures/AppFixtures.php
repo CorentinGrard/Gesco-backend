@@ -91,21 +91,21 @@ class AppFixtures extends Fixture
 
         $formation = new Formation();
         $formation->setNom("CMC");
-        $formation->setResponsable($responsable[0]);
+        $formation->setResponsable($responsables[0]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("MKX");
-        $formation->setResponsable($responsable[1]);
+        $formation->setResponsable($responsables[1]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);
 
         $formation = new Formation();
         $formation->setNom("INFRES");
-        $formation->setResponsable($responsable[2]);
+        $formation->setResponsable($responsables[2]);
         $formation->setIsAlternance(true);
         $manager->persist($formation);
         array_push($formations, $formation);

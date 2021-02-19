@@ -24,7 +24,13 @@ class Personne implements UserInterface
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_promotion", "get_formation"})
+     * @Groups({
+     *     "get_personne",
+     *     "get_etudiant",
+     *     "get_assistant",
+     *     "get_promotion",
+     *     "get_formation"
+     * })
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -33,14 +39,34 @@ class Personne implements UserInterface
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_formation", "get_promotion","get_etudiants_by_promotion","get_etudiants_for_all_promotions","post_etudiant_in_promotion","update_etudiant"})
+     * @Groups({
+     *     "get_personne",
+     *     "get_etudiant",
+     *     "get_assistant",
+     *     "get_formation",
+     *     "get_promotion",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "post_etudiant_in_promotion",
+     *     "update_etudiant"
+     * })
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_formation" ,"get_promotion", "get_etudiants_by_promotion","get_etudiants_for_all_promotions","post_etudiant_in_promotion","update_etudiant"})
+     * @Groups({
+     *     "get_personne",
+     *     "get_etudiant",
+     *     "get_assistant",
+     *     "get_formation",
+     *     "get_promotion",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "post_etudiant_in_promotion",
+     *     "update_etudiant"
+     * })
      * @ORM\Column(type="string", length=255)
      */
     private $prenom;
@@ -48,21 +74,45 @@ class Personne implements UserInterface
     /**
      * @OA\Property(type="string",
      *      readOnly="true")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant", "get_etudiants_by_promotion","get_etudiants_for_all_promotions","post_etudiant_in_promotion","update_etudiant"})
+     * @Groups({
+     *     "get_personne",
+     *     "get_etudiant",
+     *     "get_assistant",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "post_etudiant_in_promotion",
+     *     "update_etudiant"
+     * })
      * @ORM\Column(type="text", length=255)
      */
     private $email;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant","get_etudiants_by_promotion","get_etudiants_for_all_promotions","post_etudiant_in_promotion","update_etudiant"})
+     * @Groups({
+     *     "get_personne",
+     *     "get_etudiant",
+     *     "get_assistant",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "post_etudiant_in_promotion",
+     *     "update_etudiant"
+     * })
      * @ORM\Column(type="string", length=1024, nullable=true)
      */
     private $adresse;
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_personne", "get_etudiant", "get_assistant","get_etudiants_by_promotion","get_etudiants_for_all_promotions","post_etudiant_in_promotion","update_etudiant"})
+     * @Groups({
+     *     "get_personne",
+     *     "get_etudiant",
+     *     "get_assistant",
+     *     "get_etudiants_by_promotion",
+     *     "get_etudiants_for_all_promotions",
+     *     "post_etudiant_in_promotion",
+     *     "update_etudiant"
+     * })
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $numeroTel;

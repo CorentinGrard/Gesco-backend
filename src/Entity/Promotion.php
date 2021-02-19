@@ -24,7 +24,8 @@ class Promotion
      *     "get_etudiant",
      *     "get_etudiants_by_promotion",
      *     "get_etudiants_for_all_promotions",
-     *     "add_semestre_by_promotion"
+     *     "add_semestre_by_promotion",
+     *     "get_formation"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -38,7 +39,8 @@ class Promotion
      * @Groups({
      *     "get_etudiant",
      *     "get_promotion",
-     *     "get_etudiants_by_promotion"
+     *     "get_etudiants_by_promotion",
+     *     "get_formation"
      * })
      */
     private $nom;
@@ -235,7 +237,8 @@ class Promotion
      *     "get_assistant",
      *     "get_etudiants_by_promotion",
      *     "get_etudiants_for_all_promotions",
-     *     "add_semestre_by_promotion"
+     *     "add_semestre_by_promotion",
+     *     "get_formation"
      * })
      */
     public function getNomPromotion(): string

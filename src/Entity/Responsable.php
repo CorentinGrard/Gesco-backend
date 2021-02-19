@@ -6,6 +6,7 @@ use App\Repository\ResponsableRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ResponsableRepository::class)
@@ -16,17 +17,24 @@ class Responsable
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({
+     *     "get_responsable",
+     *     "get_formation"
+     * })
      */
     private $id;
 
     /**
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_formation"})
+     * @var Personne
      */
     private $Personne;
 
     /**
      * @ORM\OneToMany(targetEntity=Formation::class, mappedBy="responsable")
+     * @var Formation[]
      */
     private $formations;
 

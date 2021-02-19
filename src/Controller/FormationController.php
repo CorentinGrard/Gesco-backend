@@ -7,6 +7,7 @@ use App\Repository\PersonneRepository;
 use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,6 +88,7 @@ class FormationController extends AbstractController
      * @Route("/formations", name="formation_list", methods={"GET"})
      * @param FormationRepository $formationRepository
      * @return Response
+     * Security("is_granted('ROLE_ASSISTANT')")
      */
     public function GetAllFormation(FormationRepository $formationRepository) : Response
     {
