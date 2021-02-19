@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Responsable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,35 @@ class ResponsableRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Responsable::class);
+    }
+
+    /**
+     * @return Responsable Returns an array of Personne objects
+     */
+    public function findOneByUsername($username)
+    {
+        /*
+                $sql = "SELECT * FROM etudiant e " .
+                    "INNER JOIN personne p ON (p.id = e.personne_id) ".
+                    "WHERE p.email = :email";
+
+                $rsm = new ResultSetMapping();
+
+                $query = $this->_em->createNativeQuery($sql, $rsm);
+                $query->setParameter('email', $username);
+
+                return $query->getOneOrNullResult();
+        */
+        try {
+            return $this->createQueryBuilder('r')
+                ->innerJoin('r.Personne', 'p', 'WITH', 'p.id = r.Personne')
+                ->where('p.email = :email')
+                ->setParameter('email', $username)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            var_dump($e->getMessage());
+        }
     }
 
     // /**

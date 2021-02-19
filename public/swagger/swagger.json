@@ -1252,7 +1252,7 @@
                 "tags": [
                     "Promotions"
                 ],
-                "operationId": "App\\Controller\\PromotionController::AddFormation",
+                "operationId": "App\\Controller\\PromotionController::AddPromotion",
                 "requestBody": {
                     "request": "promotion",
                     "content": {

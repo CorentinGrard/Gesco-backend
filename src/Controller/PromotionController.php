@@ -9,6 +9,7 @@ use App\Repository\AssistantRepository;
 use App\Repository\FormationRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\PromotionRepository;
+use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -131,22 +132,27 @@ class PromotionController extends AbstractController
      *      )
      * )
      * @Route("/responsables/promotions", name="promotions_by_responsable", methods={"GET"})
-     * @param PersonneRepository $personneRepository
+     * @param ResponsableRepository $personneRepository
      * @return Response
      * @Security("is_granted('ROLE_RESPO')")
      */
-    public function getPromotionsForRespo(PersonneRepository $personneRepository):Response
+    public function getPromotionsForRespo(ResponsableRepository $personneRepository):Response
     {
         $promotions = [];
         $user = $this->getUser();
         if($user != null){
             $username = $user->getUsername();
             if(!empty($username)){
-                $personne = $personneRepository->findOneByUsername($username);
-                $formations = $personne->getFormations();
-                foreach ($promotions as $promotion)
+                $respo = $personneRepository->findOneByUsername($username);
+                if($respo == null)
+                    return new JsonResponse("Erreur...", Response::HTTP_NOT_FOUND);
+                $formations = $respo->getFormations();
+                foreach ($formations as $formation)
                 {
-                    array_push($promotions, $promotion);
+                    foreach($formation->getPromotions() as $promotion)
+                    {
+                        array_push($promotions, $promotion);
+                    }
                 }
             }
         }
@@ -179,7 +185,7 @@ class PromotionController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function AddFormation(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
 
         $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository, $request);
