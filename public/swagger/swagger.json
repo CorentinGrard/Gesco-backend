@@ -428,6 +428,82 @@
                 }
             }
         },
+        "/intervenants": {
+            "get": {
+                "tags": [
+                    "Intervenants"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Intervenant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/intervenants/{id}": {
+            "get": {
+                "tags": [
+                    "Intervenants"
+                ],
+                "operationId": "App\\Controller\\IntervenantController::read",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Intervenant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/matieres/{id}/intervenants": {
+            "get": {
+                "tags": [
+                    "Intervenants"
+                ],
+                "operationId": "App\\Controller\\IntervenantController::intervenantsParMatiere",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Matiere"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/matieres": {
             "get": {
                 "tags": [
@@ -1954,6 +2030,23 @@
                     },
                     "isAlternance": {
                         "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "Intervenant": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "Personne": {
+                        "$ref": "#/components/schemas/Personne"
+                    },
+                    "matieres": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Matiere"
+                        }
                     }
                 },
                 "type": "object"

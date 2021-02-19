@@ -66,7 +66,7 @@ class Responsable
     public function setPersonne(Personne $Personne): self
     {
         $this->Personne = $Personne;
-
+        $this->Personne->addRole("ROLE_RESPO");
         return $this;
     }
 

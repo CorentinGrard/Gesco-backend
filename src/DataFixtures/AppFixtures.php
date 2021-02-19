@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Assistant;
 use App\Entity\Etudiant;
 use App\Entity\Formation;
+use App\Entity\Intervenant;
 use App\Entity\Note;
 use App\Entity\Responsable;
 use App\Entity\Site;
@@ -20,6 +21,7 @@ use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use petstore\Pet;
 use SessionType;
 
 class AppFixtures extends Fixture
@@ -46,7 +48,7 @@ class AppFixtures extends Fixture
             $personne->setAdresse($faker->address);
             $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
-            $personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
+//            $personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
 
             $responsable = new Responsable();
             $responsable->setPersonne($personne);
@@ -65,7 +67,7 @@ class AppFixtures extends Fixture
         $personne->setAdresse($faker->address);
         $personne->generateEmail(false);
         $personne->setNumeroTel($faker->phoneNumber);
-        $personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
+        //$personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
 
         $responsable = new Responsable();
         $responsable->setPersonne($personne);
@@ -82,7 +84,7 @@ class AppFixtures extends Fixture
         $personne->setAdresse("");
         $personne->generateEmail(true);
         $personne->setNumeroTel("07XXXXXXXX");
-        $personne->setRoles(["ROLE_ADMIN","ROLE_USER"]);
+        $personne->addRole("ROLE_ADMIN");
         $manager->persist($personne);
 
 
@@ -170,7 +172,7 @@ class AppFixtures extends Fixture
             $personne->setAdresse($faker->address);
             $personne->generateEmail(false);
             $personne->setNumeroTel($faker->phoneNumber);
-            $personne->setRoles(["ROLE_ASSISTANT","ROLE_USER"]);
+//            $personne->setRoles(["ROLE_ASSISTANT","ROLE_USER"]);
 
             $assistant = new Assistant();
             $assistant->setPersonne($personne);
@@ -185,7 +187,7 @@ class AppFixtures extends Fixture
         $personne->setAdresse("Quelque part");
         $personne->generateEmail(false);
         $personne->setNumeroTel("04XXXXXXXX");
-        $personne->setRoles(["ROLE_ASSISTANT","ROLE_USER"]);
+//        $personne->setRoles(["ROLE_ASSISTANT","ROLE_USER"]);
 
         $assistant = new Assistant();
         $assistant->setPersonne($personne);
@@ -232,6 +234,16 @@ class AppFixtures extends Fixture
             $k++;
         }
 
+        $intervenant = new Intervenant();
+        $personne = new Personne();
+        $personne->setPrenom($faker->firstName);
+        $personne->setNom($faker->lastName);
+        $personne->setEmail("intervenant.test@gmail.com");
+        $manager->persist($personne);
+        $intervenant->setPersonne($personne);
+        $manager->persist($intervenant);
+
+
         $k = 0;
         $matieres = [];
         foreach ($modules as $module) {
@@ -242,6 +254,7 @@ class AppFixtures extends Fixture
             $matiere->setCoefficient($k % 4 + 1);
             $matiere->setModule($module);
             $matiere->setNombreHeuresAPlacer(($k % 5) * 1);
+            $matiere->addIntervenant($intervenant);
             $manager->persist($matiere);
             array_push($matieres, $matiere);
 
@@ -286,7 +299,7 @@ class AppFixtures extends Fixture
         //$personne->set Email("antonin.cabane@gmail.com");
         $personne->generateEmail(true);
         $personne->setNumeroTel("0750214383");
-        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
+//        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
 
 
         $etudiant1 = new Etudiant();
@@ -306,7 +319,7 @@ class AppFixtures extends Fixture
         $personne->setAdresse("30 allée des Nouilles\n30100 Alès");
         $personne->generateEmail(true);
         $personne->setNumeroTel("06XXXXXXXX");
-        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
+//        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
 
         $etudiant2 = new Etudiant();
         $etudiant2->setPersonne($personne);
@@ -331,7 +344,7 @@ class AppFixtures extends Fixture
         $personne->setAdresse("40 Chemin du Viget\n30100 Alès");
         $personne->generateEmail(true);
         $personne->setNumeroTel("07XXXXXXXX");
-        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
+//        $personne->setRoles(["ROLE_ETUDIANT","ROLE_USER"]);
 
         $etudiant3 = new Etudiant();
         $etudiant3->setPersonne($personne);

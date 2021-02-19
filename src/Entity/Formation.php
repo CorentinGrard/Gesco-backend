@@ -197,12 +197,12 @@ class Formation
 
     public function getRespo(): ?Responsable
     {
-        return $this->respo;
+        return $this->responsable;
     }
 
     public function setRespo(?Responsable $respo): self
     {
-        $this->respo = $respo;
+        $this->responsable = $respo;
 
         return $this;
     }

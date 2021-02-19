@@ -77,6 +77,8 @@ class Assistant
     {
         $this->Personne = $Personne;
 
+        $this->Personne->addRole("ROLE_ASSISTANT");
+
         return $this;
     }
 

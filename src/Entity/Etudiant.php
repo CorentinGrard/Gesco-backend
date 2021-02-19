@@ -96,6 +96,8 @@ class Etudiant
     {
         $this->Personne = $Personne;
 
+        $this->Personne->addRole("ROLE_ETUDIANT");
+
         return $this;
     }
 

@@ -30,7 +30,10 @@ class Personne implements UserInterface
      *     "get_assistant",
      *     "get_promotion",
      *     "get_formation",
-     *     "update_formation"
+     *     "update_formation",
+     *     "get_intervenant",
+     *     "matiere_get",
+     *     "get_intervenant_by_matiere"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -51,7 +54,10 @@ class Personne implements UserInterface
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
      *     "update_formation",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "get_intervenant",
+     *     "matiere_get",
+     *     "get_intervenant_by_matiere"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -70,7 +76,10 @@ class Personne implements UserInterface
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
      *     "update_formation",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "get_intervenant",
+     *     "matiere_get",
+     *     "get_intervenant_by_matiere"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -89,7 +98,7 @@ class Personne implements UserInterface
      *     "update_etudiant",
      *     "update_promotion"
      * })
-     * @ORM\Column(type="text", length=255)
+     * @ORM\Column(type="text", length=255, nullable=true)
      */
     private $email;
 
@@ -140,6 +149,7 @@ class Personne implements UserInterface
     public function __construct()
     {
         $this->formations = new ArrayCollection();
+        $this->roles = ["ROLE_USER"];
     }
 
     public function getId(): ?int
@@ -176,12 +186,12 @@ class Personne implements UserInterface
         return $this->email;
     }
 
-    /*public function set Email(string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
         return $this;
-    }*/
+    }
 
     public function getAdresse(): ?string
     {
@@ -308,4 +318,11 @@ class Personne implements UserInterface
 
         return $this;
     }*/
+    public function addRole(string $role) :self
+    {
+        if (!in_array($role, $this->roles)) {
+            array_push($this->roles, $role);
+        }
+        return $this;
+    }
 }
