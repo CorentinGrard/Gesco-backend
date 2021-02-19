@@ -158,12 +158,11 @@ class SemestreController extends AbstractController
      * )
      * @Route("/semestre/{id}", name="delete_semestre", methods={"DELETE"})
      * @param SemestreRepository $semestreRepository
-     * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Semestre $semestre
      * @return JsonResponse
      */
-    public function deleteSemestre(SemestreRepository $semestreRepository, Request $request, EntityManagerInterface $entityManager, Semestre $semestre): JsonResponse
+    public function deleteSemestre(SemestreRepository $semestreRepository, EntityManagerInterface $entityManager, Semestre $semestre): JsonResponse
     {
         $repoResponse = $semestreRepository->deleteSemestre($entityManager, $semestre);
         $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'delete_semestre']);

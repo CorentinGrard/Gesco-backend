@@ -81,6 +81,12 @@ class SemestreRepository extends ServiceEntityRepository
 
     public function deleteSemestre(EntityManagerInterface $entityManager, Semestre $semestre): array
     {
+        if (isNull($semestre)) {
+            return [
+                "status" => 404,
+                "data" => "Semestre non trouvé"
+            ];
+        }
         if (sizeof($semestre->getModules()) > 0) {
             return [
                 "status" => 409,
