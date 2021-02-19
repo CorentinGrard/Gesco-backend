@@ -18,8 +18,7 @@ class Promotion
     /**
      * @OA\Property(type="integer",
      *      readOnly="true")
-     * @Groups({
-     *     "get_promotion",
+     * @Groups({"get_promotion",
      *     "get_assistant",
      *     "get_etudiant",
      *     "get_etudiants_by_promotion",
@@ -60,7 +59,7 @@ class Promotion
      *      readOnly="true"
      * )
      * @ORM\OneToMany(targetEntity=Semestre::class, mappedBy="promotion")
-     * @Groups({"get_promotion"})
+     * @Groups({"get_promotion","get_modules_by_promotion"})
      */
     private $semestres;
 

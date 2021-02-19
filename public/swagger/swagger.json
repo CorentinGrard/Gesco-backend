@@ -624,6 +624,28 @@
                 }
             }
         },
+        "/promotions/{id}/modules": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::getModulesByPromotion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "404": {}
+                }
+            }
+        },
         "/semestres/{id}/modules": {
             "post": {
                 "tags": [
