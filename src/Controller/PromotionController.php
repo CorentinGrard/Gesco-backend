@@ -5,10 +5,13 @@ namespace App\Controller;
 use App\Entity\Assistant;
 use App\Entity\Formation;
 use App\Entity\Promotion;
+use App\Repository\AssistantRepository;
 use App\Repository\FormationRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\PromotionRepository;
 use App\Serializers\GenericSerializer;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -156,7 +159,44 @@ class PromotionController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(tags={"Promotions"},
+     *      path="/promotions",
+     *      @OA\RequestBody(
+     *          request="promotion",
+     *          @OA\JsonContent(
+     *              @OA\Property(type="number", property="idFormation", required = true),
+     *              @OA\Property(type="number", property="idAssistant", required = true),
+     *              @OA\Property(type="string", property="namePromotion", required = true)
+     *          )
+     *      ),
+     *      @OA\Response(response="200", description="Promotion ajoutée"),
+     *      @OA\Response(response="400", description="Requête invalide"),
+     *      @OA\Response(response="404", description="Erreur")
+     * )
+     * @Route("/promotions", methods={"POST"})
+     * @param FormationRepository $formationRepository
+     * @param PromotionRepository $promotionRepository
+     * @param AssistantRepository $assistantRepository
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return JsonResponse
+     */
+    public function AddFormation(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
 
+        $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository , $request);
 
-
+        switch ($repoResponse["status"])
+        {
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 200:
+                return new JsonResponse("Ok",Response::HTTP_CREATED);
+                break;
+            default:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+        }
+    }
 }
