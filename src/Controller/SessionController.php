@@ -39,7 +39,7 @@ class SessionController extends AbstractController
      * @Route("/sessions", name="session_list", methods={"GET"})
      * @param SessionRepository $sessionRepository
      * @return Response
-     * @Security("is_granted('ROLE_ETUDIANT')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_ASSISTANT')")
      */
     public function list(SessionRepository $sessionRepository, LoggerInterface $logger, EtudiantRepository $etudiantRepository): Response
     {
