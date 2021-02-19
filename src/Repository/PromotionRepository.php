@@ -193,7 +193,8 @@ class PromotionRepository extends ServiceEntityRepository
         $entityManager->flush();
 
         return [
-            "status" => 200,
+            "status" => 201,
+            "data"   =>$promotion,
             "error"  => null
         ];
     }

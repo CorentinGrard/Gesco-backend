@@ -186,15 +186,15 @@ class PromotionController extends AbstractController
      */
     public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-
         $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository, $request);
 
         switch ($repoResponse["status"]) {
             case 404:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
                 break;
-            case 200:
-                return new JsonResponse("Ok", Response::HTTP_CREATED);
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "add_promotion"]);
+                return new JsonResponse($json, Response::HTTP_CREATED);
                 break;
             default:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
@@ -220,7 +220,6 @@ class PromotionController extends AbstractController
      *      ),
      *      @OA\Response(response="201", description="promotion modifiée !"),
      *      @OA\Response(response="409", description="La formation renseignée n'existe pas"),
-     *      @OA\Response(response="409", description="L'assistant(e) renseignée n'existe pas"),
      *      @OA\Response(response="404", description="Non trouvée...")
      * )
      * @Route("/promotion/{id}", name="update_promotion", methods={"PUT"})
@@ -232,7 +231,7 @@ class PromotionController extends AbstractController
      * @param Promotion $promotion
      * @return JsonResponse
      */
-    public function updatePromotion(PromotionRepository $promotionRepository,FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
+    public function UpdatePromotion(PromotionRepository $promotionRepository, FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -240,12 +239,11 @@ class PromotionController extends AbstractController
         $formation_id = $data["formation_id"];
         $assistant_id = $data["assistant_id"];
 
-
         if (empty($nom) || empty($formation_id) || empty($assistant_id)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $promotionRepository->updatePromotion($entityManager,$formationRepository,$assistantRepository,$nom,$formation_id,$assistant_id,$promotion);
+        $repoResponse = $promotionRepository->updatePromotion($entityManager, $formationRepository, $assistantRepository, $nom, $formation_id, $assistant_id, $promotion);
 
         switch ($repoResponse["status"]){
             case 201:

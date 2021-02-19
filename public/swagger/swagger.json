@@ -1373,7 +1373,7 @@
                 "tags": [
                     "Promotions"
                 ],
-                "operationId": "App\\Controller\\PromotionController::updatePromotion",
+                "operationId": "App\\Controller\\PromotionController::UpdatePromotion",
                 "parameters": [
                     {
                         "name": "id",
