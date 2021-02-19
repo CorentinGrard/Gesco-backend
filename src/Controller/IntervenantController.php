@@ -6,6 +6,8 @@ use App\Entity\Intervenant;
 use App\Entity\Matiere;
 use App\Repository\IntervenantRepository;
 use App\Serializers\GenericSerializer;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +53,7 @@ class IntervenantController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Intervenant")
      *      )
      * )
-     * @Route("/intervenants/{id}", name="list_intervenants")
+     * @Route("/intervenants/{id}", name="list_intervenants", methods={"GET"})
      * @param Intervenant|null $intervenant
      * @return Response
      */
@@ -82,7 +84,7 @@ class IntervenantController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Matiere")
      *      )
      * )
-     * @Route("/matieres/{id}/intervenants", name="list_intervenants")
+     * @Route("/matieres/{id}/intervenants", name="intervenant", methods={"GET"})
      * @param Matiere|null $matiere
      * @return Response
      */
@@ -95,6 +97,36 @@ class IntervenantController extends AbstractController
         $json = GenericSerializer::serializeJson($matiere, ["groups"=>"get_intervenant_by_matiere"]);
 
         return new JsonResponse($json, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Delete(
+     *     tags={"Intervenants"},
+     *      path="/intervenants/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(response="200", description="Intervenant supprimé"),
+     *      @OA\Response(response="404", description="Intervenant non supprimé"),
+     * )
+     * @Route("/intervenants/{id}", name="delete_intervenant", methods={"DELETE"})
+     * @param Intervenant|null $intervenant
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function deleteIntervenant(EntityManagerInterface $em, Intervenant $intervenant = null):Response
+    {
+        if($intervenant == null){
+            return new JsonResponse("Intervenant inexistant", Response::HTTP_NOT_FOUND);
+        }
+        $nom = $intervenant->getPersonne()->getNom() . " " .  $intervenant->getPersonne()->getPrenom();
+        $em->remove($intervenant);
+        $em->flush();
+
+        return new JsonResponse("Intervenant '$nom' supprimé", Response::HTTP_OK);
     }
 
 }

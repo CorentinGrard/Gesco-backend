@@ -473,6 +473,30 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Intervenants"
+                ],
+                "operationId": "App\\Controller\\IntervenantController::deleteIntervenant",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Intervenant supprimé"
+                    },
+                    "304": {
+                        "description": "Intervenant non supprimé"
+                    }
+                }
             }
         },
         "/matieres/{id}/intervenants": {
