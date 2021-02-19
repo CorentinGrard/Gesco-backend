@@ -25,7 +25,8 @@ class Promotion
      *     "get_etudiants_for_all_promotions",
      *     "add_semestre_by_promotion",
      *     "get_formation",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "delete_promotion"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -41,7 +42,8 @@ class Promotion
      *     "get_promotion",
      *     "get_etudiants_by_promotion",
      *     "get_formation",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "delete_promotion"
      * })
      */
     private $nom;

@@ -220,4 +220,44 @@ class PromotionRepository extends ServiceEntityRepository
         }
 
     }
+
+    public function deletePromotion(EntityManagerInterface $entityManager, Promotion $promotion)
+    {
+        if(!$promotion) {
+            return [
+                "status"=>409,
+                "error"=>"La promotion n'existe pas"
+            ];
+        }
+
+        if (!(sizeof($promotion->getSemestres()) === 0)) {
+            return [
+                "status"=>409,
+                "error"=>"La promotion ne peut pas être supprimée, elle comprend des semestres"
+            ];
+        }
+
+        if (!(sizeof($promotion->getEtudiants()) === 0)) {
+            return [
+                "status"=>409,
+                "error"=>"La promotion ne peut pas être supprimée, elle comprend des étudiants"
+            ];
+        }
+
+        try {
+            $entityManager->remove($promotion);
+            $entityManager->flush();
+            return [
+                "status"=>204,
+                "data"=>$promotion
+            ];
+        } catch (\Exception $e) {
+            return [
+                "status"=>500,
+                "error"=>"La suppression de la promotion en base de données a échouée"
+            ];
+        }
+
+
+    }
 }
