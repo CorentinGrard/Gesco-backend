@@ -164,6 +164,14 @@ class SemestreController extends AbstractController
      */
     public function deleteSemestre(SemestreRepository $semestreRepository, EntityManagerInterface $entityManager, Semestre $semestre = null): JsonResponse
     {
+                if (is_null($semestre)) {
+            $reponse = [
+                "status" => 404,
+                "data" => "Semestre non trouvé"
+            ];
+            $json = SessionSerializer::serializeJson($reponse["data"], ['groups' => 'delete_semestre']);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
         $repoResponse = $semestreRepository->deleteSemestre($entityManager, $semestre);
         $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'delete_semestre']);
         return new JsonResponse($json, Response::HTTP_CREATED);
