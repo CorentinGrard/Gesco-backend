@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Assistant;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
+use App\Repository\AssistantRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
+use App\Repository\PersonneRepository;
 use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
 use App\Serializers\SessionSerializer;
@@ -38,23 +41,43 @@ class SessionController extends AbstractController
      * )
      * @Route("/sessions", name="session_list", methods={"GET"})
      * @param SessionRepository $sessionRepository
+     * @param LoggerInterface $logger
+     * @param AssistantRepository $assistantRepository
+     * @param PersonneRepository $personneRepository
      * @return Response
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_ASSISTANT')")
      */
-    public function list(SessionRepository $sessionRepository, LoggerInterface $logger, EtudiantRepository $etudiantRepository): Response
+    public function list(SessionRepository $sessionRepository, LoggerInterface $logger, AssistantRepository $assistantRepository, PersonneRepository $personneRepository): Response
     {
         $sessions = $sessionRepository->findAll();
 
-        $user = $this->getUser();
+        /*$user = $this->getUser();
         if($user != null){
             $username = $user->getUsername();
             if(!empty($username)){
-                $etudiant = $etudiantRepository->findOneByUsername($username);
-                if($etudiant != null){
-                    $logger->debug("Etudiant trouvé !!! => " . $etudiant->getPersonne()->getEmail());
+                $personne = $assistantRepository->findOneByUsername($username);
+                if($personne != null){
+                    $logger->debug("Assistant trouvé !!! => " . $personne->getPersonne()->getEmail());
+                    foreach($personne->getPromotions() as $promotion)
+                    {
+                        array_push($sessions, $promotion->getFormation()->)
+                    }
+                }else{
+                    $admin = $personneRepository->findOneByUsername($username);
+                    if(in_array("ROLE_ADMIN", $personne->getRoles()))
+                    {
+                        $logger->debug("Admin trouvé !!! => " . $personne->getEmail());
+                        $sessions = $sessionRepository->findAll();
+                    } else
+                    {
+                        $logger->debug("Admin non trouvé !!!");
+                        return new JsonResponse("Admin non trouvé", Response::HTTP_FORBIDDEN);
+                    }
+
                 }
             }
-        }
+        }*/
+
 
         $json = SessionSerializer::serializeJson($sessions, ['groups'=>'session_get']);
 
@@ -222,7 +245,13 @@ class SessionController extends AbstractController
      *      ),
      *      @OA\RequestBody(
      *          request="sessions",
-     *          @OA\JsonContent(ref="#/components/schemas/Session")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="type", ref="#/components/schemas/Session/properties/type"),
+     *              @OA\Property(property="obligatoire", ref="#/components/schemas/Session/properties/obligatoire"),
+     *              @OA\Property(property="dateDebut", ref="#/components/schemas/Session/properties/dateDebut"),
+     *              @OA\Property(property="dateFin", ref="#/components/schemas/Session/properties/dateFin"),
+     *              @OA\Property(property="detail", ref="#/components/schemas/Session/properties/detail"),
+     *          )
      *      ),
      *      @OA\Response(response="201", description="Session ajoutée !"),
      *      @OA\Response(response="409", description="Erreur...")
@@ -247,7 +276,7 @@ class SessionController extends AbstractController
         $detail = $data['detail'];
 
         if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
-            throw new NotFoundHttpException('Expecting mandatory parameters!');
+            throw new NotFoundHttpException('Paramètres obligatoires attendus !');
         }
 
         try {
@@ -327,7 +356,7 @@ class SessionController extends AbstractController
         $detail = $data['detail'];
 
         if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
-            throw new NotFoundHttpException('Expecting mandatory parameters!');
+            throw new NotFoundHttpException('Paramètres obligatoires attendus !');
         }
 
         if(empty($idMatiere))
@@ -363,7 +392,7 @@ class SessionController extends AbstractController
      * @Route("/sessions/{id}", name="delete_session", methods={"DELETE"})
      * @param SessionRepository $sessionRepository
      * @param EntityManagerInterface $entityManager
-     * @param Session $session
+     * @param Session|null $session
      * @return JsonResponse
      */
     public function deleteSession(SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session = null): JsonResponse
