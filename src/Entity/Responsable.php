@@ -27,7 +27,10 @@ class Responsable
     /**
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_formation"})
+     * @Groups({
+     *     "get_formation",
+     *     "update_formation"
+     * })
      * @var Personne
      */
     private $Personne;

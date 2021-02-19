@@ -34,7 +34,8 @@ class Formation
      * @Groups({
      *     "get_etudiant",
      *     "get_formation",
-     *     "get_promotion"
+     *     "get_promotion",
+     *     "update_formation"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -58,7 +59,9 @@ class Formation
      *      )
      * )
      * @ORM\OneToMany(targetEntity=Promotion::class, mappedBy="formation" , cascade={"persist"})
-     * @Groups({"get_formation"})
+     * @Groups({
+     *     "get_formation"
+     * })
      * @var Promotion
      */
         private $promotions;
@@ -86,7 +89,10 @@ class Formation
      *      ),
      * ),
      * @ORM\ManyToOne(targetEntity=Responsable::class, inversedBy="formations" , cascade={"persist"})
-     * @Groups({"get_formation"})
+     * @Groups({
+     *     "get_formation",
+     *     "update_formation"
+     * })
      * @ORM\JoinColumn(nullable=false)
      * @var Responsable
      */
@@ -98,7 +104,8 @@ class Formation
      * @Groups({
      *     "get_etudiant",
      *     "get_promotion",
-     *     "get_formation"
+     *     "get_formation",
+     *     "update_formation"
      * })
      */
     private $isAlternance;
