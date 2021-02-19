@@ -296,12 +296,36 @@
                 }
             }
         },
+        "/formations/{idFormation}": {
+            "delete": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::DeleteFormationById",
+                "parameters": [
+                    {
+                        "name": "idFormation",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {},
+                    "409": {}
+                }
+            }
+        },
         "/formations": {
             "get": {
                 "tags": [
                     "Formations"
                 ],
-                "operationId": "App\\Controller\\FormationController::getAllFormation",
+                "operationId": "App\\Controller\\FormationController::GetAllFormation",
                 "responses": {
                     "200": {
                         "description": "get all formations",
@@ -336,6 +360,10 @@
                                     "idResponsable": {
                                         "required": true,
                                         "type": "number"
+                                    },
+                                    "isAlternant": {
+                                        "required": true,
+                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -344,8 +372,11 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Formation ajoutée"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
                     },
                     "404": {
                         "description": "Erreur"
@@ -1552,12 +1583,37 @@
                                 "id": {
                                     "$ref": "#/components/schemas/Promotion/properties/id"
                                 },
+                                "nom": {
+                                    "$ref": "#/components/schemas/Promotion/properties/nom"
+                                },
                                 "nomPromotion": {
                                     "$ref": "#/components/schemas/Promotion/properties/nomPromotion"
                                 }
                             },
                             "type": "object"
                         }
+                    },
+                    "responsable": {
+                        "properties": {
+                            "id": {
+                                "$ref": "#/components/schemas/Responsable/properties/id"
+                            },
+                            "Personne": {
+                                "properties": {
+                                    "id": {
+                                        "$ref": "#/components/schemas/Personne/properties/id"
+                                    },
+                                    "nom": {
+                                        "$ref": "#/components/schemas/Personne/properties/nom"
+                                    },
+                                    "prenom": {
+                                        "$ref": "#/components/schemas/Personne/properties/prenom"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
                     },
                     "isAlternance": {
                         "type": "boolean"
