@@ -17,8 +17,7 @@ class Matiere
 {
     /**
      * @OA\Property(
-     *      type="integer",
-     *      readOnly="true"
+     *      type="integer"
      * )
      * @ORM\Id
      * @ORM\GeneratedValue

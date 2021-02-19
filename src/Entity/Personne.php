@@ -118,7 +118,7 @@ class Personne implements UserInterface
     private $numeroTel;
 
     /**
-     * @OA\Property(type="array")
+     * @OA\Property(type="array",@OA\Items(type="string"))
      * @Groups({"get_personne"})
      * @ORM\Column(type="array")
      */

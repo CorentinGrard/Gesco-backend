@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
 use App\Serializers\SessionSerializer;
@@ -50,7 +51,7 @@ class SessionRepository extends ServiceEntityRepository
         return $sessionArray;
     }
 
-    public function updateSession(EntityManagerInterface $entityManager, Session $session, string $type, bool $obligatoire, $dateDebut, $dateFin, $detail)
+    public function updateSession(EntityManagerInterface $entityManager, Session $session, string $type, bool $obligatoire, $dateDebut, $dateFin, $detail, Matiere $matiere)
     {
         $session->setDetail($detail);
         $session->setType($type);
@@ -60,6 +61,7 @@ class SessionRepository extends ServiceEntityRepository
         } catch (\Exception $e) {
         }
         $session->setDateFin(new \DateTime($dateFin));
+        $session->setMatiere($matiere);
 
         $entityManager->persist($session);
         $entityManager->flush();
@@ -75,7 +77,7 @@ class SessionRepository extends ServiceEntityRepository
 
         return [
             "status" => 200,
-            "error" => "Etudiant correctement supprimé"
+            "data" => "Sessions correctement supprimée"
         ];
 
     }

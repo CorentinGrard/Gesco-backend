@@ -7,13 +7,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use OpenApi\Annotations as OA;
 
 /**
+ * @OA\Schema()
  * @ORM\Entity(repositoryClass=ResponsableRepository::class)
  */
 class Responsable
 {
     /**
+     * @OA\Property(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -25,6 +28,7 @@ class Responsable
     private $id;
 
     /**
+     * @OA\Property(ref="#/components/schemas/Personne")
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_formation"})
@@ -33,6 +37,9 @@ class Responsable
     private $Personne;
 
     /**
+     * @OA\Property(type="array",
+     *     @OA\Items(ref="#/components/schemas/Formation")
+     * )
      * @ORM\OneToMany(targetEntity=Formation::class, mappedBy="responsable")
      * @var Formation[]
      */

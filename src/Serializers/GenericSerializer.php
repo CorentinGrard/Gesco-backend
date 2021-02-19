@@ -14,12 +14,23 @@ abstract class GenericSerializer
 {
     public static $serializer;
 
-    public static function serializeJson($obj, $groups){
+    public static function serializeJson($obj, array $groups){
+        self::initSerializer();
+        return self::$serializer->normalize($obj, 'json', $groups);
+    }
+
+    public static function deSerializeJson($obj, array $groups, string $class){
+        self::initSerializer();
+        return self::$serializer->denormalize($obj, $class, $groups);
+    }
+
+
+    public static function initSerializer()
+    {
         if(self::$serializer == null){
             $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
             $normalizer = new ObjectNormalizer($classMetadataFactory);
             self::$serializer = new Serializer([$normalizer],[new JsonEncoder()]);
         }
-        return self::$serializer->normalize($obj, 'json', $groups);
     }
 }

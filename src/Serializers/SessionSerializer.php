@@ -4,6 +4,7 @@
 namespace App\Serializers;
 
 
+use App\Entity\Session;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
@@ -16,7 +17,18 @@ abstract class SessionSerializer
 {
     public static $serializer;
 
-    public static function serializeJson($obj, $groups){
+    public static function serializeJson($obj, array $groups){
+        self::initSerializer();
+        return self::$serializer->normalize($obj, 'json', $groups);
+    }
+
+    public static function deSerializeJson($obj, array $groups){
+        self::initSerializer();
+        return self::$serializer->denormalize($obj, Session::class, null, $groups);
+    }
+
+    public static function initSerializer()
+    {
         if(self::$serializer == null){
             $dateCallback = function ($innerObject, $outerObject, string $attributeName, string $format = null, array $context = []) {
                 return $innerObject instanceof \DateTime ? $innerObject->format(\DateTime::RFC3339) : '';
@@ -32,6 +44,6 @@ abstract class SessionSerializer
             $normalizer = new ObjectNormalizer($classMetadataFactory, null,null,null,null,null,$defaultContext);
             self::$serializer = new Serializer([$normalizer],[new JsonEncoder()]);
         }
-        return self::$serializer->normalize($obj, 'json', $groups);
     }
+
 }
