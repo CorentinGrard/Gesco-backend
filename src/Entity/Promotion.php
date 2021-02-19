@@ -111,8 +111,8 @@ class Promotion
      * @ORM\OneToMany(targetEntity=Etudiant::class, mappedBy="Promotion")
      * @Groups({
      *     "get_etudiants_by_promotion",
-     *     "get_etudiants_for_all_promotions
-     * "})
+     *     "get_etudiants_for_all_promotions"
+     * })
      */
     private $Etudiants;
 

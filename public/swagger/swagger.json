@@ -1770,7 +1770,24 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Session"
+                                "properties": {
+                                    "type": {
+                                        "$ref": "#/components/schemas/Session/properties/type"
+                                    },
+                                    "obligatoire": {
+                                        "$ref": "#/components/schemas/Session/properties/obligatoire"
+                                    },
+                                    "dateDebut": {
+                                        "$ref": "#/components/schemas/Session/properties/dateDebut"
+                                    },
+                                    "dateFin": {
+                                        "$ref": "#/components/schemas/Session/properties/dateFin"
+                                    },
+                                    "detail": {
+                                        "$ref": "#/components/schemas/Session/properties/detail"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
