@@ -296,12 +296,36 @@
                 }
             }
         },
+        "/formations/{idFormation}": {
+            "delete": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::DeleteFormationById",
+                "parameters": [
+                    {
+                        "name": "idFormation",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {},
+                    "409": {}
+                }
+            }
+        },
         "/formations": {
             "get": {
                 "tags": [
                     "Formations"
                 ],
-                "operationId": "App\\Controller\\FormationController::getAllFormation",
+                "operationId": "App\\Controller\\FormationController::GetAllFormation",
                 "responses": {
                     "200": {
                         "description": "get all formations",
@@ -336,6 +360,10 @@
                                     "idResponsable": {
                                         "required": true,
                                         "type": "number"
+                                    },
+                                    "isAlternant": {
+                                        "required": true,
+                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -344,8 +372,11 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Formation ajoutée"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
                     },
                     "404": {
                         "description": "Erreur"
@@ -626,6 +657,56 @@
                     },
                     "404": {
                         "description": "Non trouvé..."
+                    }
+                }
+            }
+        },
+        "/module/{id}": {
+            "put": {
+                "tags": [
+                    "Modules"
+                ],
+                "operationId": "App\\Controller\\ModuleController::updateModule",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Module",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "ects": {
+                                        "type": "integer"
+                                    },
+                                    "semestre_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Module modifié !"
+                    },
+                    "409": {
+                        "description": "Le semestre renseigné n'existe pas"
+                    },
+                    "404": {
+                        "description": "Non trouvée..."
                     }
                 }
             }

@@ -161,7 +161,67 @@ class ModuleController extends AbstractController
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse($json, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Put(
+     *      tags={"Modules"},
+     *      path="/module/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Module",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="ects",type="integer"),
+     *              @OA\Property(property="semestre_id",type="integer")
+     *          )
+     *      ),
+     *      @OA\Response(response="201", description="Module modifié !"),
+     *      @OA\Response(response="409", description="Le semestre renseigné n'existe pas"),
+     *      @OA\Response(response="404", description="Non trouvée...")
+     * )
+     * @Route("/module/{id}", name="update_module", methods={"PUT"})
+     * @param SemestreRepository $semestreRepository
+     * @param ModuleRepository $moduleRepository
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param Module $module
+     * @return JsonResponse
+     */
+    public function updateModule(SemestreRepository $semestreRepository,ModuleRepository $moduleRepository, Request $request, EntityManagerInterface $entityManager, Module $module): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $nom = $data["nom"];
+        $ects = $data["ects"];
+        $semestre_id = $data["semestre_id"];
+
+
+        if (empty($nom) || empty($ects) || empty($semestre_id)) {
+            throw new NotFoundHttpException('Expecting mandatory parameters!');
+        }
+
+        $repoResponse = $moduleRepository->updateModule($entityManager,$semestreRepository,$nom,$ects,$semestre_id,$module);
+
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'update_module']);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
     }
 
 
