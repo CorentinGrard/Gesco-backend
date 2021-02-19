@@ -162,7 +162,7 @@ class SemestreController extends AbstractController
      * @param Semestre $semestre
      * @return JsonResponse
      */
-    public function deleteSemestre(SemestreRepository $semestreRepository, EntityManagerInterface $entityManager, Semestre $semestre): JsonResponse
+    public function deleteSemestre(SemestreRepository $semestreRepository, EntityManagerInterface $entityManager, Semestre $semestre = null): JsonResponse
     {
         $repoResponse = $semestreRepository->deleteSemestre($entityManager, $semestre);
         $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'delete_semestre']);
