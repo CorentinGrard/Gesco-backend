@@ -142,4 +142,57 @@ class FormationController extends AbstractController
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * @OA\Put(
+     *      tags={"Formations"},
+     *      path="/formations/{idFormation}",
+     *      @OA\Parameter(
+     *          name="idFormation",
+     *          in="path",
+     *          required=true,
+     *          description="idPromotion",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          request="formation",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="idResponsable",type="number"),
+     *              @OA\Property(property="isAlternance",type="boolean")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="La formation n'existe pas'",
+     *     )
+     * )
+     * @Route("/formations/{idFormation}", name="update_formation", methods={"PUT"})
+     * @param int $idFormation
+     * @param FormationRepository $formationRepository
+     * @param PersonneRepository $personneRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function UpdateFormation(int $idFormation, FormationRepository $formationRepository,EntityManagerInterface $entityManager,
+                                    Request $request, PersonneRepository $personneRepository): JsonResponse
+    {
+        $repoResponse = $formationRepository->UpdateFormation($formationRepository, $entityManager, $idFormation, $request, $personneRepository);
+
+        switch ($repoResponse["status"]) {
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "update_formation"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
 }

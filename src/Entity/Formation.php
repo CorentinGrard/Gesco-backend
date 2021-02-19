@@ -27,7 +27,7 @@ class Formation
 
     /**
      * @OA\Property(type="string")
-     * @Groups({"get_etudiant","get_formation", "get_promotion"})
+     * @Groups({"get_etudiant","get_formation", "get_promotion" , "update_formation"})
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
@@ -51,7 +51,7 @@ class Formation
 
     /**
      * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="formations" , cascade={"persist"})
-     * @Groups({"get_formation"})
+     * @Groups({"get_formation", "update_formation"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $responsable;
@@ -59,7 +59,7 @@ class Formation
     /**
      * @OA\Property(type="boolean")
      * @ORM\Column(type="boolean")
-     * @Groups("get_etudiant")
+     * @Groups({"get_etudiant", "update_formation"})
      */
     private $isAlternance;
 

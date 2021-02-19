@@ -3,11 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Formation;
+use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\MakerBundle\Str;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @method Formation|null find($id, $lockMode = null, $lockVersion = null)
@@ -31,7 +33,7 @@ class FormationRepository extends ServiceEntityRepository
             ];
         }
 
-        if($this->CheckFormationExist($nomFormation)){
+        if($this->CheckFormationExistByName($nomFormation)){
             return[
                 "status" => 404,
                 "error"  => "La formation existe déjà"
@@ -66,7 +68,7 @@ class FormationRepository extends ServiceEntityRepository
      * @param string $nomFormation
      * @return bool
      */
-    public function CheckFormationExist($nomFormation) : bool
+    public function CheckFormationExistByName($nomFormation) : bool
     {
         $listFormation = $this->findAll();
 
@@ -105,32 +107,43 @@ class FormationRepository extends ServiceEntityRepository
         ];
     }
 
-    // /**
-    //  * @return Formation[] Returns an array of Formation objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('f.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    public function UpdateFormation(FormationRepository $formationRepository, EntityManagerInterface $entityManager ,int $idFormation, Request $request, PersonneRepository $personneRepository){
 
-    /*
-    public function findOneBySomeField($value): ?Formation
-    {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $currentFormation = $formationRepository->find($idFormation);
+
+        if(is_null($currentFormation)){
+            return[
+                "status" => 404,
+                "error"  => "La formation d'ID ".$idFormation." n'existe pas"
+            ];
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $name = $data["nom"];
+        $idResponsable = $data["idResponsable"];
+        $isAlternance = $data["isAlternance"];
+
+        $responsable = $personneRepository->find($idResponsable);
+
+        if(is_null($responsable)){
+            return[
+                "status" => 404,
+                "error"  => "Le responsable d'Id ".$idResponsable." n'existe pas."
+            ];
+        }
+
+        $currentFormation->setIsAlternance($isAlternance);
+        $currentFormation->setNom($name);
+        $currentFormation->setResponsable($responsable);
+
+        $entityManager->persist($currentFormation);
+        $entityManager->flush();
+
+        return [
+            "status" => 201,
+            "data" => $currentFormation,
+            "error" => "Formation correctement modifiée."
+        ];
     }
-    */
 }
