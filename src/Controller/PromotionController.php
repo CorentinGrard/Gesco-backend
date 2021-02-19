@@ -122,12 +122,6 @@ class PromotionController extends AbstractController
      * @OA\Get(
      *      tags={"Promotions"},
      *      path="/responsables/promotions",
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          required=true,
-     *          @OA\Schema(type="integer")
-     *      ),
      *      @OA\Response(
      *          response="200",
      *          @OA\JsonContent(
