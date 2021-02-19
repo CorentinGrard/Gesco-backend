@@ -107,7 +107,7 @@ class FormationRepository extends ServiceEntityRepository
         ];
     }
 
-    public function UpdateFormation(FormationRepository $formationRepository, EntityManagerInterface $entityManager ,int $idFormation, Request $request, PersonneRepository $personneRepository){
+    public function UpdateFormation(FormationRepository $formationRepository, EntityManagerInterface $entityManager ,int $idFormation, Request $request, ResponsableRepository $responsableRepository){
 
         $currentFormation = $formationRepository->find($idFormation);
 
@@ -124,7 +124,7 @@ class FormationRepository extends ServiceEntityRepository
         $idResponsable = $data["idResponsable"];
         $isAlternance = $data["isAlternance"];
 
-        $responsable = $personneRepository->find($idResponsable);
+        $responsable = $responsableRepository->find($idResponsable);
 
         if(is_null($responsable)){
             return[

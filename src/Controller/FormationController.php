@@ -176,15 +176,15 @@ class FormationController extends AbstractController
      * @Route("/formations/{idFormation}", name="update_formation", methods={"PUT"})
      * @param int $idFormation
      * @param FormationRepository $formationRepository
-     * @param PersonneRepository $personneRepository
+     * @param ResponsableRepository $responsableRepository
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return JsonResponse
      */
     public function UpdateFormation(int $idFormation, FormationRepository $formationRepository,EntityManagerInterface $entityManager,
-                                    Request $request, PersonneRepository $personneRepository): JsonResponse
+                                    Request $request, ResponsableRepository $responsableRepository): JsonResponse
     {
-        $repoResponse = $formationRepository->UpdateFormation($formationRepository, $entityManager, $idFormation, $request, $personneRepository);
+        $repoResponse = $formationRepository->UpdateFormation($formationRepository, $entityManager, $idFormation, $request, $responsableRepository);
 
         switch ($repoResponse["status"]) {
             case 201:
