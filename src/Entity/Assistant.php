@@ -38,7 +38,8 @@ class Assistant
      * @Groups({
      *     "get_assistant",
      *     "add_promotion",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "get_promotion"
      * })
      */
     private $Personne;
