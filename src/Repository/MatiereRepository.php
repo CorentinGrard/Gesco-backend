@@ -2,10 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Intervenant;
 use App\Entity\Matiere;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -169,6 +169,14 @@ class MatiereRepository extends ServiceEntityRepository
         }
 
 
+    }
+
+    public function addIntervenant(Matiere $matiere, Intervenant $intervenant)
+    {
+        $matiere->addIntervenant($intervenant);
+        $this->_em->persist($matiere);
+        $this->_em->persist($intervenant);
+        $this->_em->flush();
     }
 
 }
