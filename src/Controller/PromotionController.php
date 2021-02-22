@@ -214,8 +214,8 @@ class PromotionController extends AbstractController
      *      @OA\RequestBody(
      *          @OA\JsonContent(type="object",
      *              @OA\Property(property="nom",type="string"),
-     *              @OA\Property(property="formation_id",type="integer"),
-     *              @OA\Property(property="assistant_id",type="integer")
+     *              @OA\Property(property="idFormation",type="integer"),
+     *              @OA\Property(property="idAssistant",type="integer")
      *          )
      *      ),
      *      @OA\Response(response="201", description="promotion modifiée !"),

@@ -1432,10 +1432,10 @@
                                     "nom": {
                                         "type": "string"
                                     },
-                                    "formation_id": {
+                                    "idFormation": {
                                         "type": "integer"
                                     },
-                                    "assistant_id": {
+                                    "idAssistant": {
                                         "type": "integer"
                                     }
                                 },
