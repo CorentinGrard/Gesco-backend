@@ -163,7 +163,9 @@ class ModuleController extends AbstractController
         $entityManager->persist($module);
         $entityManager->flush();
 
-        return new JsonResponse(['status' => 'Module ajouté !'], Response::HTTP_CREATED);
+        $json = GenericSerializer::serializeJson($module, ["groups"=>"module_get"]);
+
+        return new JsonResponse($json, Response::HTTP_CREATED);
     }
 
     /**
