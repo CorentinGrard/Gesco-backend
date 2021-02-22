@@ -139,7 +139,8 @@ class FormationController extends AbstractController
                 return new JsonResponse($repoResponse["error"],Response::HTTP_BAD_REQUEST);
                 break;
             case 200:
-                return new JsonResponse("Ok",Response::HTTP_CREATED);
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "get_formation"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             default:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);

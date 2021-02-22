@@ -60,6 +60,7 @@ class FormationRepository extends ServiceEntityRepository
 
         return[
             "status" => 200,
+            "data"  => $formation,
             "error"  => null
         ];
     }
