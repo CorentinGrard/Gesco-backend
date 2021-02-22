@@ -352,6 +352,7 @@ class AppFixtures extends Fixture
 
         $etudiant2 = new Etudiant();
         $etudiant2->setPersonne($personne);
+        $etudiant2->setPromotion($promotions[1]);
 
         $manager->persist($personne);
 
@@ -377,6 +378,8 @@ class AppFixtures extends Fixture
 
         $etudiant3 = new Etudiant();
         $etudiant3->setPersonne($personne);
+        $etudiant3->setPromotion($promotions[2]);
+
 
         $manager->persist($personne);
 

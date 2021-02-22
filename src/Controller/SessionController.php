@@ -240,7 +240,7 @@ class SessionController extends AbstractController
      * )
      * @Route("/etudiants/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate_etudiant", methods={"GET"})
      * @param SessionRepository $sessionRepository
-     * @param PromotionRepository $promotionRepository
+     * @param EtudiantRepository $etudiantRepository
      * @param string $startDateString
      * @param string $endDateString
      * @return Response
@@ -250,15 +250,21 @@ class SessionController extends AbstractController
     {
         $user = $this->getUser();
         if($user == null)
+        {
             return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
+        }
 
         $username = $user->getUsername();
         if(empty($username))
+        {
             return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
+        }
 
         $etudiant = $etudiantRepository->findOneByUsername($username);
         if($etudiant == null)
+        {
             return new JsonResponse("L'utilisateur n'est pas un étudiant", Response::HTTP_FORBIDDEN);
+        }
 
 
         $startDate = Tools::getDateByStringDate($startDateString);
@@ -271,7 +277,12 @@ class SessionController extends AbstractController
             return new JsonResponse("La date de fin n'est pas valable (AAAAMMJJ)", Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($etudiant->getPromotion(),$startDate,$endDate);
+        $promotion = $etudiant->getPromotion();
+        if ($promotion == null) {
+            return new JsonResponse("Etudiant sans promotion", Response::HTTP_NOT_FOUND);
+        }
+
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion,$startDate,$endDate);
 
         $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
 
