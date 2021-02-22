@@ -34,7 +34,8 @@ class Personne implements UserInterface
      *     "matiere_get",
      *     "get_intervenant_by_matiere",
      *     "add_promotion",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "get_promotion"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -60,7 +61,7 @@ class Personne implements UserInterface
      *     "matiere_get",
      *     "get_intervenant_by_matiere",
      *     "add_promotion",
-     *     "update_promotion"
+     *     "update_promotion",
      * })
      * @ORM\Column(type="string", length=255)
      */
