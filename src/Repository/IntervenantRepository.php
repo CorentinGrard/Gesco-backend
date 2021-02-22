@@ -43,6 +43,31 @@ class IntervenantRepository extends ServiceEntityRepository
         return $intervenant;
     }
 
+    public function updateIntervenant(Intervenant $intervenant, $nom, $prenom, $email, $adresse = null, $tel = null):Intervenant
+    {
+        $personne = $intervenant->getPersonne();
+        $personne->setNom($nom);
+        $personne->setPrenom($prenom);
+        $personne->setEmail($email);
+        if($adresse != null){
+            $personne->setAdresse($adresse);
+        }
+        if($tel != null){
+            $personne->setNumeroTel($tel);
+        }
+
+
+        //$intervenant = new Intervenant();
+        $intervenant->setPersonne($personne);
+
+        $this->_em->persist($personne);
+        $this->_em->persist($intervenant);
+
+        $this->_em->flush();
+
+        return $intervenant;
+    }
+
 
     // /**
     //  * @return Intervenant[] Returns an array of Intervenant objects

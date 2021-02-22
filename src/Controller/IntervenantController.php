@@ -26,7 +26,7 @@ class IntervenantController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Intervenant")
      *      )
      * )
-     * @Route("/intervenants", name="list_intervenants")
+     * @Route("/intervenants", name="list_intervenants", methods={"GET"})
      * @param IntervenantRepository $intervenantRepository
      * @return Response
      */
@@ -54,7 +54,7 @@ class IntervenantController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Intervenant")
      *      )
      * )
-     * @Route("/intervenants/{id}", name="list_intervenants", methods={"GET"})
+     * @Route("/intervenants/{id}", name="get_intervenant", methods={"GET"})
      * @param Intervenant|null $intervenant
      * @return Response
      */
@@ -85,7 +85,7 @@ class IntervenantController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Matiere")
      *      )
      * )
-     * @Route("/matieres/{id}/intervenants", name="intervenant", methods={"GET"})
+     * @Route("/matieres/{id}/intervenants", name="intervenant_by_matiere", methods={"GET"})
      * @param Matiere|null $matiere
      * @return Response
      */
@@ -162,10 +162,14 @@ class IntervenantController extends AbstractController
 
         $adresse = null;
         if(array_key_exists("adresse",$data))
-                $adresse = $data['adresse'];
+        {
+            $adresse = $data['adresse'];
+        }
         $tel = null;
         if(array_key_exists("tel",$data))
+        {
             $tel = $data['tel'];
+        }
 
         if (empty($nom) || empty($prenom) || empty($email)) {
             throw new NotFoundHttpException('Paramètres obligatoires attendus : nom, prenom, email');
@@ -179,6 +183,69 @@ class IntervenantController extends AbstractController
 
         $json = GenericSerializer::serializeJson($intervenant, ["groups"=>"get_intervenant"]);
         return new JsonResponse($json, Response::HTTP_CREATED);
+
+    }
+
+
+    /**
+     * @OA\Put(
+     *      tags={"Intervenants"},
+     *      path="/intervenants/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              @OA\Property(property="prenom", ref="#/components/schemas/Personne/properties/prenom"),
+     *              @OA\Property(property="nom", ref="#/components/schemas/Personne/properties/nom"),
+     *              @OA\Property(property="email", ref="#/components/schemas/Personne/properties/email"),
+     *              @OA\Property(property="adresse", ref="#/components/schemas/Personne/properties/adresse"),
+     *              @OA\Property(property="tel", ref="#/components/schemas/Personne/properties/numeroTel")
+     *          )
+     *      ),
+     *      @OA\Response(response="201", description="Intervenant modifié !"),
+     *      @OA\Response(response="304", description="Intervenant inexistant")
+     * )
+     * @Route("/intervenants/{id}", methods={"PUT"})
+     * @param Request $request
+     * @param IntervenantRepository $repository
+     * @param Intervenant|null $intervenant
+     * @return Response
+     */
+    public function updateIntervenant(Request $request, IntervenantRepository $repository, Intervenant $intervenant = null):Response
+    {
+        if($intervenant == null){
+            return new JsonResponse("Intervenant inexistant", Response::HTTP_NOT_MODIFIED);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $nom = $data['nom'];
+        $prenom = $data['prenom'];
+        $email = $data['email'];
+
+        $adresse = null;
+        if(array_key_exists("adresse",$data))
+        {
+            $adresse = $data['adresse'];
+        }
+        $tel = null;
+        if(array_key_exists("tel",$data))
+        {
+            $tel = $data['tel'];
+        }
+
+        if (empty($nom) || empty($prenom) || empty($email)) {
+            throw new NotFoundHttpException('Paramètres obligatoires attendus : nom, prenom, email');
+        }
+
+        $repository->updateIntervenant($intervenant, $nom, $prenom, $email, $adresse, $tel);
+
+        $json = GenericSerializer::serializeJson($intervenant, ["groups"=>"get_intervenant"]);
+        return new JsonResponse($json, Response::HTTP_OK);
 
     }
 
