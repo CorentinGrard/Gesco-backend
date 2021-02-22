@@ -35,7 +35,11 @@ class Assistant
      * )
      * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_assistant"})
+     * @Groups({
+     *     "get_assistant",
+     *     "add_promotion",
+     *     "update_promotion"
+     * })
      */
     private $Personne;
 
