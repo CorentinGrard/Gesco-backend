@@ -2235,6 +2235,9 @@
                         "items": {
                             "$ref": "#/components/schemas/Matiere"
                         }
+                    },
+                    "externe": {
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
