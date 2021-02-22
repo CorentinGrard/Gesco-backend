@@ -29,7 +29,7 @@ class Responsable
 
     /**
      * @OA\Property(ref="#/components/schemas/Personne")
-     * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({
      *     "get_formation",

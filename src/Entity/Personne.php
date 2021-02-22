@@ -324,4 +324,18 @@ class Personne implements UserInterface
         }
         return $this;
     }
+
+    public function removeRole(string $role) :self
+    {
+        $tmpRoles = $this->roles;
+        $this->roles = [];
+
+        foreach($tmpRoles as $tmpRole){
+            if($tmpRole != $role){
+                $this->addRole($tmpRole);
+            }
+        }
+
+        return $this;
+    }
 }
