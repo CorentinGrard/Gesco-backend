@@ -1,6 +1,91 @@
 {
     "openapi": "3.0.0",
     "paths": {
+        "/admin/personnes/{id}/roles": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "operationId": "App\\Controller\\AdminController::addRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Personne modifiée !"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "operationId": "App\\Controller\\AdminController::removeRole",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Personne modifiée !"
+                    }
+                }
+            }
+        },
+        "/admin/roles": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "operationId": "App\\Controller\\AdminController::listRole",
+                "responses": {
+                    "200": {
+                        "description": "Roles"
+                    }
+                }
+            }
+        },
         "/assistants": {
             "get": {
                 "tags": [

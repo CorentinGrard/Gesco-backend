@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Intervenant;
 use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -68,6 +69,31 @@ class IntervenantRepository extends ServiceEntityRepository
         return $intervenant;
     }
 
+    public function findOneByUsername($username)
+    {
+        /*
+                $sql = "SELECT * FROM etudiant e " .
+                    "INNER JOIN personne p ON (p.id = e.personne_id) ".
+                    "WHERE p.email = :email";
+
+                $rsm = new ResultSetMapping();
+
+                $query = $this->_em->createNativeQuery($sql, $rsm);
+                $query->setParameter('email', $username);
+
+                return $query->getOneOrNullResult();
+        */
+        try {
+            return $this->createQueryBuilder('i')
+                ->innerJoin('i.Personne', 'p', 'WITH', 'p.id = i.Personne')
+                ->where('p.email = :email')
+                ->setParameter('email', $username)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            var_dump($e->getMessage());
+        }
+    }
 
     // /**
     //  * @return Intervenant[] Returns an array of Intervenant objects

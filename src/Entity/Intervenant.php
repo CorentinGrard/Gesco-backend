@@ -28,7 +28,7 @@ class Intervenant
 
     /**
      * @OA\Property(ref="#/components/schemas/Personne")
-     * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Personne::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_intervenant","matiere_get","get_intervenant_by_matiere"})
      * @var Personne
