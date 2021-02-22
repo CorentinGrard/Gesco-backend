@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Intervenant;
+use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,6 +19,30 @@ class IntervenantRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Intervenant::class);
     }
+
+    public function createIntervenant($nom, $prenom, $email, $adresse = null, $tel = null):Intervenant
+    {
+        $personne = new Personne();
+        $personne->setNom($nom);
+        $personne->setPrenom($prenom);
+        $personne->setEmail($email);
+
+        $personne->setAdresse($adresse);
+        $personne->setNumeroTel($tel);
+
+
+        $intervenant = new Intervenant();
+        $intervenant->setPersonne($personne);
+
+        $this->_em->persist($personne);
+        $this->_em->persist($intervenant);
+
+        $this->_em->flush();
+
+
+        return $intervenant;
+    }
+
 
     // /**
     //  * @return Intervenant[] Returns an array of Intervenant objects

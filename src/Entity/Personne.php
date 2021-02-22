@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\PersonneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -86,8 +85,7 @@ class Personne implements UserInterface
     private $prenom;
 
     /**
-     * @OA\Property(type="string",
-     *      readOnly="true")
+     * @OA\Property(type="string")
      * @Groups({
      *     "get_personne",
      *     "get_etudiant",
@@ -96,7 +94,8 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "get_intervenant",
      * })
      * @ORM\Column(type="text", length=255, nullable=true)
      */
