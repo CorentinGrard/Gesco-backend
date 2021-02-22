@@ -1853,6 +1853,55 @@
                 }
             }
         },
+        "/etudiants/start/{startDateString}/end/{endDateString}/sessions": {
+            "get": {
+                "tags": [
+                    "Sessions"
+                ],
+                "operationId": "App\\Controller\\SessionController::allSessionsBetweenStartDateAndEndDateForEtudiant",
+                "parameters": [
+                    {
+                        "name": "startDateString",
+                        "in": "path",
+                        "description": "format AAAAMMJJ",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "endDateString",
+                        "in": "path",
+                        "description": "format AAAAMMJJ",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Les sessions pour cet étudiant aux dates demandées sont trouvées",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Session"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "L'utilisateur n'existe pas|L'utilisateur n'est pas un étudiant"
+                    },
+                    "406": {
+                        "description": "La date de début ou de fin n'est pas valide"
+                    }
+                }
+            }
+        },
         "/sessions/{id}": {
             "get": {
                 "tags": [

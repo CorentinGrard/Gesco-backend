@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Assistant;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
@@ -14,6 +13,7 @@ use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
 use App\Serializers\SessionSerializer;
 use App\Tools;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -194,11 +194,84 @@ class SessionController extends AbstractController
         }
 
         $endDate = Tools::getDateByStringDate($endDateString);
-        if ($startDate == null) {
+        if ($endDate == null) {
             return new JsonResponse("La date de fin n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
         }
 
         $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion,$startDate,$endDate);
+
+        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
+    }
+
+
+    /**
+     * @OA\Get(
+     *      tags={"Sessions"},
+     *      path="/etudiants/start/{startDateString}/end/{endDateString}/sessions",
+     *      @OA\Parameter(
+     *          name="startDateString",
+     *          description="format AAAAMMJJ",
+     *          in="path",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Parameter(
+     *          name="endDateString",
+     *          description="format AAAAMMJJ",
+     *          in="path",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *          description ="Les sessions pour cet étudiant aux dates demandées sont trouvées",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Session"))
+     *      ),
+     *     @OA\Response(
+     *          response="403",
+     *          description ="L'utilisateur n'existe pas|L'utilisateur n'est pas un étudiant"
+     *      ),
+     *     @OA\Response(
+     *          response="406",
+     *          description ="La date de début ou de fin n'est pas valide"
+     *      ),
+     * )
+     * @Route("/etudiants/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
+     * @param SessionRepository $sessionRepository
+     * @param PromotionRepository $promotionRepository
+     * @param string $startDateString
+     * @param string $endDateString
+     * @return Response
+     * @Security("is_granted('ROLE_ETUDIANT')")
+     */
+    public function allSessionsBetweenStartDateAndEndDateForEtudiant(SessionRepository $sessionRepository, EtudiantRepository $etudiantRepository, string $startDateString, string $endDateString): Response
+    {
+        $user = $this->getUser();
+        if($user == null)
+            return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
+
+        $username = $user->getUsername();
+        if(empty($username))
+            return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
+
+        $etudiant = $etudiantRepository->findOneByUsername($username);
+        if($etudiant == null)
+            return new JsonResponse("L'utilisateur n'est pas un étudiant", Response::HTTP_FORBIDDEN);
+
+
+        $startDate = Tools::getDateByStringDate($startDateString);
+        if ($startDate == null) {
+            return new JsonResponse("La date de début n'est pas valable (AAAAMMJJ)", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $endDate = Tools::getDateByStringDate($endDateString);
+        if ($endDate == null) {
+            return new JsonResponse("La date de fin n'est pas valable (AAAAMMJJ)", Response::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($etudiant->getPromotion(),$startDate,$endDate);
 
         $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
 
@@ -284,8 +357,8 @@ class SessionController extends AbstractController
             $session->setType($type);
             $session->setObligatoire($obligatoire);
             $session->setMatiere($matiere);
-            $session->setDateDebut(new \DateTime($dateDebut));
-            $session->setDateFin(new \DateTime($dateFin));
+            $session->setDateDebut(new DateTime($dateDebut));
+            $session->setDateFin(new DateTime($dateFin));
             $session->setDetail($detail);
 
             /*$session = SessionSerializer::deSerializeJson($data, ['groups'=>'create_session']);
