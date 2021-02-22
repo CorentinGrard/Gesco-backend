@@ -32,7 +32,9 @@ class Personne implements UserInterface
      *     "update_formation",
      *     "get_intervenant",
      *     "matiere_get",
-     *     "get_intervenant_by_matiere"
+     *     "get_intervenant_by_matiere",
+     *     "add_promotion",
+     *     "update_promotion"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -56,7 +58,9 @@ class Personne implements UserInterface
      *     "update_promotion",
      *     "get_intervenant",
      *     "matiere_get",
-     *     "get_intervenant_by_matiere"
+     *     "get_intervenant_by_matiere",
+     *     "add_promotion",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -78,7 +82,9 @@ class Personne implements UserInterface
      *     "update_promotion",
      *     "get_intervenant",
      *     "matiere_get",
-     *     "get_intervenant_by_matiere"
+     *     "get_intervenant_by_matiere",
+     *     "add_promotion",
+     *     "update_promotion"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -94,8 +100,7 @@ class Personne implements UserInterface
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
      *     "update_etudiant",
-     *     "update_promotion",
-     *     "get_intervenant",
+     *     "get_intervenant"
      * })
      * @ORM\Column(type="text", length=255, nullable=true)
      */
@@ -110,8 +115,7 @@ class Personne implements UserInterface
      *     "get_etudiants_by_promotion",
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
-     *     "update_etudiant",
-     *     "update_promotion"
+     *     "update_etudiant"
      * })
      * @ORM\Column(type="string", length=1024, nullable=true)
      */
@@ -126,8 +130,7 @@ class Personne implements UserInterface
      *     "get_etudiants_by_promotion",
      *     "get_etudiants_for_all_promotions",
      *     "post_etudiant_in_promotion",
-     *     "update_etudiant",
-     *     "update_promotion"
+     *     "update_etudiant"
      * })
      * @ORM\Column(type="string", length=255, nullable=true)
      */
