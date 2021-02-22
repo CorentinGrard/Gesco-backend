@@ -238,7 +238,7 @@ class SessionController extends AbstractController
      *          description ="La date de début ou de fin n'est pas valide"
      *      ),
      * )
-     * @Route("/etudiants/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
+     * @Route("/etudiants/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate_etudiant", methods={"GET"})
      * @param SessionRepository $sessionRepository
      * @param PromotionRepository $promotionRepository
      * @param string $startDateString
