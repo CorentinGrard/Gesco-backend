@@ -6,11 +6,12 @@ use App\Entity\Intervenant;
 use App\Entity\Matiere;
 use App\Repository\IntervenantRepository;
 use App\Serializers\GenericSerializer;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
 
@@ -101,7 +102,7 @@ class IntervenantController extends AbstractController
 
     /**
      * @OA\Delete(
-     *     tags={"Intervenants"},
+     *      tags={"Intervenants"},
      *      path="/intervenants/{id}",
      *      @OA\Parameter(
      *          name="id",
@@ -122,11 +123,63 @@ class IntervenantController extends AbstractController
         if($intervenant == null){
             return new JsonResponse("Intervenant inexistant", Response::HTTP_NOT_FOUND);
         }
-        $nom = $intervenant->getPersonne()->getNom() . " " .  $intervenant->getPersonne()->getPrenom();
+        $nom = $intervenant->getPersonne()->getPrenom() . " " .  $intervenant->getPersonne()->getNom();
         $em->remove($intervenant);
         $em->flush();
 
         return new JsonResponse("Intervenant '$nom' supprimé", Response::HTTP_OK);
+    }
+
+
+    /**
+     * @OA\Post(
+     *      tags={"Intervenants"},
+     *      path="/intervenants",
+     *      @OA\RequestBody(
+     *          @OA\JsonContent(
+     *              @OA\Property(property="prenom", ref="#/components/schemas/Personne/properties/prenom"),
+     *              @OA\Property(property="nom", ref="#/components/schemas/Personne/properties/nom"),
+     *              @OA\Property(property="email", ref="#/components/schemas/Personne/properties/email"),
+     *              @OA\Property(property="adresse", ref="#/components/schemas/Personne/properties/adresse"),
+     *              @OA\Property(property="tel", ref="#/components/schemas/Personne/properties/numeroTel")
+     *          )
+     *      ),
+     *      @OA\Response(response="201", description="Intervenant ajouté !"),
+     *      @OA\Response(response="409", description="Erreur lors de la création.")
+     * )
+     * @Route("/intervenants", methods={"POST"})
+     * @param Request $request
+     * @param IntervenantRepository $repository
+     * @return Response
+     */
+    public function addIntervenant(Request $request, IntervenantRepository $repository):Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $nom = $data['nom'];
+        $prenom = $data['prenom'];
+        $email = $data['email'];
+
+        $adresse = null;
+        if(array_key_exists("adresse",$data))
+                $adresse = $data['adresse'];
+        $tel = null;
+        if(array_key_exists("tel",$data))
+            $tel = $data['tel'];
+
+        if (empty($nom) || empty($prenom) || empty($email)) {
+            throw new NotFoundHttpException('Paramètres obligatoires attendus : nom, prenom, email');
+        }
+
+        $intervenant = $repository->createIntervenant($nom, $prenom, $email, $adresse, $tel);
+
+        if($intervenant == null){
+            return new JsonResponse("Erreur lors de la création.", Response::HTTP_CONFLICT);
+        }
+
+        $json = GenericSerializer::serializeJson($intervenant, ["groups"=>"get_intervenant"]);
+        return new JsonResponse($json, Response::HTTP_CREATED);
+
     }
 
 }

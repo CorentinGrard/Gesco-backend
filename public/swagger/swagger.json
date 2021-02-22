@@ -444,6 +444,46 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Intervenants"
+                ],
+                "operationId": "App\\Controller\\IntervenantController::addIntervenant",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "prenom": {
+                                        "$ref": "#/components/schemas/Personne/properties/prenom"
+                                    },
+                                    "nom": {
+                                        "$ref": "#/components/schemas/Personne/properties/nom"
+                                    },
+                                    "email": {
+                                        "$ref": "#/components/schemas/Personne/properties/email"
+                                    },
+                                    "adresse": {
+                                        "$ref": "#/components/schemas/Personne/properties/adresse"
+                                    },
+                                    "tel": {
+                                        "$ref": "#/components/schemas/Personne/properties/numeroTel"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Intervenant ajouté !"
+                    },
+                    "409": {
+                        "description": "Erreur lors de la création."
+                    }
+                }
             }
         },
         "/intervenants/{id}": {
@@ -2206,8 +2246,7 @@
                         "type": "string"
                     },
                     "email": {
-                        "type": "string",
-                        "readOnly": "true"
+                        "type": "string"
                     },
                     "adresse": {
                         "type": "string"
