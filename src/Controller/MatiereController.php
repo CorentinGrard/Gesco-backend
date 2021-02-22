@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Intervenant;
 use App\Entity\Matiere;
 use App\Entity\Module;
 use App\Entity\Promotion;
@@ -10,6 +11,7 @@ use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,7 +108,7 @@ class MatiereController extends AbstractController
      */
     public function read(Matiere $matiere): Response
     {
-        $json = MatiereSerializer::serializeJson($matiere, ['groups'=>'matiere_get']);
+        $json = GenericSerializer::serializeJson($matiere, ['groups'=>'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -158,6 +160,47 @@ class MatiereController extends AbstractController
 
         $json = GenericSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
         return new JsonResponse($json, Response::HTTP_CREATED);
+
+    }
+
+
+    /**
+     * @OA\Post(
+     *      tags={"Matieres"},
+     *      path="/matieres/{id}/intervenants/{idIntervenant}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Matière",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="idIntervenant",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(response="200", description="Intervenant ajouté !"),
+     *      @OA\Response(response="404", description="Non trouvé...")
+     * )
+     * @Route("/matieres/{id}/intervenants/{idIntervenant}", name="add_intervenant_to_matiere", methods={"POST"})
+     * @Entity("intervenant", expr="repository.find(idIntervenant)")
+     * @param MatiereRepository $repository
+     * @param Matiere|null $matiere
+     * @param Intervenant|null $intervenant
+     * @return JsonResponse
+     */
+    public function addIntervenant(MatiereRepository $repository, Matiere $matiere = null, Intervenant $intervenant = null): JsonResponse
+    {
+        if($matiere == null || $intervenant == null){
+            return new JsonResponse("Matière ou intervenant inexistant", Response::HTTP_NOT_MODIFIED);
+        }
+
+        $repository->addIntervenant($matiere, $intervenant);
+
+        $json = GenericSerializer::serializeJson($matiere, ["groups" => "matiere_get"]);
+        return new JsonResponse($json, Response::HTTP_OK);
 
     }
 

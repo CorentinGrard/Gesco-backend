@@ -24,7 +24,7 @@ class Note
     /**
      * @OA\Property(type="number",format="float")
      * @ORM\Column(type="float", scale=2)
-     * @Groups({"get_notes_etudiant"})
+     * @Groups({"get_notes_etudiant","matiere_get"})
      */
     private $note;
 
