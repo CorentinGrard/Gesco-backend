@@ -22,7 +22,8 @@ class Formation
      *     "get_etudiant",
      *     "get_formation",
      *     "get_promotion",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "add_promotion"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -37,7 +38,8 @@ class Formation
      *     "get_formation",
      *     "get_promotion",
      *     "update_formation",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "add_promotion"
      * })
      * @ORM\Column(type="string", length=255)
      */
@@ -108,7 +110,8 @@ class Formation
      *     "get_promotion",
      *     "get_formation",
      *     "update_formation",
-     *     "update_promotion"
+     *     "update_promotion",
+     *     "add_promotion"
      * })
      */
     private $isAlternance;

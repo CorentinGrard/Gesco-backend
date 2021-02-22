@@ -283,7 +283,5 @@ class PromotionRepository extends ServiceEntityRepository
                 "error"=>"La suppression de la promotion en base de données a échouée"
             ];
         }
-
-
     }
 }

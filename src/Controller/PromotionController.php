@@ -236,8 +236,8 @@ class PromotionController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $nom = $data["nom"];
-        $formation_id = $data["formation_id"];
-        $assistant_id = $data["assistant_id"];
+        $formation_id = $data["idFormation"];
+        $assistant_id = $data["idAssistant"];
 
         if (empty($nom) || empty($formation_id) || empty($assistant_id)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
