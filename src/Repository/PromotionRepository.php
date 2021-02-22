@@ -156,7 +156,7 @@ class PromotionRepository extends ServiceEntityRepository
     public function AjoutPromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, \Symfony\Component\HttpFoundation\Request $request)
     {
         $data = json_decode($request->getContent(), true);
-        $namePromotion = $data['namePromotion'];
+        $namePromotion = $data['nom'];
         $idAssistant = $data['idAssistant'];
         $idFormation   = $data['idFormation'];
 
