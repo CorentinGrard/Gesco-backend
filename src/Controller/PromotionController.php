@@ -169,7 +169,7 @@ class PromotionController extends AbstractController
      *          @OA\JsonContent(
      *              @OA\Property(type="number", property="idFormation", required = true),
      *              @OA\Property(type="number", property="idAssistant", required = true),
-     *              @OA\Property(type="string", property="namePromotion", required = true)
+     *              @OA\Property(type="string", property="nom", required = true)
      *          )
      *      ),
      *      @OA\Response(response="200", description="Promotion ajoutée"),
