@@ -39,8 +39,9 @@ class AppFixtures extends Fixture
 
         $responsables = [];
 
+        $faker = Factory::create('fr_FR');
+
         for($i = 0; $i < 2; $i++){
-            $faker = Factory::create();
             $personne = new Personne();
 
             $personne->setNom($faker->lastName);
@@ -59,20 +60,20 @@ class AppFixtures extends Fixture
             array_push($responsables, $responsable);
         }
 
-        $faker = Factory::create();
-        $personne = new Personne();
+        //$faker = Factory::create();
+        $yan = new Personne();
 
-        $personne->setNom("Moret");
-        $personne->setPrenom("Yan");
-        $personne->setAdresse($faker->address);
-        $personne->generateEmail(false);
-        $personne->setNumeroTel($faker->phoneNumber);
+        $yan->setNom("Moret");
+        $yan->setPrenom("Yan");
+        $yan->setAdresse($faker->address);
+        $yan->generateEmail(false);
+        $yan->setNumeroTel($faker->phoneNumber);
         //$personne->setRoles(["ROLE_RESPO","ROLE_USER"]);
 
         $responsable = new Responsable();
-        $responsable->setPersonne($personne);
+        $responsable->setPersonne($yan);
 
-        $manager->persist($personne);
+        $manager->persist($yan);
         $manager->persist($responsable);
         array_push($responsables, $responsable);
 
@@ -81,7 +82,6 @@ class AppFixtures extends Fixture
         $personne = new Personne();
         $personne->setPrenom("Corentin");
         $personne->setNom("Grard");
-        $personne->setAdresse("");
         $personne->generateEmail(true);
         $personne->setNumeroTel("07XXXXXXXX");
         $personne->addRole("ROLE_ADMIN");
@@ -132,7 +132,7 @@ class AppFixtures extends Fixture
 
         //Ajout batiments
 
-        $batimentValue = 'ABCDEF';
+        $batimentValue = 'ABCDEFM';
         $batiments = [];
 
         for ($i = 0; $i < strlen($batimentValue); $i++)
@@ -164,7 +164,7 @@ class AppFixtures extends Fixture
 
         $assistants = [];
         for($i = 0; $i < 2; $i++){
-            $faker = Factory::create();
+            //$faker = Factory::create();
             $personne = new Personne();
 
             $personne->setNom($faker->lastName);
@@ -251,15 +251,24 @@ class AppFixtures extends Fixture
         $personne->setPrenom($faker->firstName);
         $personne->setNom($faker->lastName);
         $personne->setEmail("intervenant.test@gmail.com");
-        $manager->persist($personne);
         $intervenant->setPersonne($personne);
+        $intervenant->setExterne(true);
+
+        $manager->persist($personne);
         $manager->persist($intervenant);
+
+        $intervenantYan = new Intervenant();
+        $intervenantYan->setPersonne($yan);
+        $intervenantYan->setExterne(false);
+
+        $manager->persist($yan);
+        $manager->persist($intervenantYan);
 
 
         $k = 0;
         $matieres = [];
         foreach ($modules as $module) {
-            $faker = Factory::create();
+            //$faker = Factory::create();
 
             $matiere = new Matiere();
             $matiere->setNom($faker->firstName);
@@ -284,7 +293,7 @@ class AppFixtures extends Fixture
         $mat = sizeof($matieres);
         $bool = true;
         for ($i = 0; $i < 20; $i++) {
-            $faker = Factory::create();
+            //$faker = Factory::create();
 
             $bool = !$bool;
             $session = new Session();
@@ -314,7 +323,7 @@ class AppFixtures extends Fixture
 
         $personne = new Personne();
         $personne->setPrenom("Antonin");
-        $personne->setNom("CABANE");
+        $personne->setNom("Cabane");
         $personne->setAdresse("479 Avenue des euzières\n34190 Brissac");
         //$personne->set Email("antonin.cabane@gmail.com");
         $personne->generateEmail(true);

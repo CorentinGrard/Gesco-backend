@@ -43,9 +43,18 @@ class Intervenant
      */
     private $matieres;
 
+    /**
+     * @OA\Property(type="boolean"))
+     * @ORM\Column(type="boolean")
+     * @Groups({"get_intervenant"})
+     * @var boolean
+     */
+    private $externe;
+
     public function __construct()
     {
         $this->matieres = new ArrayCollection();
+        $this->externe = true;
     }
 
     public function getId(): ?int
@@ -100,6 +109,18 @@ class Intervenant
         if ($this->matieres->removeElement($matiere)) {
             $matiere->removeIntervenant($this);
         }
+
+        return $this;
+    }
+
+    public function getExterne(): ?bool
+    {
+        return $this->externe;
+    }
+
+    public function setExterne(bool $externe): self
+    {
+        $this->externe = $externe;
 
         return $this;
     }
