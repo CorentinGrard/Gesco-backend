@@ -237,8 +237,16 @@ class MatiereController extends AbstractController
      * @param Matiere $matiere
      * @return JsonResponse
      */
-    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere): JsonResponse
+    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere = null): JsonResponse
     {
+        if($matiere == null){
+            return new JsonResponse("Matiere inexistante !",Response::HTTP_NOT_FOUND);
+        }
+        if(sizeof($matiere->getNotes()) > 0)
+        {
+            return new JsonResponse("Veuillez supprimer les notes associées avant de supprimer la matière !", Response::HTTP_CONFLICT);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data["nom"];
