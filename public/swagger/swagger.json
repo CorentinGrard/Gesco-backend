@@ -2229,6 +2229,49 @@
                     }
                 }
             }
+        },
+        "/sites/{idSite}": {
+            "put": {
+                "tags": [
+                    "Sites"
+                ],
+                "operationId": "App\\Controller\\SiteController::UpdateSite",
+                "parameters": [
+                    {
+                        "name": "idSite",
+                        "in": "path",
+                        "description": "idSite",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "request": "formation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {},
+                    "404": {
+                        "description": "Le site n'existe pas'"
+                    }
+                }
+            }
         }
     },
     "components": {

@@ -67,4 +67,40 @@ class SiteRepository extends ServiceEntityRepository
         }
         return false;
     }
+
+    public function UpdateSite(SiteRepository $siteRepository, EntityManagerInterface $entityManager, int $idSite, Request $request)
+    {
+        $currentSite = $siteRepository->find($idSite);
+
+        if(is_null($currentSite)){
+            return[
+                "status" => 404,
+                "error"  => "Le site d'ID ".$idSite." n'existe pas"
+            ];
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $name = $data["nom"];
+        $adresse = $data["adresse"];
+
+        if(empty($name) || empty($adresse)){
+            return[
+                "status" => 400,
+                "error"  => "Adresse ou nom du site non valide."
+            ];
+        }
+
+        $currentSite->setNomSite($name);
+        $currentSite->setAdress($adresse);
+
+        $entityManager->persist($currentSite);
+        $entityManager->flush();
+
+        return [
+            "status" => 201,
+            "data" => $currentSite,
+            "error" => "Site correctement modifié."
+        ];
+    }
 }
