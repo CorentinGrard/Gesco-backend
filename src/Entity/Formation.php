@@ -23,7 +23,8 @@ class Formation
      *     "get_formation",
      *     "get_promotion",
      *     "update_promotion",
-     *     "add_promotion"
+     *     "add_promotion",
+     *     "update_formation"
      * })
      * @ORM\Id
      * @ORM\GeneratedValue
