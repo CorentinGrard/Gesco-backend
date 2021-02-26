@@ -343,7 +343,7 @@ class SessionController extends AbstractController
      * @param Matiere $matiere
      * @param LoggerInterface $logger
      * @return JsonResponse
-     * Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_ASSISTANT')")
+     * @Security("is_granted('ROLE_ASSISTANT')")
      */
     public function add(Request $request, EntityManagerInterface $entityManager, Matiere $matiere, LoggerInterface $logger): JsonResponse
     {
