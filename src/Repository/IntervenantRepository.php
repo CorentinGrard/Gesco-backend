@@ -71,25 +71,16 @@ class IntervenantRepository extends ServiceEntityRepository
 
     public function findOneByUsername($username)
     {
-        /*
-                $sql = "SELECT * FROM etudiant e " .
-                    "INNER JOIN personne p ON (p.id = e.personne_id) ".
-                    "WHERE p.email = :email";
-
-                $rsm = new ResultSetMapping();
-
-                $query = $this->_em->createNativeQuery($sql, $rsm);
-                $query->setParameter('email', $username);
-
-                return $query->getOneOrNullResult();
-        */
         try {
-            return $this->createQueryBuilder('i')
-                ->innerJoin('i.Personne', 'p', 'WITH', 'p.id = i.Personne')
-                ->where('p.email = :email')
-                ->setParameter('email', $username)
-                ->getQuery()
-                ->getOneOrNullResult();
+            $sql = "SELECT r.id FROM responsable r ".
+                "JOIN personne p ON r.personne_id = p.id AND p.id = r.personne_id WHERE p.email = :email";
+
+            $conn = $this->getEntityManager()->getConnection();
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(array('email' => $username));
+            $result = $stmt->fetchOne();
+            $etudiant = $this->find($result);
+            return $etudiant;
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
         }
