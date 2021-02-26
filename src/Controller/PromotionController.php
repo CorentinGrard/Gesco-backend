@@ -182,9 +182,11 @@ class PromotionController extends AbstractController
      * @param AssistantRepository $assistantRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, ResponsableRepository $responsableRepository): Response
     {
         $user = $this->getUser();
         if($user != null){
@@ -239,11 +241,20 @@ class PromotionController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Promotion $promotion
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
      * @Security("is_granted('ROLE_RESPO')")
      */
-    public function UpdatePromotion(PromotionRepository $promotionRepository, FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
+    public function UpdatePromotion(PromotionRepository $promotionRepository, FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion, ResponsableRepository $responsableRepository): JsonResponse
     {
+
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data["nom"];
@@ -254,7 +265,7 @@ class PromotionController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $promotionRepository->updatePromotion($entityManager, $formationRepository, $assistantRepository, $nom, $formation_id, $assistant_id, $promotion);
+        $repoResponse = $promotionRepository->updatePromotion($entityManager, $formationRepository, $assistantRepository, $nom, $formation_id, $assistant_id, $promotion, $responsableConnected);
 
         switch ($repoResponse["status"]){
             case 201:
@@ -263,6 +274,9 @@ class PromotionController extends AbstractController
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 500:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -288,14 +302,23 @@ class PromotionController extends AbstractController
      * )
      * @Route("/promotion/{id}", name="delete_promotion", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @param PromotionRepository $promotionRepository
      * @param Promotion $promotion
      * @return Response
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function deletePromotion(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository,Promotion $promotion): Response
+    public function deletePromotion(EntityManagerInterface $entityManager,ResponsableRepository $responsableRepository, PromotionRepository $promotionRepository,Promotion $promotion): Response
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
-        $repoResponse = $promotionRepository->deletePromotion($entityManager,$promotion);
+
+        $repoResponse = $promotionRepository->deletePromotion($entityManager,$promotion,$responsableConnected);
 
         switch ($repoResponse["status"]){
             case 204:
@@ -304,6 +327,9 @@ class PromotionController extends AbstractController
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 500:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
