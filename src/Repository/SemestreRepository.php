@@ -79,18 +79,41 @@ class SemestreRepository extends ServiceEntityRepository
 
     }
 
-    public function updateSemestre(EntityManagerInterface $entityManager, $nom, Semestre $semestre)
+    public function updateSemestre(EntityManagerInterface $entityManager, $nom, Semestre $semestre, Responsable $responsableConnected)
     {
-        $semestre->setNom($nom);
 
-        $entityManager->persist($semestre);
-        $entityManager->flush();
+        $responsableCible = $semestre->getPromotion()->getFormation()->getResponsable();
 
-        return [
-            "status" => 201,
-            "data" => $semestre,
-            "error" => null
-        ];
+
+        if ($responsableConnected === $responsableCible) {
+
+
+            try {
+                $semestre->setNom($nom);
+                $entityManager->persist($semestre);
+                $entityManager->flush();
+
+                return [
+                    "status" => 201,
+                    "data" => $semestre,
+                    "error" => null
+                ];
+
+            } catch (\Exception $e) {
+                return [
+                    "status" => 500,
+                    "error" => "Problème lors de l'injection en base de données"
+                ];
+            }
+
+        }
+        else {
+            return [
+                "status" => 403,
+                "error" => "Vous ne pouvez pas actualiser un semestre dont vous n'êtes pas le responsable"
+            ];
+        }
+
     }
 
     public function deleteSemestre(EntityManagerInterface $entityManager, Semestre $semestre): array
