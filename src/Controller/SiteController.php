@@ -61,4 +61,27 @@ class SiteController extends AbstractController
                 return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * @OA\Get(
+     *      tags={"Sites"},
+     *      path="/sites",
+     *      @OA\Response(
+     *          response="200",
+     *          description ="get all sites",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Site"))
+     *      )
+     * )
+     * @Route("/sites", name="site_list", methods={"GET"})
+     * @param SiteRepository $siteRepository
+     * @return Response
+     */
+    public function GetAllSite(SiteRepository $siteRepository) : Response
+    {
+        $formations = $siteRepository->findAll();
+
+        $json = GenericSerializer::serializeJson($formations,['groups'=>'get_site']);
+
+        return new JsonResponse($json, Response::HTTP_OK);
+    }
 }
