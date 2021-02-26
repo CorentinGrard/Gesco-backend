@@ -157,12 +157,14 @@ class ModuleController extends AbstractController
      * @return Response
      * @Security("is_granted('ROLE_RESPO')")
      */
-    public function add(
+    public function insertModuleInSemestre(
         Request $request,
         EntityManagerInterface $entityManager,
         SemestreRepository $semestreRepository,
         Semestre $semestre): Response
     {
+
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
@@ -205,20 +207,31 @@ class ModuleController extends AbstractController
      * )
      * @Route("/modules/{id}", name="delete_module", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @param ModuleRepository $moduleRepository
      * @param Module $module
      * @return Response
      * @Security("is_granted('ROLE_RESPO')")
      */
-    public function deleteModule(EntityManagerInterface $entityManager,ModuleRepository $moduleRepository,Module $module): Response
+    public function deleteModule(EntityManagerInterface $entityManager,ResponsableRepository $responsableRepository, ModuleRepository $moduleRepository,Module $module): Response
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
-        $repoResponse = $moduleRepository->deleteModule($entityManager,$module);
+
+        $repoResponse = $moduleRepository->deleteModule($entityManager,$module,$responsableConnected);
 
         switch ($repoResponse["status"]){
             case 204:
                 $json = GenericSerializer::serializeJson($module, ['groups'=>'delete_module']);
                 return new JsonResponse("Ok",Response::HTTP_NO_CONTENT);
+                break;
+            case 403 :
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
