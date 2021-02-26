@@ -9,6 +9,7 @@ use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
+use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -235,10 +236,19 @@ class MatiereController extends AbstractController
      * @param ModuleRepository $moduleRepository
      * @param EntityManagerInterface $entityManager
      * @param Matiere $matiere
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere): JsonResponse
+    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere, ResponsableRepository $responsableRepository): JsonResponse
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data["nom"];
@@ -250,7 +260,7 @@ class MatiereController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $matiereRepository->updateMatiere($entityManager, $moduleRepository, $matiere, $nom, $coeff, $nbhp, $module_id);
+        $repoResponse = $matiereRepository->updateMatiere($entityManager, $moduleRepository, $matiere, $nom, $coeff, $nbhp, $module_id,$responsableConnected);
 
         switch ($repoResponse["status"]) {
             case 201:
@@ -259,6 +269,9 @@ class MatiereController extends AbstractController
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_CONFLICT);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"], Response::HTTP_FORBIDDEN);
                 break;
             case 500:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_INTERNAL_SERVER_ERROR);
