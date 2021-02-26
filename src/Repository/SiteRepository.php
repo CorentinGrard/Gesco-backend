@@ -103,4 +103,31 @@ class SiteRepository extends ServiceEntityRepository
             "error" => "Site correctement modifié."
         ];
     }
+
+    public function DeleteSiteById(EntityManagerInterface $entityManager, SiteRepository $siteRepository, int $idSite)
+    {
+        $currentSite = $siteRepository->find($idSite);
+
+        if($currentSite == null){
+            return[
+                "status" => 404,
+                "error"  => "Le site d'ID ".$idSite." n'existe pas"
+            ];
+        }
+
+        if(count($currentSite->getBatiments()) > 1){
+            return[
+                "status" => 409,
+                "error"  => "Il existe des batiments dans ce site."
+            ];
+        }
+
+        $entityManager->remove($currentSite);
+        $entityManager->flush();
+
+        return [
+            "status" => 200,
+            "error"  => null
+        ];
+    }
 }
