@@ -189,6 +189,7 @@ class ModuleController extends AbstractController
      * @param ModuleRepository $moduleRepository
      * @param Module $module
      * @return Response
+     * @Security("is_granted('ROLE_RESPO')")
      */
     public function deleteModule(EntityManagerInterface $entityManager,ModuleRepository $moduleRepository,Module $module): Response
     {
