@@ -73,6 +73,25 @@
                 }
             }
         },
+        "/ad/eligible-responsable/personnes": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "operationId": "App\\Controller\\AdminController::getPersonneEligibleRespo",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Personne"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/roles": {
             "get": {
                 "tags": [
@@ -1455,44 +1474,6 @@
                     "Personnes"
                 ],
                 "operationId": "App\\Controller\\PersonneController::profil",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Personne"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/personnes/eligiblent/intervenants": {
-            "get": {
-                "tags": [
-                    "Personnes"
-                ],
-                "operationId": "App\\Controller\\PersonneController::getPersonnesEligiblentIntervenants",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Personne"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/ad/eligible-responsable/personnes": {
-            "get": {
-                "tags": [
-                    "Admin"
-                ],
-                "operationId": "App\\Controller\\PersonneController::getPersonneEligibleRespo",
                 "responses": {
                     "200": {
                         "content": {

@@ -102,39 +102,4 @@ class PersonneController extends AbstractController
 
     }
 
-    /**
-     * @OA\Get(
-     *      tags={"Personnes"},
-     *      path="/personnes/eligiblent/intervenants",
-     *      @OA\Response(
-     *          response="200",
-     *          @OA\JsonContent(ref="#/components/schemas/Personne")
-     *      )
-     * )
-     * @Route("/personnes/eligiblent/intervenants", name="get_personnes_eligibles_responsable", methods={ "GET" } )
-     * @param PersonneRepository $personneRepository
-     * @param AssistantRepository $assistantRepository
-     * @param IntervenantRepository $intervenantRepository
-     * @param ResponsableRepository $responsableRepository
-     * @return Response
-     * @Security("is_granted('ROLE_ADMIN')")
-     */
-    public function getPersonnesEligiblentIntervenants(PersonneRepository $personneRepository, AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository): Response
-    {
-
-        $repoResponse = $personneRepository->getPersonnesEligiblentIntervenants($personneRepository, $assistantRepository, $responsableRepository, $intervenantRepository);
-
-        switch ($repoResponse["status"]) {
-            case 200:
-                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups' => 'get_personne']);
-                return new JsonResponse($json, Response::HTTP_OK);
-                break;
-            case 500:
-                return new JsonResponse($repoResponse["error"], Response::HTTP_INTERNAL_SERVER_ERROR);
-                break;
-            default:
-                return new JsonResponse(Response::HTTP_NOT_FOUND);
-        }
-    }
-
 }
