@@ -46,7 +46,7 @@ class EtudiantRepository extends ServiceEntityRepository
 */
         try {
             return $this->createQueryBuilder('e')
-                ->innerJoin('e.Personne', 'p', 'WITH', 'p.id = e.Personne')
+                ->join('e.Personne', 'p', 'WITH', 'p.id = e.Personne')
                 ->where('p.email = :email')
                 ->setParameter('email', $username)
                 ->getQuery()

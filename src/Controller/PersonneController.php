@@ -76,7 +76,7 @@ class PersonneController extends AbstractController
      *          @OA\JsonContent(ref="#/components/schemas/Personne")
      *      )
      * )
-     * @Route("/profil", name="profil")
+     * @Route("/profil", name="profil", methods={"GET"})
      * @param PersonneRepository $personneRepository
      * @return Response
      * @Security("is_granted('ROLE_USER')")
