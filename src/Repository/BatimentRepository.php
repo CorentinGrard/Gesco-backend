@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Batiment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @method Batiment|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,61 @@ class BatimentRepository extends ServiceEntityRepository
         parent::__construct($registry, Batiment::class);
     }
 
-    // /**
-    //  * @return Batiment[] Returns an array of Batiment objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Batiment
+    public function AddBatiment(EntityManagerInterface $entityManager, Request $request,SiteRepository $siteRepository)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+
+        $data = json_decode($request->getContent(), true);
+
+        $idSite = $data['idSite'];
+        $nomBatiment = $data['nom'];
+
+        if(empty($nomBatiment)){
+            return[
+                "status" => 400,
+                "error"  => "Nom non renseigné"
+            ];
+        }
+
+        if($this->CheckExistBatimentByName($nomBatiment)){
+            return[
+                "status" => 404,
+                "error"  => "Le batiment de nom  ".$nomBatiment." existe déjà."
+            ];
+        }
+
+        $currentSite = $siteRepository->find($idSite);
+
+        if($currentSite == null){
+            return[
+                "status" => 400,
+                "error"  => "L'ID site ".$idSite." n'existe pas."
+            ];
+        }
+
+        $batiment = new Batiment();
+        $batiment->setNomBatiment($nomBatiment);
+        $batiment->setBatimentSite($currentSite);
+
+        $entityManager->persist($batiment);
+        $entityManager->flush();
+
+        return [
+            "status" => 201,
+            "data"   =>$batiment,
+            "error"  => null
+        ];
     }
-    */
+
+    private function CheckExistBatimentByName($nomBatiment)
+    {
+        $listBatiment = $this->findAll();
+
+        foreach ($listBatiment as $batiment){
+            if($nomBatiment == $batiment->getNomBatiment()){
+                return true;
+            }
+        }
+        return false;
+    }
 }
