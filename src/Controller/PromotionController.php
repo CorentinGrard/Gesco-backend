@@ -182,9 +182,11 @@ class PromotionController extends AbstractController
      * @param AssistantRepository $assistantRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, ResponsableRepository $responsableRepository): Response
     {
         $user = $this->getUser();
         if($user != null){
