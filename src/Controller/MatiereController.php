@@ -12,6 +12,7 @@ use App\Repository\ModuleRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +41,7 @@ class MatiereController extends AbstractController
     {
         $matieres = $matiereRepository->findAll();
 
-        $json = GenericSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
+        $json = GenericSerializer::serializeJson($matieres, ['groups' => 'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -74,12 +75,12 @@ class MatiereController extends AbstractController
     {
         $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
 
-        switch ($repoResponse["status"]){
+        switch ($repoResponse["status"]) {
             case 202:
-                return new JsonResponse("Ok",Response::HTTP_ACCEPTED);
+                return new JsonResponse("Ok", Response::HTTP_ACCEPTED);
                 break;
             case 404:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
@@ -108,7 +109,7 @@ class MatiereController extends AbstractController
      */
     public function read(Matiere $matiere): Response
     {
-        $json = GenericSerializer::serializeJson($matiere, ['groups'=>'matiere_get']);
+        $json = GenericSerializer::serializeJson($matiere, ['groups' => 'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -189,11 +190,12 @@ class MatiereController extends AbstractController
      * @param MatiereRepository $repository
      * @param Matiere|null $matiere
      * @param Intervenant|null $intervenant
+     * @IsGranted("ROLE_ASSISTANT")
      * @return JsonResponse
      */
     public function addIntervenant(MatiereRepository $repository, Matiere $matiere = null, Intervenant $intervenant = null): JsonResponse
     {
-        if($matiere == null || $intervenant == null){
+        if ($matiere == null || $intervenant == null) {
             return new JsonResponse("Matière ou intervenant inexistant", Response::HTTP_NOT_MODIFIED);
         }
 
@@ -248,18 +250,18 @@ class MatiereController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $matiereRepository->updateMatiere($entityManager,$moduleRepository,$matiere,$nom,$coeff,$nbhp,$module_id);
+        $repoResponse = $matiereRepository->updateMatiere($entityManager, $moduleRepository, $matiere, $nom, $coeff, $nbhp, $module_id);
 
-        switch ($repoResponse["status"]){
+        switch ($repoResponse["status"]) {
             case 201:
-                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'update_matiere']);
-                return new JsonResponse($json,Response::HTTP_CREATED);
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups' => 'update_matiere']);
+                return new JsonResponse($json, Response::HTTP_CREATED);
                 break;
             case 409:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                return new JsonResponse($repoResponse["error"], Response::HTTP_CONFLICT);
                 break;
             case 500:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse($repoResponse["error"], Response::HTTP_INTERNAL_SERVER_ERROR);
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
@@ -291,7 +293,7 @@ class MatiereController extends AbstractController
      * @param Semestre $semestre
      * @return Response
      */
-    public function getMatieresParSemestre(Semestre $semestre):Response
+    public function getMatieresParSemestre(Semestre $semestre): Response
     {
         $modules = $semestre->getModules();
         $matieres = [];
@@ -302,7 +304,7 @@ class MatiereController extends AbstractController
             }
         }
 
-        $json = GenericSerializer::serializeJson($matieres,['groups'=>'matiere_get']);
+        $json = GenericSerializer::serializeJson($matieres, ['groups' => 'matiere_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
