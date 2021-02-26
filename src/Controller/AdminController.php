@@ -171,13 +171,13 @@ class AdminController extends AbstractController
     /**
      * @OA\Get(
      *     tags={"Admin"},
-     *     path="/admin/eligible-responsable/personnes",
+     *     path="/admin/personnels",
      *      @OA\Response(
      *          response="200",
      *          @OA\JsonContent(ref="#/components/schemas/Personne")
      *      )
      * )
-     * @Route("/admin/eligible-responsable/personnes", name="get_eligible_respo", methods={"GET"})
+     * @Route("/admin/personnels", name="get_eligible_respo", methods={"GET"})
      * @param PersonneRepository $personneRepository
      * @param AssistantRepository $assistantRepository
      * @param IntervenantRepository $intervenantRepository
