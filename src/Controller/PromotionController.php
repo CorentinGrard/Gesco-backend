@@ -186,7 +186,14 @@ class PromotionController extends AbstractController
      */
     public function AddPromotion(FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository, $request);
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+        $repoResponse = $promotionRepository->AjoutPromotion($entityManager, $formationRepository, $promotionRepository, $assistantRepository, $request, $responsableConnected);
 
         switch ($repoResponse["status"]) {
             case 404:
@@ -195,6 +202,9 @@ class PromotionController extends AbstractController
             case 201:
                 $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "add_promotion"]);
                 return new JsonResponse($json, Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"], Response::HTTP_FORBIDDEN);
                 break;
             default:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
@@ -230,6 +240,7 @@ class PromotionController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Promotion $promotion
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
     public function UpdatePromotion(PromotionRepository $promotionRepository, FormationRepository $formationRepository, AssistantRepository $assistantRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
     {
