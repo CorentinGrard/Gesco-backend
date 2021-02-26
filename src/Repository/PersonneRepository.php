@@ -6,6 +6,7 @@ use App\Entity\Personne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use MongoDB\Driver\Exception\Exception;
 
 /**
  * @method Personne|null find($id, $lockMode = null, $lockVersion = null)
@@ -48,4 +49,36 @@ class PersonneRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getPersonnesEligiblentIntervenants(PersonneRepository $personneRepository, AssistantRepository $assistantRepository, ResponsableRepository $responsableRepository, IntervenantRepository $intervenantRepository)
+    {
+        $personnesEligibles = [];
+
+        try {
+            $assistants = $assistantRepository->findAll();
+            foreach ($assistants as $assistant) {
+                array_push($personnesEligibles,$assistant->getPersonne());
+            }
+
+            $responsables = $responsableRepository->findAll();
+            foreach ($responsables as $responsable) {
+                array_push($personnesEligibles,$responsable->getPersonne());
+            }
+
+            $intervenants = $intervenantRepository->findAll();
+            foreach ($intervenants as $intervenant) {
+                if (!$intervenant->getExterne()) {
+                    array_push($personnesEligibles,$intervenant->getPersonne());
+                }
+            }
+            return [
+                "status" => 200,
+                "data" => $personnesEligibles
+            ];
+        } catch(\Exception $e) {
+            return [
+                "status" => 500,
+                "error" => $e
+            ];
+        }
+    }
 }

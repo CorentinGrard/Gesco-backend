@@ -1429,6 +1429,25 @@
                 }
             }
         },
+        "/personnes/eligiblent/intervenants": {
+            "get": {
+                "tags": [
+                    "Personnes"
+                ],
+                "operationId": "App\\Controller\\PersonneController::getPersonnesEligiblentIntervenants",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Personne"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/assistants/{id}/promotions": {
             "get": {
                 "tags": [
