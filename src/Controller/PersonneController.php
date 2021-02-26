@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Assistant;
 use App\Entity\Personne;
 use App\Repository\AssistantRepository;
 use App\Repository\IntervenantRepository;
@@ -35,7 +36,7 @@ class PersonneController extends AbstractController
 
         $personnes = $personneRepository->findAll();
 
-        $json = GenericSerializer::serializeJson($personnes,['groups'=>'get_personne']);
+        $json = GenericSerializer::serializeJson($personnes, ['groups' => 'get_personne']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -60,9 +61,10 @@ class PersonneController extends AbstractController
      * @param Personne $personne
      * @return Response
      */
-    public function getPersonneById(Personne $personne):Response {
+    public function getPersonneById(Personne $personne): Response
+    {
 
-        $json = GenericSerializer::serializeJson($personne, ['groups'=>'get_personne']);
+        $json = GenericSerializer::serializeJson($personne, ['groups' => 'get_personne']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -81,15 +83,16 @@ class PersonneController extends AbstractController
      * @return Response
      * @Security("is_granted('ROLE_USER')")
      */
-    public function profil(PersonneRepository $personneRepository):Response {
+    public function profil(PersonneRepository $personneRepository): Response
+    {
         //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
-        if($user != null){
+        if ($user != null) {
             $username = $user->getUsername();
-            if(!empty($username)){
+            if (!empty($username)) {
                 $personne = $personneRepository->findOneByUsername($username);
-                $json = GenericSerializer::serializeJson($personne,['groups'=>'get_personne']);
+                $json = GenericSerializer::serializeJson($personne, ['groups' => 'get_personne']);
                 return new JsonResponse($json, Response::HTTP_OK);
             }
         }
@@ -116,22 +119,22 @@ class PersonneController extends AbstractController
      * @return Response
      * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function getPersonnesEligiblentIntervenants(PersonneRepository $personneRepository,AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository):Response {
+    public function getPersonnesEligiblentIntervenants(PersonneRepository $personneRepository, AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository): Response
+    {
 
-        $repoResponse = $personneRepository->getPersonnesEligiblentIntervenants($personneRepository,$assistantRepository,$responsableRepository,$intervenantRepository);
+        $repoResponse = $personneRepository->getPersonnesEligiblentIntervenants($personneRepository, $assistantRepository, $responsableRepository, $intervenantRepository);
 
-        switch ($repoResponse["status"]){
+        switch ($repoResponse["status"]) {
             case 200:
-                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'get_personne']);
-                return new JsonResponse($json,Response::HTTP_OK);
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups' => 'get_personne']);
+                return new JsonResponse($json, Response::HTTP_OK);
                 break;
             case 500:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse($repoResponse["error"], Response::HTTP_INTERNAL_SERVER_ERROR);
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
     }
-
 
 }

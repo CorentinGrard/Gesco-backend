@@ -1448,6 +1448,25 @@
                 }
             }
         },
+        "/ad/eligible-responsable/personnes": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "operationId": "App\\Controller\\PersonneController::getPersonneEligibleRespo",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Personne"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/assistants/{id}/promotions": {
             "get": {
                 "tags": [
