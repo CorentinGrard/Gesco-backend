@@ -20,21 +20,21 @@ class Site
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_session_by_startDate_and_endDate", "add_site"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_site", "get_site"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=64)
-     * @Groups({"get_session_by_startDate_and_endDate", "add_site"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_site", "get_site"})
      */
     private $nomSite;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_session_by_startDate_and_endDate", "add_site"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_site", "get_site"})
      */
     private $adress;
 

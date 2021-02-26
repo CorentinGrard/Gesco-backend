@@ -2171,6 +2171,27 @@
             }
         },
         "/sites": {
+            "get": {
+                "tags": [
+                    "Sites"
+                ],
+                "operationId": "App\\Controller\\SiteController::GetAllSite",
+                "responses": {
+                    "200": {
+                        "description": "get all sites",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Site"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Sites"
