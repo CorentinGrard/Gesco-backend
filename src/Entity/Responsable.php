@@ -22,7 +22,8 @@ class Responsable
      * @ORM\Column(type="integer")
      * @Groups({
      *     "get_responsable",
-     *     "get_formation"
+     *     "get_formation",
+     *     "update_formation"
      * })
      */
     private $id;
