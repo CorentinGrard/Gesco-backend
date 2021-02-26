@@ -164,6 +164,7 @@ class ModuleController extends AbstractController
      * @Route("/semestres/{id}/modules", name="add_module", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @param SemestreRepository $semestreRepository
      * @param Semestre $semestre
      * @return Response
@@ -172,35 +173,45 @@ class ModuleController extends AbstractController
     public function insertModuleInSemestre(
         Request $request,
         EntityManagerInterface $entityManager,
+        ResponsableRepository $responsableRepository,
         SemestreRepository $semestreRepository,
         Semestre $semestre): Response
     {
-
+        $user = $this->getUser();
+        if($user != null) {
+            $username = $user->getUsername();
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
-        //$idSemestre = $data['idSemestre'];
-        $ects = $data['ects'];
-
-        if (empty($nom) /*|| empty($ects)*/ ) {
+        if(!array_key_exists("ects",$data) || empty($nom)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
+        $ects = $data['ects'];
 
+        $repoResponse = $semestreRepository->insertModuleInSemestre($entityManager,$nom,$semestre,$ects,$responsableConnected);
         //$semestre = $semestreRepository->find($idSemestre);
 
-        $module = new Module();
-        $module->setNom($nom);
-        $module->setSemestre($semestre);
-        $module->setEcts($ects);
+
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups"=>"module_get"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403 :
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
 
 
-        $entityManager->persist($module);
-        $entityManager->flush();
-
-        $json = GenericSerializer::serializeJson($module, ["groups"=>"module_get"]);
-
-        return new JsonResponse($json, Response::HTTP_CREATED);
     }
 
     /**
