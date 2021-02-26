@@ -12,6 +12,7 @@ use App\Repository\IntervenantRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
+use App\Tools;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations\Property;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -49,14 +50,14 @@ class AdminController extends AbstractController
      */
     public function addRole(Request $request, EntityManagerInterface $em, Personne $personne = null)
     {
-        if($personne == null){
+        if ($personne == null) {
             return new JsonResponse("La personne n'existe pas", Response::HTTP_NOT_FOUND);
         }
         $data = json_decode($request->getContent(), true);
 
         $role = $data["role"];
 
-        switch($role){
+        switch ($role) {
             case "ROLE_ADMIN" :
                 $personne->addRole($role);
                 break;
@@ -75,18 +76,18 @@ class AdminController extends AbstractController
                 $inter->setPersonne($personne);
                 $em->persist($inter);
                 break;
-/*            case "ROLE_ETUDIANT" :
-                $etudiant = new Etudiant();
-                $etudiant->setPersonne($personne);
-                $em->persist($etudiant);
-                break;*/
+            /*            case "ROLE_ETUDIANT" :
+                            $etudiant = new Etudiant();
+                            $etudiant->setPersonne($personne);
+                            $em->persist($etudiant);
+                            break;*/
         }
 
         $em->persist($personne);
 
         $em->flush();
 
-        $json = GenericSerializer::serializeJson($personne, ["groups"=>"get_personne"]);
+        $json = GenericSerializer::serializeJson($personne, ["groups" => "get_personne"]);
 
         return new JsonResponse($json, Response::HTTP_CREATED);
 
@@ -124,18 +125,18 @@ class AdminController extends AbstractController
                                ResponsableRepository $responsableRepository,
                                IntervenantRepository $intervenantRepository)
     {
-        if($personne == null){
+        if ($personne == null) {
             return new JsonResponse("La personne n'existe pas", Response::HTTP_NOT_FOUND);
         }
         $data = json_decode($request->getContent(), true);
 
         $role = $data["role"];
-        if($role=="ROLE_USER"){
+        if ($role == "ROLE_USER") {
             return new JsonResponse("ROLE_USER ne peut être supprimé", Response::HTTP_NOT_MODIFIED);
         }
 
 
-        switch($role){
+        switch ($role) {
             case "ROLE_ADMIN" :
                 $personne->removeRole($role);
                 break;
@@ -161,7 +162,7 @@ class AdminController extends AbstractController
         $em->persist($personne);
         $em->flush();
 
-        $json = GenericSerializer::serializeJson($personne, ["groups"=>"get_personne"]);
+        $json = GenericSerializer::serializeJson($personne, ["groups" => "get_personne"]);
 
         return new JsonResponse($json, Response::HTTP_CREATED);
 
@@ -170,13 +171,13 @@ class AdminController extends AbstractController
     /**
      * @OA\Get(
      *     tags={"Admin"},
-     *     path="/admin/eligible-responsable/personnes",
+     *     path="/ad/eligible-responsable/personnes",
      *      @OA\Response(
      *          response="200",
      *          @OA\JsonContent(ref="#/components/schemas/Personne")
      *      )
      * )
-     * @Route("/admin/eligible-responsable/personnes", name="get_eligible_respo", methods={"GET"})
+     * @Route("/ad/eligible-responsable/personnes", name="get_eligible_respo", methods={"GET"})
      * @param PersonneRepository $personneRepository
      * @param AssistantRepository $assistantRepository
      * @param IntervenantRepository $intervenantRepository
@@ -196,19 +197,29 @@ class AdminController extends AbstractController
                 array_push($personneArray, $personne);
             }
         }
+
         foreach ($assistants as $assistant) {
-            array_push($personneArray, $assistant->getPersonne());
+            $personne = $assistant->getPersonne();
+            if(!Tools::personneAlreadyInArray($personneArray, $personne->getId()))
+                array_push($personneArray, $personne);
         }
+
         foreach ($intervenants as $intervenant) {
             if (!$intervenant->getExterne()) {
-                array_push($personneArray, $intervenant->getPersonne());
+                $personne = $intervenant->getPersonne();
+                if(!Tools::personneAlreadyInArray($personneArray, $personne->getId()))
+                    array_push($personneArray, $personne);
+
             }
         }
         foreach ($responsables as $responsable) {
-            array_push($personneArray, $responsable->getPersonne());
+            $personne = $responsable->getPersonne();
+            if(!Tools::personneAlreadyInArray($personneArray, $personne->getId()))
+                array_push($personneArray, $personne);
+
         }
 
-        $json = GenericSerializer::serializeJson($personneArray, ["groups"=>"get_personne"]);
+        $json = GenericSerializer::serializeJson($personneArray, ["groups" => "get_personne"]);
         return new JsonResponse($json, Response::HTTP_OK);
     }
 

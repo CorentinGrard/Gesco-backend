@@ -46,4 +46,15 @@ class Tools
     }
 
 
+    static function personneAlreadyInArray(array $personnes, int $id):bool{
+        foreach($personnes as $a){
+            if($a->getId() == $id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
