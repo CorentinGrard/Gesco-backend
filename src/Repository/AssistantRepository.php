@@ -25,25 +25,16 @@ class AssistantRepository extends ServiceEntityRepository
      */
     public function findOneByUsername($username)
     {
-        /*
-                $sql = "SELECT * FROM etudiant e " .
-                    "INNER JOIN personne p ON (p.id = e.personne_id) ".
-                    "WHERE p.email = :email";
-
-                $rsm = new ResultSetMapping();
-
-                $query = $this->_em->createNativeQuery($sql, $rsm);
-                $query->setParameter('email', $username);
-
-                return $query->getOneOrNullResult();
-        */
         try {
-            return $this->createQueryBuilder('a')
-                ->innerJoin('a.Personne', 'p', 'WITH', 'p.id = a.Personne')
-                ->where('p.email = :email')
-                ->setParameter('email', $username)
-                ->getQuery()
-                ->getOneOrNullResult();
+            $sql = "SELECT a.id FROM assistant a ".
+                "JOIN personne p ON a.personne_id = p.id AND p.id = a.personne_id WHERE p.email = :email";
+
+            $conn = $this->getEntityManager()->getConnection();
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(array('email' => $username));
+            $result = $stmt->fetchOne();
+            $etudiant = $this->find($result);
+            return $etudiant;
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
         }
