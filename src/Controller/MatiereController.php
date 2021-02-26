@@ -9,6 +9,7 @@ use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\MatiereRepository;
 use App\Repository\ModuleRepository;
+use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -73,6 +74,15 @@ class MatiereController extends AbstractController
      */
     public function deleteMatiereById(EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
     {
+        /*
+                if($matiere == null){
+            return new JsonResponse("Matiere inexistante !",Response::HTTP_NOT_FOUND);
+        }
+        if(sizeof($matiere->getNotes()) > 0)
+        {
+            return new JsonResponse("Veuillez supprimer les notes associées avant de supprimer la matière !", Response::HTTP_CONFLICT);
+        }*/
+        
         $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
 
         switch ($repoResponse["status"]) {
@@ -235,16 +245,17 @@ class MatiereController extends AbstractController
      * @param ModuleRepository $moduleRepository
      * @param EntityManagerInterface $entityManager
      * @param Matiere $matiere
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere = null): JsonResponse
+    public function updatematiere(Request $request, MatiereRepository $matiereRepository, ModuleRepository $moduleRepository, EntityManagerInterface $entityManager, Matiere $matiere, ResponsableRepository $responsableRepository): JsonResponse
     {
-        if($matiere == null){
-            return new JsonResponse("Matiere inexistante !",Response::HTTP_NOT_FOUND);
-        }
-        if(sizeof($matiere->getNotes()) > 0)
-        {
-            return new JsonResponse("Veuillez supprimer les notes associées avant de supprimer la matière !", Response::HTTP_CONFLICT);
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
         }
 
         $data = json_decode($request->getContent(), true);
@@ -258,7 +269,7 @@ class MatiereController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $matiereRepository->updateMatiere($entityManager, $moduleRepository, $matiere, $nom, $coeff, $nbhp, $module_id);
+        $repoResponse = $matiereRepository->updateMatiere($entityManager, $moduleRepository, $matiere, $nom, $coeff, $nbhp, $module_id,$responsableConnected);
 
         switch ($repoResponse["status"]) {
             case 201:
@@ -267,6 +278,9 @@ class MatiereController extends AbstractController
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_CONFLICT);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"], Response::HTTP_FORBIDDEN);
                 break;
             case 500:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_INTERNAL_SERVER_ERROR);
