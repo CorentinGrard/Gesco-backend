@@ -79,7 +79,7 @@ class SessionController extends AbstractController
         }*/
 
 
-        $json = SessionSerializer::serializeJson($sessions, ['groups'=>'session_get']);
+        $json = SessionSerializer::serializeJson($sessions, ['groups' => 'session_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
 
@@ -122,13 +122,13 @@ class SessionController extends AbstractController
         $sessions = $promotion->getSessions();
 
         $sessionArray = [];
-        foreach($sessions as $session){
-            if($session->getDateDebut() >= $dates["debut"] && $session->getDateFin() <= $dates["fin"]){
+        foreach ($sessions as $session) {
+            if ($session->getDateDebut() >= $dates["debut"] && $session->getDateFin() <= $dates["fin"]) {
                 array_push($sessionArray, $session);//->getArray());
             }
         }
 
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'session_get']);
+        $json = SessionSerializer::serializeJson($sessionArray, ['groups' => 'session_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -198,9 +198,9 @@ class SessionController extends AbstractController
             return new JsonResponse("La date de fin n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion,$startDate,$endDate);
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion, $startDate, $endDate);
 
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
+        $json = SessionSerializer::serializeJson($sessionArray, ['groups' => 'get_session_by_startDate_and_endDate']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -249,20 +249,17 @@ class SessionController extends AbstractController
     public function allSessionsBetweenStartDateAndEndDateForEtudiant(SessionRepository $sessionRepository, EtudiantRepository $etudiantRepository, string $startDateString, string $endDateString): Response
     {
         $user = $this->getUser();
-        if($user == null)
-        {
+        if ($user == null) {
             return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
         }
 
         $username = $user->getUsername();
-        if(empty($username))
-        {
+        if (empty($username)) {
             return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
         }
 
         $etudiant = $etudiantRepository->findOneByUsername($username);
-        if($etudiant == null)
-        {
+        if ($etudiant == null) {
             return new JsonResponse("L'utilisateur n'est pas un étudiant", Response::HTTP_FORBIDDEN);
         }
 
@@ -282,9 +279,9 @@ class SessionController extends AbstractController
             return new JsonResponse("Etudiant sans promotion", Response::HTTP_NOT_FOUND);
         }
 
-        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion,$startDate,$endDate);
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion, $startDate, $endDate);
 
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups'=>'get_session_by_startDate_and_endDate']);
+        $json = SessionSerializer::serializeJson($sessionArray, ['groups' => 'get_session_by_startDate_and_endDate']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -311,7 +308,7 @@ class SessionController extends AbstractController
      */
     public function read(Session $session): Response
     {
-        $json = SessionSerializer::serializeJson($session, ['groups'=>'session_get']);
+        $json = SessionSerializer::serializeJson($session, ['groups' => 'session_get']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
@@ -346,7 +343,7 @@ class SessionController extends AbstractController
      * @param Matiere $matiere
      * @param LoggerInterface $logger
      * @return JsonResponse
-     * Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_ASSISTANT')")
+     * @Security("is_granted('ROLE_ASSISTANT')")
      */
     public function add(Request $request, EntityManagerInterface $entityManager, Matiere $matiere, LoggerInterface $logger): JsonResponse
     {
@@ -357,9 +354,11 @@ class SessionController extends AbstractController
         $obligatoire = $data['obligatoire'];
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
-        $detail = $data['detail'];
+        if (isset($data['detail'])) {
+            $detail = $data['detail'];
+        }
 
-        if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
+        if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin)) {
             throw new NotFoundHttpException('Paramètres obligatoires attendus !');
         }
 
@@ -370,7 +369,9 @@ class SessionController extends AbstractController
             $session->setMatiere($matiere);
             $session->setDateDebut(new DateTime($dateDebut));
             $session->setDateFin(new DateTime($dateFin));
-            $session->setDetail($detail);
+            if (isset($detail)) {
+                $session->setDetail($detail);
+            }
 
             /*$session = SessionSerializer::deSerializeJson($data, ['groups'=>'create_session']);
 
@@ -379,10 +380,10 @@ class SessionController extends AbstractController
             $entityManager->persist($session);
             $entityManager->flush();
 
-            $json = SessionSerializer::serializeJson($session, ['groups'=>'session_get']);
+            $json = SessionSerializer::serializeJson($session, ['groups' => 'session_get']);
             return new JsonResponse($json, Response::HTTP_CREATED);
 
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             return new JsonResponse("Erreur", Response::HTTP_CONFLICT);
         }
 
@@ -427,7 +428,7 @@ class SessionController extends AbstractController
      * @param int $idMatiere
      * @return JsonResponse
      */
-    public function modifySession(Request $request, SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session, MatiereRepository $matiereRepository): JsonResponse
+    public function modifySession(Request $request, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, Session $session, MatiereRepository $matiereRepository): JsonResponse
     {
         //TODO Deserialize json posté !
         $data = json_decode($request->getContent(), true);
@@ -442,18 +443,18 @@ class SessionController extends AbstractController
             throw new NotFoundHttpException('Paramètres obligatoires attendus !');
         }
 
-        if(empty($idMatiere))
+        if (empty($idMatiere))
             $idMatiere = 0;
 
         $matiere = null;
         $matiere = $matiereRepository->find($idMatiere);
-        if($matiere == null){
-            $matiere =  $session->getMatiere();
+        if ($matiere == null) {
+            $matiere = $session->getMatiere();
         }
 
-        $repoResponse = $sessionRepository->updateSession($entityManager,$session, $type, $dateDebut, $dateFin, $detail, $matiere, $obligatoire);
+        $repoResponse = $sessionRepository->updateSession($entityManager, $session, $type, $dateDebut, $dateFin, $detail, $matiere, $obligatoire);
 
-        $json = SessionSerializer::serializeJson($repoResponse, ['groups'=>'session_get']);
+        $json = SessionSerializer::serializeJson($repoResponse, ['groups' => 'session_get']);
         return new JsonResponse($json, Response::HTTP_CREATED); //TODO
 
     }
@@ -478,9 +479,9 @@ class SessionController extends AbstractController
      * @param Session|null $session
      * @return JsonResponse
      */
-    public function deleteSession(SessionRepository  $sessionRepository, EntityManagerInterface $entityManager, Session $session = null): JsonResponse
+    public function deleteSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, Session $session = null): JsonResponse
     {
-        if($session == null){
+        if ($session == null) {
             return new JsonResponse("Session non trouvée...", Response::HTTP_NOT_FOUND);
         }
 
