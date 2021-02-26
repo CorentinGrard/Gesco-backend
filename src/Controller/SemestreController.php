@@ -113,7 +113,7 @@ class SemestreController extends AbstractController
                 return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             case 403:
-                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
@@ -142,13 +142,22 @@ class SemestreController extends AbstractController
      * )
      * @Route("/semestre/{id}", name="update_semestre", methods={"PUT"})
      * @param SemestreRepository $semestreRepository
+     * @param ResponsableRepository $responsableRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Semestre $semestre
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function updateSemestre(SemestreRepository $semestreRepository, Request $request, EntityManagerInterface $entityManager, Semestre $semestre): JsonResponse
+    public function updateSemestre(SemestreRepository $semestreRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager, Semestre $semestre): JsonResponse
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
@@ -157,10 +166,22 @@ class SemestreController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $semestreRepository->updateSemestre($entityManager, $nom, $semestre);
+        $repoResponse = $semestreRepository->updateSemestre($entityManager, $nom, $semestre,$responsableConnected);
 
-        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'update_semestre']);
-        return new JsonResponse($json, Response::HTTP_CREATED);
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_modules_by_promotion']);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
