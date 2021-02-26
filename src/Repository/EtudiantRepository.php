@@ -13,6 +13,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\EntityManagerInterface;
 
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 /**
  * @method Etudiant|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,9 +23,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EtudiantRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $logger;
+
+    public function __construct(ManagerRegistry $registry, LoggerInterface  $logger)
     {
         parent::__construct($registry, Etudiant::class);
+        $this->logger = $logger;
     }
 
     /**
@@ -32,25 +36,40 @@ class EtudiantRepository extends ServiceEntityRepository
      */
     public function findOneByUsername($username)
     {
-/*
-        $sql = "SELECT * FROM etudiant e " .
-            "INNER JOIN personne p ON (p.id = e.personne_id) ".
-            "WHERE p.email = :email";
 
-        $rsm = new ResultSetMapping();
+        /*try {
+            $sql = "SELECT * FROM etudiant e " .
+                "JOIN personne p ON (p.id = e.personne_id) ".
+                "WHERE p.email = ?";
 
-        $query = $this->_em->createNativeQuery($sql, $rsm);
-        $query->setParameter('email', $username);
+            $sql = "SELECT e0_.id AS id_0, e0_.personne_id AS personne_id_1, e0_.promotion_id AS promotion_id_2 ".
+                "FROM etudiant e0_ LEFT JOIN (personne p1_) ON e0_.personne_id = p1_.id AND (p1_.id = e0_.personne_id) WHERE p1_.email = ?"
 
-        return $query->getOneOrNullResult();
-*/
+            $rsm = new ResultSetMapping();
+            $rsm->addEntityResult(Etudiant::class, 'e');
+
+            //$rsm->addJoinedEntityResult(Personne::class, 'p','e','e.personne_id');
+
+
+            $query = $this->_em->createNativeQuery($sql, $rsm);
+            $query->setParameter(1, $username);
+
+            $result = $query->getOneOrNullResult();
+            $this->logger->warning("Etudiant inexistant : " . ($result == null));
+            return $result;
+        } catch (NonUniqueResultException $e) {
+            var_dump($e->getMessage());
+        }*/
+
         try {
-            return $this->createQueryBuilder('e')
-                ->join('e.Personne', 'p', 'WITH', 'p.id = e.Personne')
+            $query = $this->createQueryBuilder('e')
+                ->leftJoin('e.Personne', 'p', 'WITH', 'p.id = e.Personne')
                 ->where('p.email = :email')
                 ->setParameter('email', $username)
-                ->getQuery()
-                ->getOneOrNullResult();
+                ->getQuery();
+                $this->logger->warning("QUERY : " . $query->getSQL()
+            );
+            return $query->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
         }
