@@ -438,8 +438,12 @@ class SessionController extends AbstractController
         $obligatoire = $data['obligatoire'];
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
-        $detail = $data['detail'];
-        if (empty($type) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
+        if (isset($data['detail'])) {
+            $detail = $data['detail'];
+        } else {
+            $detail = null;
+        }
+        if (empty($type) || empty($dateDebut) || empty($dateFin)) {
             throw new NotFoundHttpException('Paramètres obligatoires attendus !');
         }
 
