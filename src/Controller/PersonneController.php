@@ -114,6 +114,7 @@ class PersonneController extends AbstractController
      * @param IntervenantRepository $intervenantRepository
      * @param ResponsableRepository $responsableRepository
      * @return Response
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function getPersonnesEligiblentIntervenants(PersonneRepository $personneRepository,AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository):Response {
 
