@@ -73,7 +73,7 @@
                 }
             }
         },
-        "/ad/eligible-responsable/personnes": {
+        "/admin/eligible-responsable/personnes": {
             "get": {
                 "tags": [
                     "Admin"
