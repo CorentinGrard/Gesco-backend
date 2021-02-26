@@ -24,7 +24,8 @@ class Site
      *     "get_session_by_startDate_and_endDate",
      *     "add_site",
      *     "get_site",
-     *     "update_site"
+     *     "update_site",
+     *     "add_batiment"
      * })
      */
     private $id;
@@ -35,7 +36,8 @@ class Site
      * @Groups({
      *     "get_session_by_startDate_and_endDate",
      *     "add_site", "get_site",
-     *     "update_site"
+     *     "update_site",
+     *     "add_batiment"
      * })
      */
     private $nomSite;

@@ -20,14 +20,14 @@ class Batiment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_session_by_startDate_and_endDate"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_batiment"})
      */
     private $id;
 
     /**
      * @OA\Property(type="string")
      * @ORM\Column(type="string", length=64)
-     * @Groups({"get_session_by_startDate_and_endDate"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_batiment"})
      */
     private $nomBatiment;
 
@@ -49,7 +49,7 @@ class Batiment
      * )
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="batiments")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_session_by_startDate_and_endDate"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_batiment"})
      */
     private $batimentSite;
 

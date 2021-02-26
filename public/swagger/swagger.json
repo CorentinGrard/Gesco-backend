@@ -136,6 +136,45 @@
                 }
             }
         },
+        "/batiments": {
+            "post": {
+                "tags": [
+                    "Batiments"
+                ],
+                "operationId": "App\\Controller\\BatimentController::AddSite",
+                "requestBody": {
+                    "request": "batiment",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "idSite": {
+                                        "required": true,
+                                        "type": "number"
+                                    },
+                                    "nom": {
+                                        "required": true,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Batiment ajouté"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
+                    },
+                    "404": {
+                        "description": "Erreur"
+                    }
+                }
+            }
+        },
         "/etudiants": {
             "get": {
                 "tags": [
@@ -1058,7 +1097,7 @@
                 "tags": [
                     "Modules"
                 ],
-                "operationId": "App\\Controller\\ModuleController::add",
+                "operationId": "App\\Controller\\ModuleController::insertModuleInSemestre",
                 "parameters": [
                     {
                         "name": "id",
