@@ -7,6 +7,7 @@ use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\ModuleRepository;
 use App\Repository\PromotionRepository;
+use App\Repository\ResponsableRepository;
 use App\Repository\SemestreRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,6 +34,7 @@ class ModuleController extends AbstractController
      * @Route("/modules", name="module_list", methods={"GET"})
      * @param ModuleRepository $moduleRepository
      * @return Response
+     *
      */
     public function list(ModuleRepository $moduleRepository): Response
     {
@@ -65,11 +67,28 @@ class ModuleController extends AbstractController
      * )
      * @Route("/modules/{id}", name="module", methods={"GET"})
      * @param Module $module
+     * @param ResponsableRepository $responsableRepository
      * @return Response
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function read(Module $module): Response
+    public function read(Module $module, ResponsableRepository $responsableRepository): Response
     {
-        return new JsonResponse($module->getArray(), Response::HTTP_OK);
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+        $responsableCible = $module->getSemestre()->getPromotion()->getFormation()->getResponsable();
+
+        if ($responsableCible === $responsableConnected) {
+            return new JsonResponse($module->getArray(), Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Vous n'êtes pas responsable du semestre contenant ce module", Response::HTTP_FORBIDDEN);
+        }
+
     }
 
     /**
