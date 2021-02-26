@@ -6,7 +6,10 @@ use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Entity\Session;
+use App\Repository\PromotionRepository;
+use App\Repository\ResponsableRepository;
 use App\Repository\SemestreRepository;
+use App\Serializers\GenericSerializer;
 use App\Serializers\SessionSerializer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SemestreController extends AbstractController
 {
@@ -77,13 +81,22 @@ class SemestreController extends AbstractController
      * )
      * @Route("/promotions/{id}/semestre", name="add_semestre_by_promotion", methods={"POST"})
      * @param SemestreRepository $semestreRepository
+     * @param ResponsableRepository $responsableRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Promotion $promotion
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function add(SemestreRepository $semestreRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
+    public function add(SemestreRepository $semestreRepository, ResponsableRepository $responsableRepository, PromotionRepository $promotionRepository, Request $request, EntityManagerInterface $entityManager, Promotion $promotion): JsonResponse
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
@@ -92,10 +105,19 @@ class SemestreController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $semestreRepository->add($entityManager, $promotion, $nom);
+        $repoResponse = $semestreRepository->add($entityManager, $responsableConnected, $promotion, $nom);
 
-        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'add_semestre_by_promotion']);
-        return new JsonResponse($json, Response::HTTP_CREATED);
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_modules_by_promotion']);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
 
     }
 

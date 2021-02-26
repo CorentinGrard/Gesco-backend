@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Promotion;
+use App\Entity\Responsable;
 use App\Entity\Semestre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -49,20 +50,32 @@ class SemestreRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function add(EntityManagerInterface $entityManager, Promotion $promotion, string $nom)
+    public function add(EntityManagerInterface $entityManager, Responsable $responsableConnected,Promotion $promotion, string $nom)
     {
-        $semestre = new Semestre();
-        $semestre->setNom($nom);
-        $semestre->setPromotion($promotion);
+        // Vérification
+        $responsableCible = $promotion->getFormation()->getResponsable();
 
-        $entityManager->persist($semestre);
-        $entityManager->flush();
+        if ($responsableCible === $responsableConnected) {
+            $semestre = new Semestre();
+            $semestre->setNom($nom);
+            $semestre->setPromotion($promotion);
 
-        return [
-            "status" => 201,
-            "data" => $semestre,
-            "error" => null
-        ];
+            $entityManager->persist($semestre);
+            $entityManager->flush();
+
+            return [
+                "status" => 201,
+                "data" => $semestre,
+                "error" => null
+            ];
+        } else {
+            return [
+                "status" => 403,
+                "error" => "Vous n'êtes pas responsable d'une formation contenant une promotion visée"
+            ];
+
+        }
+
     }
 
     public function updateSemestre(EntityManagerInterface $entityManager, $nom, Semestre $semestre)
