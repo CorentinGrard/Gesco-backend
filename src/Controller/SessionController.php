@@ -438,8 +438,7 @@ class SessionController extends AbstractController
         $dateDebut = $data['dateDebut'];
         $dateFin = $data['dateFin'];
         $detail = $data['detail'];
-
-        if (empty($type) || empty($obligatoire) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
+        if (empty($type) || empty($dateDebut) || empty($dateFin) || empty($detail)) {
             throw new NotFoundHttpException('Paramètres obligatoires attendus !');
         }
 
@@ -452,7 +451,7 @@ class SessionController extends AbstractController
             $matiere =  $session->getMatiere();
         }
 
-        $repoResponse = $sessionRepository->updateSession($entityManager,$session, $type,  $obligatoire, $dateDebut, $dateFin, $detail, $matiere);
+        $repoResponse = $sessionRepository->updateSession($entityManager,$session, $type, $dateDebut, $dateFin, $detail, $matiere, $obligatoire);
 
         $json = SessionSerializer::serializeJson($repoResponse, ['groups'=>'session_get']);
         return new JsonResponse($json, Response::HTTP_CREATED); //TODO

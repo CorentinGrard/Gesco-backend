@@ -51,7 +51,7 @@ class SessionRepository extends ServiceEntityRepository
         return $sessionArray;
     }
 
-    public function updateSession(EntityManagerInterface $entityManager, Session $session, string $type, bool $obligatoire, $dateDebut, $dateFin, $detail, Matiere $matiere)
+    public function updateSession(EntityManagerInterface $entityManager, Session $session, string $type, $dateDebut, $dateFin, $detail, Matiere $matiere, bool $obligatoire=false)
     {
         $session->setDetail($detail);
         $session->setType($type);
