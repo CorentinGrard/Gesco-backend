@@ -329,6 +329,14 @@ class Personne implements UserInterface
         return $this;
     }
 
+    public function hasRole(string $role) :bool
+    {
+        if (in_array($role, $this->roles)) {
+            return true;
+        }
+        return false;
+    }
+
     public function removeRole(string $role) :self
     {
         $tmpRoles = $this->roles;

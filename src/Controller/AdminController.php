@@ -9,6 +9,7 @@ use App\Entity\Personne;
 use App\Entity\Responsable;
 use App\Repository\AssistantRepository;
 use App\Repository\IntervenantRepository;
+use App\Repository\PersonneRepository;
 use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -164,6 +165,51 @@ class AdminController extends AbstractController
 
         return new JsonResponse($json, Response::HTTP_CREATED);
 
+    }
+
+    /**
+     * @OA\Get(
+     *     tags={"Admin"},
+     *     path="/admin/eligible-responsable/personnes",
+     *      @OA\Response(
+     *          response="200",
+     *          @OA\JsonContent(ref="#/components/schemas/Personne")
+     *      )
+     * )
+     * @Route("/admin/eligible-responsable/personnes", name="get_eligible_respo", methods={"GET"})
+     * @param PersonneRepository $personneRepository
+     * @param AssistantRepository $assistantRepository
+     * @param IntervenantRepository $intervenantRepository
+     * @param ResponsableRepository $responsableRepository
+     * @return JsonResponse
+     */
+    public function getPersonneEligibleRespo(PersonneRepository $personneRepository, AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository): JsonResponse
+    {
+        $personnes = $personneRepository->findAll();
+        $intervenants = $intervenantRepository->findAll();
+        $assistants = $assistantRepository->findAll();
+        $responsables = $responsableRepository->findAll();
+
+        $personneArray = [];
+        foreach ($personnes as $personne) {
+            if ($personne->hasRole("ROLE_ADMIN")) {
+                array_push($personneArray, $personne);
+            }
+        }
+        foreach ($assistants as $assistant) {
+            array_push($personneArray, $assistant->getPersonne());
+        }
+        foreach ($intervenants as $intervenant) {
+            if (!$intervenant->getExterne()) {
+                array_push($personneArray, $intervenant->getPersonne());
+            }
+        }
+        foreach ($responsables as $responsable) {
+            array_push($personneArray, $responsable->getPersonne());
+        }
+
+        $json = GenericSerializer::serializeJson($personneArray, ["groups"=>"get_personne"]);
+        return new JsonResponse($json, Response::HTTP_OK);
     }
 
 
