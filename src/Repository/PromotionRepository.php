@@ -226,7 +226,7 @@ class PromotionRepository extends ServiceEntityRepository
 
     }
 
-    public function updatePromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, AssistantRepository $assistantRepository, $nom, $formation_id, $assistant_id, Promotion $promotion)
+    public function updatePromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, AssistantRepository $assistantRepository, $nom, $formation_id, $assistant_id, Promotion $promotion, Responsable $responsableConnected)
     {
         if(!$promotion) {
             return [
@@ -234,6 +234,8 @@ class PromotionRepository extends ServiceEntityRepository
                 "error"=>"La promotion n'existe pas"
             ];
         }
+
+        $responsableCible = $promotion->getFormation()->getResponsable();
 
         $formation = $formationRepository->find($formation_id);
 
@@ -253,24 +255,33 @@ class PromotionRepository extends ServiceEntityRepository
             ];
         }
 
-        $promotion->setNom($nom);
-        $promotion->setFormation($formation);
-        $promotion->setAssistant($assistant);
+        if($responsableConnected === $responsableCible) {
+            $promotion->setNom($nom);
+            $promotion->setFormation($formation);
+            $promotion->setAssistant($assistant);
 
-        try {
-            $entityManager->persist($promotion);
-            $entityManager->flush();
+            try {
+                $entityManager->persist($promotion);
+                $entityManager->flush();
+                return [
+                    "status"=>201,
+                    "data"=>$promotion
+                ];
+            }
+            catch (\Exception $e) {
+                return [
+                    "status"=>500,
+                    "error"=>"Probleme lors de l'injection de la promotion en base de données"
+                ];
+            }
+        }
+        else {
             return [
-                "status"=>201,
-                "data"=>$promotion
+                "status"=>403,
+                "error"=>"Vous ne pouvez pas modifier de promotion dont vous n'êtes pas responsable"
             ];
         }
-        catch (\Exception $e) {
-            return [
-                "status"=>500,
-                "error"=>"Probleme lors de l'injection de la promotion en base de données"
-            ];
-        }
+
 
     }
 
@@ -285,38 +296,39 @@ class PromotionRepository extends ServiceEntityRepository
 
         $responsableCible = $promotion->getFormation()->getResponsable();
         if ($responsableConnected === $responsableCible) {
+            if (!(sizeof($promotion->getSemestres()) === 0)) {
+                return [
+                    "status"=>409,
+                    "error"=>"La promotion ne peut pas être supprimée, elle comprend des semestres"
+                ];
+            }
+
+            if (!(sizeof($promotion->getEtudiants()) === 0)) {
+                return [
+                    "status"=>409,
+                    "error"=>"La promotion ne peut pas être supprimée, elle comprend des étudiants"
+                ];
+            }
+
+            try {
+                $entityManager->remove($promotion);
+                $entityManager->flush();
+                return [
+                    "status"=>204,
+                    "data"=>$promotion
+                ];
+            } catch (\Exception $e) {
+                return [
+                    "status"=>500,
+                    "error"=>"La suppression de la promotion en base de données a échouée"
+                ];
+            }
+        } else {
             return [
                 "status"=>403,
                 "error"=>"Vous ne pouvez pas supprimer une promotion dont voue n'êtes pas responsable"
             ];
         }
 
-        if (!(sizeof($promotion->getSemestres()) === 0)) {
-            return [
-                "status"=>409,
-                "error"=>"La promotion ne peut pas être supprimée, elle comprend des semestres"
-            ];
-        }
-
-        if (!(sizeof($promotion->getEtudiants()) === 0)) {
-            return [
-                "status"=>409,
-                "error"=>"La promotion ne peut pas être supprimée, elle comprend des étudiants"
-            ];
-        }
-
-        try {
-            $entityManager->remove($promotion);
-            $entityManager->flush();
-            return [
-                "status"=>204,
-                "data"=>$promotion
-            ];
-        } catch (\Exception $e) {
-            return [
-                "status"=>500,
-                "error"=>"La suppression de la promotion en base de données a échouée"
-            ];
-        }
     }
 }
