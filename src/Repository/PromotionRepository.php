@@ -274,12 +274,20 @@ class PromotionRepository extends ServiceEntityRepository
 
     }
 
-    public function deletePromotion(EntityManagerInterface $entityManager, Promotion $promotion)
+    public function deletePromotion(EntityManagerInterface $entityManager, Promotion $promotion, Responsable $responsableConnected)
     {
         if(!$promotion) {
             return [
                 "status"=>409,
                 "error"=>"La promotion n'existe pas"
+            ];
+        }
+
+        $responsableCible = $promotion->getFormation()->getResponsable();
+        if ($responsableConnected === $responsableCible) {
+            return [
+                "status"=>403,
+                "error"=>"Vous ne pouvez pas supprimer une promotion dont voue n'êtes pas responsable"
             ];
         }
 

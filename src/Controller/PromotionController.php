@@ -288,14 +288,23 @@ class PromotionController extends AbstractController
      * )
      * @Route("/promotion/{id}", name="delete_promotion", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @param PromotionRepository $promotionRepository
      * @param Promotion $promotion
      * @return Response
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function deletePromotion(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository,Promotion $promotion): Response
+    public function deletePromotion(EntityManagerInterface $entityManager,ResponsableRepository $responsableRepository, PromotionRepository $promotionRepository,Promotion $promotion): Response
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
-        $repoResponse = $promotionRepository->deletePromotion($entityManager,$promotion);
+
+        $repoResponse = $promotionRepository->deletePromotion($entityManager,$promotion,$responsableConnected);
 
         switch ($repoResponse["status"]){
             case 204:
@@ -304,6 +313,9 @@ class PromotionController extends AbstractController
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 500:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
