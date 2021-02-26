@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ModuleController extends AbstractController
 {
@@ -135,6 +136,7 @@ class ModuleController extends AbstractController
      * @param SemestreRepository $semestreRepository
      * @param Semestre $semestre
      * @return Response
+     * @Security("is_granted('ROLE_RESPO')")
      */
     public function add(
         Request $request,
