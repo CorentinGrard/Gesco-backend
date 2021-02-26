@@ -105,9 +105,9 @@ class FormationController extends AbstractController
      *      @OA\RequestBody(
      *          request="formation",
      *          @OA\JsonContent(
-     *              @OA\Property(type="string", property="nameFormation", required = true),
+     *              @OA\Property(type="string", property="nom", required = true),
      *              @OA\Property(type="number", property="idResponsable", required = true),
-     *              @OA\Property(type="boolean", property="isAlternant", required = true)
+     *              @OA\Property(type="boolean", property="isAlternance", required = true)
      *          )
      *      ),
      *      @OA\Response(response="200", description="Formation ajoutée"),
@@ -124,9 +124,9 @@ class FormationController extends AbstractController
     public function AddFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
-        $nameFormation = $data['nameFormation'];
+        $nameFormation = $data['nom'];
         $idResponsable = $data['idResponsable'];
-        $isAlternant   = $data['isAlternant'];
+        $isAlternant   = $data['isAlternance'];
 
         $repoResponse = $formationRepository->AjoutFormation($entityManager, $responsableRepository, $nameFormation, $idResponsable, $isAlternant);
 

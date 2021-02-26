@@ -482,7 +482,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "nameFormation": {
+                                    "nom": {
                                         "required": true,
                                         "type": "string"
                                     },
@@ -490,7 +490,7 @@
                                         "required": true,
                                         "type": "number"
                                     },
-                                    "isAlternant": {
+                                    "isAlternance": {
                                         "required": true,
                                         "type": "boolean"
                                     }
