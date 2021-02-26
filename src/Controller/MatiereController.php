@@ -74,6 +74,15 @@ class MatiereController extends AbstractController
      */
     public function deleteMatiereById(EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
     {
+        /*
+                if($matiere == null){
+            return new JsonResponse("Matiere inexistante !",Response::HTTP_NOT_FOUND);
+        }
+        if(sizeof($matiere->getNotes()) > 0)
+        {
+            return new JsonResponse("Veuillez supprimer les notes associées avant de supprimer la matière !", Response::HTTP_CONFLICT);
+        }*/
+        
         $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
 
         switch ($repoResponse["status"]) {
