@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @method Promotion|null find($id, $lockMode = null, $lockVersion = null)
@@ -166,7 +167,7 @@ class PromotionRepository extends ServiceEntityRepository
         return false;
     }
 
-    public function AjoutPromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, \Symfony\Component\HttpFoundation\Request $request)
+    public function AjoutPromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, PromotionRepository $promotionRepository, AssistantRepository $assistantRepository, Request $request, $responsableConnected)
     {
         $data = json_decode($request->getContent(), true);
         $namePromotion = $data['nom'];
@@ -175,6 +176,8 @@ class PromotionRepository extends ServiceEntityRepository
 
         $assistant = $assistantRepository->find($idAssistant);
         $formation = $formationRepository->find($idFormation);
+
+
 
         if(is_null($assistant)){
             return[
@@ -197,19 +200,30 @@ class PromotionRepository extends ServiceEntityRepository
             ];
         }
 
-        $promotion = new Promotion();
-        $promotion->setAssistant($assistant);
-        $promotion->setNom($namePromotion);
-        $promotion->setFormation($formation);
+        $responsableCible = $formation->getResponsable();
 
-        $entityManager->persist($promotion);
-        $entityManager->flush();
+        if($responsableCible === $responsableConnected) {
+            $promotion = new Promotion();
+            $promotion->setAssistant($assistant);
+            $promotion->setNom($namePromotion);
+            $promotion->setFormation($formation);
 
-        return [
-            "status" => 201,
-            "data"   =>$promotion,
-            "error"  => null
-        ];
+            $entityManager->persist($promotion);
+            $entityManager->flush();
+
+            return [
+                "status" => 201,
+                "data" => $promotion,
+                "error" => null
+            ];
+        }
+        else {
+            return [
+                "status" => 403,
+                "error" => "Vous ne pouvez pas creer une promotion dans la formation d'ID ".$idFormation." car vous n'etes pas responsable de cette formation"
+            ];
+        }
+
     }
 
     public function updatePromotion(EntityManagerInterface $entityManager, FormationRepository $formationRepository, AssistantRepository $assistantRepository, $nom, $formation_id, $assistant_id, Promotion $promotion)
