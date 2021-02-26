@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Formation;
 use App\Entity\Promotion;
+use App\Entity\Responsable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -126,19 +127,31 @@ class PromotionRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getModulesByPromotion(Promotion $promotion)
+    public function getModulesByPromotion(Promotion $promotion, Responsable $responsableConnected)
     {
-        if(!$promotion) {
+        $responsableCible = $promotion->getFormation()->getResponsable();
+
+        if ($responsableCible === $responsableConnected) {
+            if(!$promotion) {
+                return [
+                    "status"=>404,
+                    "error"=>"La promotion n'existe pas"
+                ];
+            }
+
             return [
-                "status"=>404,
-                "error"=>"La promotion n'existe pas"
+                "status"=>200,
+                "data"=>$promotion
+            ];
+        }
+        else {
+            return [
+                "status"=>403,
+                "error"=>"Vous ne pouvez pas récupérer les modules des promotions visées car vous n'êtes pas responsable de cette promotion"
             ];
         }
 
-        return [
-            "status"=>200,
-            "data"=>$promotion
-        ];
+
     }
 
     private function CheckExistPromotionByName(string $namePromotion,Formation $formation) : bool

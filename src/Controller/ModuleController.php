@@ -110,18 +110,30 @@ class ModuleController extends AbstractController
      * )
      * @Route("/promotions/{id}/modules", name="get_modules_by_promotion", methods={"GET"})
      * @param PromotionRepository $promotionRepository
+     * @param ResponsableRepository $responsableRepository
      * @param Promotion $promotion
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function getModulesByPromotion(PromotionRepository $promotionRepository, Promotion $promotion): JsonResponse
+    public function getModulesByPromotion(PromotionRepository $promotionRepository, ResponsableRepository $responsableRepository, Promotion $promotion): JsonResponse
     {
 
-        $repoResponse = $promotionRepository->getModulesByPromotion($promotion);
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+        $repoResponse = $promotionRepository->getModulesByPromotion($promotion,$responsableConnected);
 
         switch ($repoResponse["status"]){
             case 200:
                 $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_modules_by_promotion']);
                 return new JsonResponse($json,Response::HTTP_OK);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
