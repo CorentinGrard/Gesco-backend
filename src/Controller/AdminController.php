@@ -184,7 +184,7 @@ class AdminController extends AbstractController
      * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
      */
-    public function getPersonneEligibleRespo(PersonneRepository $personneRepository, AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository): JsonResponse
+    public function getPersonnel(PersonneRepository $personneRepository, AssistantRepository $assistantRepository, IntervenantRepository $intervenantRepository, ResponsableRepository $responsableRepository): JsonResponse
     {
         $personnes = $personneRepository->findAll();
         $intervenants = $intervenantRepository->findAll();
