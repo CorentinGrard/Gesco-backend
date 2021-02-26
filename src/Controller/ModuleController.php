@@ -7,6 +7,7 @@ use App\Entity\Promotion;
 use App\Entity\Semestre;
 use App\Repository\ModuleRepository;
 use App\Repository\PromotionRepository;
+use App\Repository\ResponsableRepository;
 use App\Repository\SemestreRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,6 +34,7 @@ class ModuleController extends AbstractController
      * @Route("/modules", name="module_list", methods={"GET"})
      * @param ModuleRepository $moduleRepository
      * @return Response
+     *
      */
     public function list(ModuleRepository $moduleRepository): Response
     {
@@ -65,11 +67,28 @@ class ModuleController extends AbstractController
      * )
      * @Route("/modules/{id}", name="module", methods={"GET"})
      * @param Module $module
+     * @param ResponsableRepository $responsableRepository
      * @return Response
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function read(Module $module): Response
+    public function read(Module $module, ResponsableRepository $responsableRepository): Response
     {
-        return new JsonResponse($module->getArray(), Response::HTTP_OK);
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+        $responsableCible = $module->getSemestre()->getPromotion()->getFormation()->getResponsable();
+
+        if ($responsableCible === $responsableConnected) {
+            return new JsonResponse($module->getArray(), Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Vous n'êtes pas responsable du semestre contenant ce module", Response::HTTP_FORBIDDEN);
+        }
+
     }
 
     /**
@@ -91,18 +110,30 @@ class ModuleController extends AbstractController
      * )
      * @Route("/promotions/{id}/modules", name="get_modules_by_promotion", methods={"GET"})
      * @param PromotionRepository $promotionRepository
+     * @param ResponsableRepository $responsableRepository
      * @param Promotion $promotion
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function getModulesByPromotion(PromotionRepository $promotionRepository, Promotion $promotion): JsonResponse
+    public function getModulesByPromotion(PromotionRepository $promotionRepository, ResponsableRepository $responsableRepository, Promotion $promotion): JsonResponse
     {
 
-        $repoResponse = $promotionRepository->getModulesByPromotion($promotion);
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+        $repoResponse = $promotionRepository->getModulesByPromotion($promotion,$responsableConnected);
 
         switch ($repoResponse["status"]){
             case 200:
                 $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_modules_by_promotion']);
                 return new JsonResponse($json,Response::HTTP_OK);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
@@ -133,41 +164,54 @@ class ModuleController extends AbstractController
      * @Route("/semestres/{id}/modules", name="add_module", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @param SemestreRepository $semestreRepository
      * @param Semestre $semestre
      * @return Response
      * @Security("is_granted('ROLE_RESPO')")
      */
-    public function add(
+    public function insertModuleInSemestre(
         Request $request,
         EntityManagerInterface $entityManager,
+        ResponsableRepository $responsableRepository,
         SemestreRepository $semestreRepository,
         Semestre $semestre): Response
     {
+        $user = $this->getUser();
+        if($user != null) {
+            $username = $user->getUsername();
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data['nom'];
-        //$idSemestre = $data['idSemestre'];
-        $ects = $data['ects'];
-
-        if (empty($nom) /*|| empty($ects)*/ ) {
+        if(!array_key_exists("ects",$data) || empty($nom)) {
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
+        $ects = $data['ects'];
 
+        $repoResponse = $semestreRepository->insertModuleInSemestre($entityManager,$nom,$semestre,$ects,$responsableConnected);
         //$semestre = $semestreRepository->find($idSemestre);
 
-        $module = new Module();
-        $module->setNom($nom);
-        $module->setSemestre($semestre);
-        $module->setEcts($ects);
+
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups"=>"module_get"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403 :
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
 
 
-        $entityManager->persist($module);
-        $entityManager->flush();
-
-        $json = GenericSerializer::serializeJson($module, ["groups"=>"module_get"]);
-
-        return new JsonResponse($json, Response::HTTP_CREATED);
     }
 
     /**
@@ -186,20 +230,31 @@ class ModuleController extends AbstractController
      * )
      * @Route("/modules/{id}", name="delete_module", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
+     * @param ResponsableRepository $responsableRepository
      * @param ModuleRepository $moduleRepository
      * @param Module $module
      * @return Response
      * @Security("is_granted('ROLE_RESPO')")
      */
-    public function deleteModule(EntityManagerInterface $entityManager,ModuleRepository $moduleRepository,Module $module): Response
+    public function deleteModule(EntityManagerInterface $entityManager,ResponsableRepository $responsableRepository, ModuleRepository $moduleRepository,Module $module): Response
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
-        $repoResponse = $moduleRepository->deleteModule($entityManager,$module);
+
+        $repoResponse = $moduleRepository->deleteModule($entityManager,$module,$responsableConnected);
 
         switch ($repoResponse["status"]){
             case 204:
                 $json = GenericSerializer::serializeJson($module, ['groups'=>'delete_module']);
                 return new JsonResponse("Ok",Response::HTTP_NO_CONTENT);
+                break;
+            case 403 :
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);

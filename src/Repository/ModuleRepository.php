@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Module;
+use App\Entity\Responsable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -49,24 +50,36 @@ class ModuleRepository extends ServiceEntityRepository
     }
     */
 
-    public function deleteModule(EntityManagerInterface $entityManager, Module $module)
+    public function deleteModule(EntityManagerInterface $entityManager, Module $module, Responsable $responsableConnected)
     {
-        if(sizeof($module->getMatieres()) === 0) {
+        $responsableCible = $module->getSemestre()->getPromotion()->getFormation()->getResponsable();
 
-            $entityManager->remove($module);
-            $entityManager->flush();
+        if($responsableCible === $responsableConnected) {
+            if(sizeof($module->getMatieres()) === 0) {
 
-            return [
-                "status" => 204,
-                "error" => "Etudiant correctement supprimé"
-            ];
+                $entityManager->remove($module);
+                $entityManager->flush();
+
+                return [
+                    "status" => 204,
+                    "error" => "Etudiant correctement supprimé"
+                ];
+            }
+            else {
+                return [
+                    "status" => 409,
+                    "error" => "La module ne peut pas être supprimé car des matières le compose"
+                ];
+            }
         }
         else {
             return [
-                "status" => 409,
-                "error" => "La module ne peut pas être supprimé car des matières le compose"
+                "status" => 403,
+                "error" => "Vous n'êtes pas responsable du modèle que vous voulez supprimer"
             ];
         }
+
+
     }
 
     public function updateModule(EntityManagerInterface $entityManager, SemestreRepository $semestreRepository, $nom, $ects, $semestre_id, Module $module)

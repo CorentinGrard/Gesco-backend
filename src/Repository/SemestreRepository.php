@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Module;
 use App\Entity\Promotion;
 use App\Entity\Responsable;
 use App\Entity\Semestre;
@@ -109,5 +110,40 @@ class SemestreRepository extends ServiceEntityRepository
             "status" => 202,
             "data" => "Semestre supprimé",
         ];
+    }
+
+    public function insertModuleInSemestre(EntityManagerInterface $entityManager, $nom, Semestre $semestre, $ects, Responsable $responsableConnected)
+    {
+        $responsableCible = $semestre->getPromotion()->getFormation()->getResponsable();
+
+        if ($responsableCible === $responsableConnected) {
+
+
+            try {
+                $module = new Module();
+                $module->setNom($nom);
+                $module->setSemestre($semestre);
+                $module->setEcts($ects);
+
+                $entityManager->persist($module);
+                $entityManager->flush();
+                return [
+                    "status" => 201,
+                    "data" => $module,
+                ];
+            } catch (\Exception $e) {
+                return [
+                    "status" => 500,
+                    "error" => "Problème lors de l'injection en base de donnée",
+                ];
+            }
+        }
+        else {
+            return [
+                "status" => 403,
+                "error" => "Vous ne pouvez pas inserer de modules dans un semestre dont vous n'êtes pas responsable",
+            ];
+        }
+
     }
 }
