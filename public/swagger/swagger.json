@@ -2169,6 +2169,45 @@
                     }
                 }
             }
+        },
+        "/sites": {
+            "post": {
+                "tags": [
+                    "Sites"
+                ],
+                "operationId": "App\\Controller\\SiteController::AddSite",
+                "requestBody": {
+                    "request": "site",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "required": true,
+                                        "type": "string"
+                                    },
+                                    "adresse": {
+                                        "required": true,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Site ajouté"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
+                    },
+                    "404": {
+                        "description": "Erreur"
+                    }
+                }
+            }
         }
     },
     "components": {
