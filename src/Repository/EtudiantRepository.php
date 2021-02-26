@@ -37,31 +37,21 @@ class EtudiantRepository extends ServiceEntityRepository
     public function findOneByUsername($username)
     {
 
-        /*try {
-            $sql = "SELECT * FROM etudiant e " .
-                "JOIN personne p ON (p.id = e.personne_id) ".
-                "WHERE p.email = ?";
+        try {
+            $sql = "SELECT e.id FROM etudiant e ".
+                    "JOIN personne p ON e.personne_id = p.id AND p.id = e.personne_id WHERE p.email = :email";
 
-            $sql = "SELECT e0_.id AS id_0, e0_.personne_id AS personne_id_1, e0_.promotion_id AS promotion_id_2 ".
-                "FROM etudiant e0_ LEFT JOIN (personne p1_) ON e0_.personne_id = p1_.id AND (p1_.id = e0_.personne_id) WHERE p1_.email = ?"
-
-            $rsm = new ResultSetMapping();
-            $rsm->addEntityResult(Etudiant::class, 'e');
-
-            //$rsm->addJoinedEntityResult(Personne::class, 'p','e','e.personne_id');
-
-
-            $query = $this->_em->createNativeQuery($sql, $rsm);
-            $query->setParameter(1, $username);
-
-            $result = $query->getOneOrNullResult();
-            $this->logger->warning("Etudiant inexistant : " . ($result == null));
-            return $result;
+            $conn = $this->getEntityManager()->getConnection();
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(array('email' => $username));
+            $result = $stmt->fetchOne();
+            $etudiant = $this->find($result);
+            return $etudiant;
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
-        }*/
+        }
 
-        try {
+        /*try {
             $query = $this->createQueryBuilder('e')
                 ->leftJoin('e.Personne', 'p', 'WITH', 'p.id = e.Personne')
                 ->where('p.email = :email')
@@ -72,7 +62,7 @@ class EtudiantRepository extends ServiceEntityRepository
             return $query->getOneOrNullResult();
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
-        }
+        }*/
     }
 
 
