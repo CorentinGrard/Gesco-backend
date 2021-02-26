@@ -84,4 +84,57 @@ class SiteController extends AbstractController
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
+
+    /**
+     * @OA\Put(
+     *      tags={"Sites"},
+     *      path="/sites/{idSite}",
+     *      @OA\Parameter(
+     *          name="idSite",
+     *          in="path",
+     *          required=true,
+     *          description="idSite",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\RequestBody(
+     *          request="formation",
+     *          @OA\JsonContent(type="object",
+     *              @OA\Property(property="nom",type="string"),
+     *              @OA\Property(property="adresse",type="string")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Le site n'existe pas'",
+     *     )
+     * )
+     * @Route("/sites/{idSite}", name="update_site", methods={"PUT"})
+     * @param int $idSite
+     * @param SiteRepository $siteRepository
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function UpdateSite(int $idSite, EntityManagerInterface $entityManager, SiteRepository $siteRepository, Request $request ): JsonResponse
+    {
+        $repoResponse = $siteRepository->UpdateSite($siteRepository, $entityManager, $idSite, $request);
+
+        switch ($repoResponse["status"]) {
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "update_site"]);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 400:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_BAD_REQUEST);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
 }
