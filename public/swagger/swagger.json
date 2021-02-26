@@ -2271,6 +2271,28 @@
                         "description": "Le site n'existe pas'"
                     }
                 }
+            },
+            "delete": {
+                "tags": [
+                    "Sites"
+                ],
+                "operationId": "App\\Controller\\SiteController::DeleteSiteById",
+                "parameters": [
+                    {
+                        "name": "idSite",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {},
+                    "404": {},
+                    "409": {}
+                }
             }
         }
     },

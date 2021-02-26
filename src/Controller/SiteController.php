@@ -137,4 +137,50 @@ class SiteController extends AbstractController
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * @OA\Delete(
+     *      tags={"Sites"},
+     *      path="/sites/{idSite}",
+     *      @OA\Parameter(
+     *          name="idSite",
+     *          in="path",
+     *          required=true,
+     *          description ="",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="202",
+     *      ),
+     *      @OA\Response(
+     *          response="404",
+     *      ),
+     *      @OA\Response(
+     *          response="409",
+     *      )
+     * )
+     * @Route("/sites/{idSite}", name="delete_site", methods={"DELETE"})
+     * @param EntityManagerInterface $entityManager
+     * @param SiteRepository $siteRepository
+     * @param int $idSite
+     * @return JsonResponse
+     */
+    public function DeleteSiteById(EntityManagerInterface $entityManager, SiteRepository $siteRepository, int $idSite): JsonResponse
+    {
+        $repoResponse = $siteRepository->DeleteSiteById($entityManager,$siteRepository, $idSite);
+
+        switch ($repoResponse["status"]){
+            case 200:
+                return new JsonResponse("Ok",Response::HTTP_ACCEPTED);
+                break;
+            case 404:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
 }
