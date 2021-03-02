@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Etudiant;
 use App\Entity\Personne;
 use App\Entity\Promotion;
+use App\Entity\Responsable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 use Doctrine\ORM\NonUniqueResultException;
@@ -127,7 +128,7 @@ class EtudiantRepository extends ServiceEntityRepository
         ];
     }
 
-    public function updateEtudiant(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel, $promotion_id)
+    public function updateEtudiant(EntityManagerInterface $entityManager,PromotionRepository $promotionRepository, Etudiant $etudiant, $nom, $prenom, $adresse, $numeroTel, $promotion_id, Responsable $responsableConnected)
     {
         $promotion = $promotionRepository->find($promotion_id);
         if(!$promotion) {
@@ -137,24 +138,45 @@ class EtudiantRepository extends ServiceEntityRepository
             ];
         }
 
-        $etudiant->setPromotion($promotion);
+        $responsableCible = $etudiant->getPromotion()->getFormation()->getResponsable();
 
-        $personne = $etudiant->getPersonne();
-        $personne->setNom($nom);
-        $personne->setPrenom($prenom);
-        $personne->setAdresse($adresse);
-        $personne->setNumeroTel($numeroTel);
+        if ($responsableCible === $responsableConnected) {
 
-        $entityManager->persist($personne);
+            $responsableCible = $promotion->getFormation()->getResponsable();
+            if($responsableCible === $responsableConnected) {
+                return [
+                    "status" => 403,
+                    "data" => null,
+                    "error" => "Vous ne pouvez pas mettre un etudiant dans une promotion dont vous n'êtes pas responsable"
+                ];
+            }
 
-        $etudiant->setPersonne($personne);
-        $entityManager->persist($etudiant);
-        $entityManager->flush();
+            $etudiant->setPromotion($promotion);
 
-        return [
-            "status" => 201,
-            "data" => $etudiant,
-            "error" => "Etudiant correctement modifié en base de données"
-        ];
+            $personne = $etudiant->getPersonne();
+            $personne->setNom($nom);
+            $personne->setPrenom($prenom);
+            $personne->setAdresse($adresse);
+            $personne->setNumeroTel($numeroTel);
+
+            $entityManager->persist($personne);
+
+            $etudiant->setPersonne($personne);
+            $entityManager->persist($etudiant);
+            $entityManager->flush();
+
+            return [
+                "status" => 201,
+                "data" => $etudiant,
+                "error" => "Etudiant correctement modifié en base de données"
+            ];
+        }
+        else {
+            return [
+                "status" => 403,
+                "data" => null,
+                "error" => "Vous ne pouvez pas modifier un etudiant qui n'est pas dans une promotion dont vous êtes responsable"
+            ];
+        }
     }
 }

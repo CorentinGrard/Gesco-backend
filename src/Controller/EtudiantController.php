@@ -8,6 +8,7 @@ use App\Entity\Promotion;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PromotionRepository;
+use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class EtudiantController extends AbstractController
 {
@@ -236,14 +238,25 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/etudiant/{id}", name="update_etudiant", methods={"PUT"})
      * @param Etudiant $etudiant
+     * @param ResponsableRepository $responsableRepository
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function updateEtudiant(Etudiant $etudiant, EtudiantRepository $etudiantRepository, PromotionRepository $promotionRepository, EntityManagerInterface $entityManager, Request $request): JsonResponse
+    public function updateEtudiant(Etudiant $etudiant, ResponsableRepository $responsableRepository, EtudiantRepository $etudiantRepository, PromotionRepository $promotionRepository, EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
+
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
         if ($etudiant == null) {
             return new JsonResponse("L'étudiant d'ID ".$etudiant." renseignée n'existe pas",Response::HTTP_NOT_FOUND);
@@ -260,12 +273,15 @@ class EtudiantController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$promotionRepository,$etudiant,$nom,$prenom,$adresse,$numeroTel,$promotion_id);
+        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$promotionRepository,$etudiant,$nom,$prenom,$adresse,$numeroTel,$promotion_id,$responsableConnected);
 
         switch ($repoResponse["status"]) {
             case 201:
                 $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "update_etudiant"]);
                 return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
