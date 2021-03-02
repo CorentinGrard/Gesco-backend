@@ -20,7 +20,7 @@ class Batiment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_session_by_startDate_and_endDate", "add_batiment"})
+     * @Groups({"get_session_by_startDate_and_endDate", "add_batiment", "add_salle"})
      */
     private $id;
 
