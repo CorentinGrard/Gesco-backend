@@ -105,17 +105,37 @@ class PromotionController extends AbstractController
      *      )
      * )
      * @Route("/formations/{id}/promotions", name="promotions_by_formation", methods={"GET"})
-     * @param Formation $formation
-     * @return Response
-     * Security("is_granted('ROLE_ADMIN')")
+     * @param Formation|null $formation
+     * @param ResponsableRepository $responsableRepository
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function getPromotionsByFormation(Formation $formation):Response
+    public function getPromotionsByFormation(ResponsableRepository $responsableRepository, Formation $formation = null):JsonResponse
     {
-        $promotions = $formation->getPromotions();
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
-        $json = GenericSerializer::serializeJson($promotions, ["groups"=>"get_promotion"]);
 
-        return new JsonResponse($json, Response::HTTP_OK);
+
+        if (is_null($formation)) {
+            return new JsonResponse("Formation non  trouvée", Response::HTTP_CONFLICT);
+        }
+
+        $responsableCible = $formation->getResponsable();
+
+        if ($responsableConnected === $responsableCible) {
+            $promotions = $formation->getPromotions();
+
+            $json = GenericSerializer::serializeJson($promotions, ["groups"=>"get_promotion"]);
+
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Vous ne pouvez obtenir des promotions dont vous n'etes pas responsable", Response::HTTP_FORBIDDEN);
+        }
     }
 
     /**
