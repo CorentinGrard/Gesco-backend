@@ -77,6 +77,7 @@ class FormationController extends AbstractController
      * @param FormationRepository $formationRepository
      * @param Formation|null $formation
      * @return JsonResponse
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function DeleteFormationById(EntityManagerInterface $entityManager, FormationRepository $formationRepository, Formation $formation = null): JsonResponse
     {
@@ -133,16 +134,47 @@ class FormationController extends AbstractController
      * )
      * @Route("/formations", name="formation_list", methods={"GET"})
      * @param FormationRepository $formationRepository
+     * @param ResponsableRepository $responsableRepository
      * @return Response
-     * Security("is_granted('ROLE_ASSISTANT')")
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ADMIN')")
      */
-    public function GetAllFormation(FormationRepository $formationRepository) : Response
+    public function GetAllFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository) : Response
     {
-        $formations = $formationRepository->findAll();
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
 
-        $json = GenericSerializer::serializeJson($formations,['groups'=>'get_formation']);
+        if(in_array("ROLE_ADMIN",$roles)) {
+            $formations = $formationRepository->findAll();
 
-        return new JsonResponse($json, Response::HTTP_OK);
+            $json = GenericSerializer::serializeJson($formations, ['groups' => 'get_formation']);
+
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_RESPO",$roles)){
+            $responsableConnected = null;
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+
+            $formations = $formationRepository->findAll();
+            $formationsOfRespo = [];
+            foreach ($formations as $formation) {
+                if ($formation->getResponsable() == $responsableConnected) {
+                    array_push($formationsOfRespo, $formation);
+                }
+            }
+            $json = GenericSerializer::serializeJson($formationsOfRespo, ['groups' => 'get_formation']);
+
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Problème de rôle", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -167,8 +199,7 @@ class FormationController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function AddFormation(PersonneRepository $personneRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager, IntervenantRepository $intervenantRepository): Response
     {
@@ -275,8 +306,7 @@ class FormationController extends AbstractController
      * @param ResponsableRepository $responsableRepository
      * @param Formation|null $formation
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function UpdateFormation(PersonneRepository $personneRepository, EntityManagerInterface $entityManager, IntervenantRepository $intervenantRepository, Request $request, ResponsableRepository $responsableRepository, Formation $formation = null): JsonResponse
     {

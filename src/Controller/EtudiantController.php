@@ -8,6 +8,7 @@ use App\Entity\Promotion;
 use App\Repository\EtudiantRepository;
 use App\Repository\MatiereRepository;
 use App\Repository\PromotionRepository;
+use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class EtudiantController extends AbstractController
 {
@@ -32,15 +34,48 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/etudiants", name="etudiant_list")
      * @param EtudiantRepository $etudiantRepository
+     * @param ResponsableRepository $responsableRepository
      * @return Response
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ADMIN')")
      */
-    public function list(EtudiantRepository $etudiantRepository): Response
+    public function list(EtudiantRepository $etudiantRepository, ResponsableRepository $responsableRepository): Response
     {
-        $etudiants = $etudiantRepository->findAll();
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
 
-        $json = GenericSerializer::serializeJson($etudiants,['groups'=>'get_etudiant']);
+        if(in_array("ROLE_ADMIN",$roles)) {
 
-        return new JsonResponse($json, Response::HTTP_OK);
+            $etudiants = $etudiantRepository->findAll();
+
+            $json = GenericSerializer::serializeJson($etudiants, ['groups' => 'get_etudiant']);
+
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_RESPO",$roles)) {
+
+            $responsableConnected = null;
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+
+            $etudiants = $etudiantRepository->findAll();
+            $etudiantsOfRespo = [];
+            foreach ($etudiants as $etudiant) {
+                if ($etudiant->getPromotion()->getFormation()->getResponsable() === $responsableConnected) {
+                    array_push($etudiantsOfRespo,$etudiant);
+                }
+            }
+            $json = GenericSerializer::serializeJson($etudiantsOfRespo, ['groups' => 'get_etudiant']);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Problème de rôle", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
     }
 
@@ -236,14 +271,25 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/etudiant/{id}", name="update_etudiant", methods={"PUT"})
      * @param Etudiant $etudiant
+     * @param ResponsableRepository $responsableRepository
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function updateEtudiant(Etudiant $etudiant, EtudiantRepository $etudiantRepository, PromotionRepository $promotionRepository, EntityManagerInterface $entityManager, Request $request): JsonResponse
+    public function updateEtudiant(Etudiant $etudiant, ResponsableRepository $responsableRepository, EtudiantRepository $etudiantRepository, PromotionRepository $promotionRepository, EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
+
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
 
         if ($etudiant == null) {
             return new JsonResponse("L'étudiant d'ID ".$etudiant." renseignée n'existe pas",Response::HTTP_NOT_FOUND);
@@ -260,12 +306,15 @@ class EtudiantController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$promotionRepository,$etudiant,$nom,$prenom,$adresse,$numeroTel,$promotion_id);
+        $repoResponse = $etudiantRepository->updateEtudiant($entityManager,$promotionRepository,$etudiant,$nom,$prenom,$adresse,$numeroTel,$promotion_id,$responsableConnected);
 
         switch ($repoResponse["status"]) {
             case 201:
                 $json = GenericSerializer::serializeJson($repoResponse["data"], ["groups" => "update_etudiant"]);
                 return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 404:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
@@ -342,16 +391,48 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/promotions/etudiants", name="promotions_etudiants", methods={"GET"})
      * @param PromotionRepository $promotionRepository
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ADMIN')")
      */
-    public function getEtudiantsOfAllPromotions(PromotionRepository $promotionRepository) {
+    public function getEtudiantsOfAllPromotions(PromotionRepository $promotionRepository, ResponsableRepository $responsableRepository) {
 
-        $promotions = $promotionRepository->findAll();
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
 
-        $json = GenericSerializer::serializeJson($promotions, ["groups" => "get_etudiants_for_all_promotions"]);
+        if(in_array("ROLE_ADMIN",$roles)) {
 
-        return new JsonResponse($json,Response::HTTP_OK);
+            $promotions = $promotionRepository->findAll();
 
+            $json = GenericSerializer::serializeJson($promotions, ["groups" => "get_etudiants_for_all_promotions"]);
+
+            return new JsonResponse($json,Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_RESPO",$roles)) {
+
+            $responsableConnected = null;
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+
+            $promotions = $promotionRepository->findAll();
+            $promotionsOfRespo = [];
+            foreach ($promotions as $promotion) {
+                if ($promotion->getFormation()->getResponsable() === $responsableConnected) {
+                    array_push($promotionsOfRespo,$promotion);
+                }
+            }
+            $json = GenericSerializer::serializeJson($promotionsOfRespo, ['groups' => 'get_etudiants_for_all_promotions']);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Problème de rôle", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

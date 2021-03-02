@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Assistant;
+use App\Entity\Etudiant;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
@@ -36,8 +38,38 @@ class SessionRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function allSessionsBetweenStartDateAndEndDateForPromotion(Promotion $promotion, $startDate, $endDate)
+    public function allSessionsBetweenStartDateAndEndDateForPromotionAssistant(Promotion $promotion, $startDate, $endDate, Assistant $assistantConnected): array
     {
+
+        $sessions = $promotion->getSessions();
+
+
+
+        if ($promotion->getAssistant() === $assistantConnected) {
+            $sessionArray = [];
+            foreach($sessions as $session) {
+                if($session->getDateDebut() >= $startDate && $session->getDateFin() <= $endDate && $session->getMatiere()->getModule()->getSemestre()->getPromotion()->getAssistant() === $assistantConnected){
+                    array_push($sessionArray, $session);//->getArray());
+                }
+            }
+            return [
+                "status" => 200,
+                "data" => $sessionArray
+            ];
+        }
+        else {
+            return [
+                "status" => 403,
+                "error" => "Vous ne pouvez pas voir les sessions des promotions dont vous n'êtes pas responsable"
+            ];
+        }
+
+
+    }
+
+    public function allSessionsBetweenStartDateAndEndDateForPromotionAdmin(Promotion $promotion, $startDate, $endDate): array
+    {
+
         $sessions = $promotion->getSessions();
 
         $sessionArray = [];
@@ -47,8 +79,28 @@ class SessionRepository extends ServiceEntityRepository
             }
         }
 
+        return [
+            "status" => 200,
+            "data" => $sessionArray
+        ];
+    }
 
-        return $sessionArray;
+    public function allSessionsBetweenStartDateAndEndDateForPromotionEtudiant(Promotion $promotion, $startDate, $endDate): array
+    {
+
+        $sessions = $promotion->getSessions();
+
+        $sessionArray = [];
+        foreach($sessions as $session) {
+            if($session->getDateDebut() >= $startDate && $session->getDateFin() <= $endDate){
+                array_push($sessionArray, $session);
+            }
+        }
+
+        return [
+            "status" => 200,
+            "data" => $sessionArray
+        ];
     }
 
     public function updateSession(EntityManagerInterface $entityManager, Session $session, string $type, $dateDebut, $dateFin, $detail, Matiere $matiere, bool $obligatoire=false)
