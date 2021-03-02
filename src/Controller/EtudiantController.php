@@ -391,16 +391,48 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/promotions/etudiants", name="promotions_etudiants", methods={"GET"})
      * @param PromotionRepository $promotionRepository
+     * @param ResponsableRepository $responsableRepository
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ADMIN')")
      */
-    public function getEtudiantsOfAllPromotions(PromotionRepository $promotionRepository) {
+    public function getEtudiantsOfAllPromotions(PromotionRepository $promotionRepository, ResponsableRepository $responsableRepository) {
 
-        $promotions = $promotionRepository->findAll();
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
 
-        $json = GenericSerializer::serializeJson($promotions, ["groups" => "get_etudiants_for_all_promotions"]);
+        if(in_array("ROLE_ADMIN",$roles)) {
 
-        return new JsonResponse($json,Response::HTTP_OK);
+            $promotions = $promotionRepository->findAll();
 
+            $json = GenericSerializer::serializeJson($promotions, ["groups" => "get_etudiants_for_all_promotions"]);
+
+            return new JsonResponse($json,Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_RESPO",$roles)) {
+
+            $responsableConnected = null;
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+
+            $promotions = $promotionRepository->findAll();
+            $promotionsOfRespo = [];
+            foreach ($promotions as $promotion) {
+                if ($promotion->getFormation()->getResponsable() === $responsableConnected) {
+                    array_push($promotionsOfRespo,$promotion);
+                }
+            }
+            $json = GenericSerializer::serializeJson($promotionsOfRespo, ['groups' => 'get_etudiants_for_all_promotions']);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Problème de rôle", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
