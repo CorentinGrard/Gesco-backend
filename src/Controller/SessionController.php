@@ -347,7 +347,6 @@ class SessionController extends AbstractController
      */
     public function add(Request $request, EntityManagerInterface $entityManager, Matiere $matiere, LoggerInterface $logger): JsonResponse
     {
-        //TODO Deserialize json posté !
         $data = json_decode($request->getContent(), true);
 
         $type = $data['type'];
@@ -423,14 +422,39 @@ class SessionController extends AbstractController
      * @param Request $request
      * @param SessionRepository $sessionRepository
      * @param EntityManagerInterface $entityManager
-     * @param Session $session
      * @param MatiereRepository $matiereRepository
-     * @param int $idMatiere
+     * @param AssistantRepository $assistantRepository
+     * @param Session|null $session
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_ASSISTANT')")
      */
-    public function modifySession(Request $request, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, Session $session, MatiereRepository $matiereRepository): JsonResponse
+    public function modifySession(Request $request, SessionRepository $sessionRepository, EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, AssistantRepository $assistantRepository, Session $session = null): JsonResponse
     {
-        //TODO Deserialize json posté !
+        if($session == null)
+            return new JsonResponse("Session inexistante !", Response::HTTP_NOT_FOUND);
+
+        $user = $this->getUser();
+        if($user == null)
+            return new JsonResponse("Utilisateur inexistant !", Response::HTTP_FORBIDDEN);
+
+        $username = $user->getUsername();
+        if(empty($username))
+            return new JsonResponse("Utilisateur inexistant !", Response::HTTP_FORBIDDEN);
+
+        $assistant = $assistantRepository->findOneByUsername($username);
+        $promotions = $assistant->getPromotions();
+        $promotion = $session->getMatiere()->getModule()->getSemestre()->getPromotion();
+        $assistantHasRightsOnSession = false;
+        foreach($promotions as $promo)
+        {
+            if($promo->getId() == $promotion->getId())
+                $assistantHasRightsOnSession = true;
+        }
+        if(!$assistantHasRightsOnSession)
+            return new JsonResponse("L'assistant actuel n'a pas de droit sur cette session !", Response::HTTP_FORBIDDEN);
+
         $data = json_decode($request->getContent(), true);
 
         $type = $data['type'];
@@ -480,14 +504,38 @@ class SessionController extends AbstractController
      * @Route("/sessions/{id}", name="delete_session", methods={"DELETE"})
      * @param SessionRepository $sessionRepository
      * @param EntityManagerInterface $entityManager
+     * @param AssistantRepository $assistantRepository
      * @param Session|null $session
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_ASSISTANT')")
      */
-    public function deleteSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, Session $session = null): JsonResponse
+    public function deleteSession(SessionRepository $sessionRepository, EntityManagerInterface $entityManager, AssistantRepository $assistantRepository, Session $session = null): JsonResponse
     {
         if ($session == null) {
             return new JsonResponse("Session non trouvée...", Response::HTTP_NOT_FOUND);
         }
+
+        $user = $this->getUser();
+        if($user == null)
+            return new JsonResponse("Utilisateur inexistant !", Response::HTTP_FORBIDDEN);
+
+        $username = $user->getUsername();
+        if(empty($username))
+            return new JsonResponse("Utilisateur inexistant !", Response::HTTP_FORBIDDEN);
+
+        $assistant = $assistantRepository->findOneByUsername($username);
+        $promotions = $assistant->getPromotions();
+        $promotion = $session->getMatiere()->getModule()->getSemestre()->getPromotion();
+        $assistantHasRightsOnSession = false;
+        foreach($promotions as $promo)
+        {
+            if($promo->getId() == $promotion->getId())
+                $assistantHasRightsOnSession = true;
+        }
+        if(!$assistantHasRightsOnSession)
+            return new JsonResponse("L'assistant actuel n'a pas de droit sur cette session !", Response::HTTP_FORBIDDEN);
 
         $repoResponse = $sessionRepository->deleteSession($entityManager, $session);
 
