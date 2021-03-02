@@ -78,7 +78,7 @@
                 "tags": [
                     "Admin"
                 ],
-                "operationId": "App\\Controller\\AdminController::getPersonneEligibleRespo",
+                "operationId": "App\\Controller\\AdminController::getPersonnel",
                 "responses": {
                     "200": {
                         "content": {
@@ -1727,6 +1727,43 @@
                                 }
                             }
                         }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Salles"
+                ],
+                "operationId": "App\\Controller\\SalleController::AddSalle",
+                "requestBody": {
+                    "request": "salle",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "idBatiment": {
+                                        "required": true,
+                                        "type": "number"
+                                    },
+                                    "nom": {
+                                        "required": true,
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Salle ajoutée"
+                    },
+                    "400": {
+                        "description": "Requête invalide"
+                    },
+                    "404": {
+                        "description": "Erreur"
                     }
                 }
             }

@@ -25,7 +25,8 @@ class Salle
      * @Groups({
      *     "get_salle",
      *     "get_session_by_startDate_and_endDate",
-     *     "session_get"
+     *     "session_get",
+     *     "add_salle"
      * })
      * @var int
      */
@@ -37,7 +38,8 @@ class Salle
      * @Groups({
      *     "get_salle",
      *     "get_session_by_startDate_and_endDate",
-     *     "session_get"
+     *     "session_get",
+     *     "add_salle"
      * })
      * @var string
      */
@@ -63,7 +65,8 @@ class Salle
      * @ORM\ManyToOne(targetEntity=Batiment::class, inversedBy="salles")
      * @Groups({
      *     "get_session_by_startDate_and_endDate",
-     *     "session_get"
+     *     "session_get",
+     *     "add_salle"
      * })
      * @var Batiment
      */
