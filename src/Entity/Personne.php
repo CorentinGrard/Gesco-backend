@@ -21,8 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Personne implements UserInterface
 {
     /**
-     * @OA\Property(type="integer",
-     *      readOnly="true")
+     * @OA\Property(type="integer")
      * @Groups({
      *     "get_personne",
      *     "get_etudiant",

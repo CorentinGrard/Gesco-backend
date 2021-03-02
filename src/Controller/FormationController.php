@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Formation;
+use App\Entity\Responsable;
 use App\Repository\FormationRepository;
+use App\Repository\IntervenantRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\ResponsableRepository;
 use App\Serializers\GenericSerializer;
@@ -18,25 +21,45 @@ use OpenApi\Annotations as OA;
 class FormationController extends AbstractController
 {
     /**
-     * @Route("/formation", name="formation")
+     * @OA\Get(
+     *      tags={"Formations"},
+     *      path="/formations/{id}",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="id Formation",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response="200",
+     *      ),
+     *      @OA\Response(
+     *          response="404",
+     *          description="Formation inexistante !",
+     *      )
+     * )
+     * @Route("/formations/{id}", name="get_formation")
+     * @param Formation|null $formation
+     * @return JsonResponse
+     * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function index(): Response
+    public function index(Formation $formation = null): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/FormationController.php',
-        ]);
+        if($formation == null)
+            return new JsonResponse("Formation inexistante !", Response::HTTP_NOT_FOUND);
+        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups"=>"get_formation"]), Response::HTTP_OK);
     }
 
     /**
      * @OA\Delete(
      *      tags={"Formations"},
-     *      path="/formations/{idFormation}",
+     *      path="/formations/{id}",
      *      @OA\Parameter(
-     *          name="idFormation",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description ="",
+     *          description ="id Formation",
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
@@ -49,15 +72,38 @@ class FormationController extends AbstractController
      *          response="409",
      *      )
      * )
-     * @Route("/formations/{idFormation}", name="delete_formation", methods={"DELETE"})
+     * @Route("/formations/{id}", name="delete_formation", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
      * @param FormationRepository $formationRepository
-     * @param int $idFormation
+     * @param Formation|null $formation
      * @return JsonResponse
      */
-    public function DeleteFormationById(EntityManagerInterface $entityManager, FormationRepository $formationRepository, int $idFormation): JsonResponse
+    public function DeleteFormationById(EntityManagerInterface $entityManager, FormationRepository $formationRepository, Formation $formation = null): JsonResponse
     {
-        $repoResponse = $formationRepository->DeleteFormationById($entityManager,$formationRepository, $idFormation);
+        if($formation == null)
+            return new JsonResponse("La formation n'existe pas !",Response::HTTP_NOT_FOUND);
+
+        $respo = $formation->getResponsable();
+
+        $respo->removeFormation($formation);
+        $entityManager->remove($formation);
+        $formations = $respo->getFormations();
+
+        if(sizeof($formations) == 0)
+        {
+            $personne = $respo->getPersonne();
+            $personne->removeRole("ROLE_RESPO");
+            $entityManager->remove($respo);
+        }else{
+            $entityManager->persist($respo);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse("Formation supprimée !", Response::HTTP_ACCEPTED);
+
+
+        /*$repoResponse = $formationRepository->DeleteFormationById($entityManager,$formationRepository, $idFormation);
 
         switch ($repoResponse["status"]){
             case 200:
@@ -71,7 +117,7 @@ class FormationController extends AbstractController
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
-        }
+        }*/
     }
 
 
@@ -100,14 +146,15 @@ class FormationController extends AbstractController
     }
 
     /**
-     * @OA\Post(tags={"Formations"},
+     * @OA\Post(
+     *      tags={"Formations"},
      *      path="/formations",
      *      @OA\RequestBody(
      *          request="formation",
      *          @OA\JsonContent(
-     *              @OA\Property(type="string", property="nom", required = true),
-     *              @OA\Property(type="number", property="idResponsable", required = true),
-     *              @OA\Property(type="boolean", property="isAlternance", required = true)
+     *              @OA\Property(property="nom", ref="#/components/schemas/Formation/properties/nom"),
+     *              @OA\Property(property="idPersonne", ref="#/components/schemas/Personne/properties/id"),
+     *              @OA\Property(property="isAlternance", ref="#/components/schemas/Formation/properties/isAlternance")
      *          )
      *      ),
      *      @OA\Response(response="200", description="Formation ajoutée"),
@@ -115,20 +162,66 @@ class FormationController extends AbstractController
      *      @OA\Response(response="404", description="Erreur")
      * )
      * @Route("/formations", methods={"POST"})
-     * @param FormationRepository $formationRepository
+     * @param PersonneRepository $personneRepository
      * @param ResponsableRepository $responsableRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function AddFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function AddFormation(PersonneRepository $personneRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager, IntervenantRepository $intervenantRepository): Response
     {
         $data = json_decode($request->getContent(), true);
         $nameFormation = $data['nom'];
-        $idResponsable = $data['idResponsable'];
-        $isAlternant   = $data['isAlternance'];
+        $idPersonne = $data['idPersonne'];
+        $isAlternance = $data['isAlternance'];
 
-        $repoResponse = $formationRepository->AjoutFormation($entityManager, $responsableRepository, $nameFormation, $idResponsable, $isAlternant);
+        $personne = $personneRepository->find($idPersonne);
+        if($personne == null)
+        {
+            return new JsonResponse("Personne avec l'ID '$idPersonne' inexistante !", Response::HTTP_NOT_FOUND);
+        }
+
+        if($personne->hasRole("ROLE_ETUDIANT"))
+        {
+            return new JsonResponse("Un étudiant ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
+        }
+
+        $intervenant = $intervenantRepository->findOneByUsername($personne->getUsername());
+        if($intervenant != null && $intervenant->getExterne())
+        {
+            return new JsonResponse("Un intervenant [externe] ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
+        }
+
+        //$personne->addRole("ROLE_RESPO");
+        $respo = $responsableRepository->findOneByUsername($personne->getUsername());
+        if($respo == null)
+        {
+            $respo = new Responsable();
+            $respo->setPersonne($personne);
+        }
+
+        $formation = new Formation();
+        $formation->setNom($nameFormation);
+        $formation->setIsAlternance($isAlternance);
+        $formation->setResponsable($respo);
+
+        $entityManager->persist($personne);
+        $entityManager->persist($respo);
+        $entityManager->persist($formation);
+
+        $entityManager->flush();
+
+        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups"=>"get_formation"]), Response::HTTP_CREATED);
+
+        /*if(empty($nameFormation) || empty($idPersonne))
+        {
+
+        }*/
+
+
+        /*$repoResponse = $formationRepository->AjoutFormation($entityManager, $responsableRepository, $nameFormation, $idResponsable, $isAlternant);
 
         switch ($repoResponse["status"])
         {
@@ -144,26 +237,26 @@ class FormationController extends AbstractController
                 break;
             default:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_NOT_FOUND);
-        }
+        }*/
     }
 
     /**
      * @OA\Put(
      *      tags={"Formations"},
-     *      path="/formations/{idFormation}",
+     *      path="/formations/{id}",
      *      @OA\Parameter(
-     *          name="idFormation",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description="idPromotion",
+     *          description="id Formation",
      *          @OA\Schema(type="integer")
      *      ),
-     *     @OA\RequestBody(
+     *      @OA\RequestBody(
      *          request="formation",
-     *          @OA\JsonContent(type="object",
-     *              @OA\Property(property="nom",type="string"),
-     *              @OA\Property(property="idResponsable",type="number"),
-     *              @OA\Property(property="isAlternance",type="boolean")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="nom", ref="#/components/schemas/Formation/properties/nom"),
+     *              @OA\Property(property="idPersonne", ref="#/components/schemas/Personne/properties/id"),
+     *              @OA\Property(property="isAlternance", ref="#/components/schemas/Formation/properties/isAlternance")
      *          )
      *      ),
      *      @OA\Response(
@@ -174,18 +267,81 @@ class FormationController extends AbstractController
      *         description="La formation n'existe pas'",
      *     )
      * )
-     * @Route("/formations/{idFormation}", name="update_formation", methods={"PUT"})
-     * @param int $idFormation
-     * @param FormationRepository $formationRepository
-     * @param ResponsableRepository $responsableRepository
+     * @Route("/formations/{id}", name="update_formation", methods={"PUT"})
+     * @param PersonneRepository $personneRepository
      * @param EntityManagerInterface $entityManager
+     * @param IntervenantRepository $intervenantRepository
      * @param Request $request
+     * @param ResponsableRepository $responsableRepository
+     * @param Formation|null $formation
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function UpdateFormation(int $idFormation, FormationRepository $formationRepository,EntityManagerInterface $entityManager,
-                                    Request $request, ResponsableRepository $responsableRepository): JsonResponse
+    public function UpdateFormation(PersonneRepository $personneRepository, EntityManagerInterface $entityManager, IntervenantRepository $intervenantRepository, Request $request, ResponsableRepository $responsableRepository, Formation $formation = null): JsonResponse
     {
-        $repoResponse = $formationRepository->UpdateFormation($formationRepository, $entityManager, $idFormation, $request, $responsableRepository);
+        if($formation == null)
+            return new JsonResponse("La formation n'existe pas !",Response::HTTP_NOT_FOUND);
+
+        $respo_old = $formation->getResponsable();
+
+        $data = json_decode($request->getContent(), true);
+        $nameFormation = $data['nom'];
+        $idPersonne = $data['idPersonne'];
+        $isAlternance = $data['isAlternance'];
+
+        $personne = $personneRepository->find($idPersonne);
+        if($personne == null)
+        {
+            return new JsonResponse("Personne avec l'ID '$idPersonne' inexistante !", Response::HTTP_NOT_FOUND);
+        }
+
+        if($personne->hasRole("ROLE_ETUDIANT"))
+        {
+            return new JsonResponse("Un étudiant ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
+        }
+
+        $intervenant = $intervenantRepository->findOneByUsername($personne->getUsername());
+        if($intervenant != null && $intervenant->getExterne())
+        {
+            return new JsonResponse("Un intervenant [externe] ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
+        }
+
+        //$personne->addRole("ROLE_RESPO");
+        $newRespo = $responsableRepository->findOneByUsername($personne->getUsername());
+        if($newRespo == null)
+        {
+            $newRespo = new Responsable();
+            $newRespo->setPersonne($personne);
+        }
+
+        $respo_old->removeFormation($formation);
+
+        $formation->setResponsable($newRespo);
+        $formation->setIsAlternance($isAlternance);
+        $formation->setNom($nameFormation);
+
+        $entityManager->persist($personne);
+        $entityManager->persist($newRespo);
+        $entityManager->persist($formation);
+
+
+        $formations = $respo_old->getFormations();
+
+        if(sizeof($formations) == 0)
+        {
+            $personne = $respo_old->getPersonne();
+            $personne->removeRole("ROLE_RESPO");
+            $entityManager->remove($respo_old);
+        }else{
+            $entityManager->persist($respo_old);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups"=>"get_formation"]), Response::HTTP_OK);
+
+        /*$repoResponse = $formationRepository->UpdateFormation($formationRepository, $entityManager, $idFormation, $request, $responsableRepository);
 
         switch ($repoResponse["status"]) {
             case 201:
@@ -197,6 +353,6 @@ class FormationController extends AbstractController
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
-        }
+        }*/
     }
 }

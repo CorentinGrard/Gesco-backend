@@ -199,7 +199,7 @@ class Formation
         return $this;
     }
 
-    public function getRespo(): ?Responsable
+    /*public function getRespo(): ?Responsable
     {
         return $this->responsable;
     }
@@ -209,5 +209,5 @@ class Formation
         $this->responsable = $respo;
 
         return $this;
-    }
+    }*/
 }

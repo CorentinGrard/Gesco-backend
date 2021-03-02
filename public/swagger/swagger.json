@@ -439,7 +439,30 @@
                 }
             }
         },
-        "/formations/{idFormation}": {
+        "/formations/{id}": {
+            "get": {
+                "tags": [
+                    "Formations"
+                ],
+                "operationId": "App\\Controller\\FormationController::index",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id Formation",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {},
+                    "404": {
+                        "description": "Formation inexistante !"
+                    }
+                }
+            },
             "put": {
                 "tags": [
                     "Formations"
@@ -447,9 +470,9 @@
                 "operationId": "App\\Controller\\FormationController::UpdateFormation",
                 "parameters": [
                     {
-                        "name": "idFormation",
+                        "name": "id",
                         "in": "path",
-                        "description": "idPromotion",
+                        "description": "id Formation",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -463,13 +486,13 @@
                             "schema": {
                                 "properties": {
                                     "nom": {
-                                        "type": "string"
+                                        "$ref": "#/components/schemas/Formation/properties/nom"
                                     },
-                                    "idResponsable": {
-                                        "type": "number"
+                                    "idPersonne": {
+                                        "$ref": "#/components/schemas/Personne/properties/id"
                                     },
                                     "isAlternance": {
-                                        "type": "boolean"
+                                        "$ref": "#/components/schemas/Formation/properties/isAlternance"
                                     }
                                 },
                                 "type": "object"
@@ -491,9 +514,9 @@
                 "operationId": "App\\Controller\\FormationController::DeleteFormationById",
                 "parameters": [
                     {
-                        "name": "idFormation",
+                        "name": "id",
                         "in": "path",
-                        "description": "",
+                        "description": "id Formation",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -541,16 +564,13 @@
                             "schema": {
                                 "properties": {
                                     "nom": {
-                                        "required": true,
-                                        "type": "string"
+                                        "$ref": "#/components/schemas/Formation/properties/nom"
                                     },
-                                    "idResponsable": {
-                                        "required": true,
-                                        "type": "number"
+                                    "idPersonne": {
+                                        "$ref": "#/components/schemas/Personne/properties/id"
                                     },
                                     "isAlternance": {
-                                        "required": true,
-                                        "type": "boolean"
+                                        "$ref": "#/components/schemas/Formation/properties/isAlternance"
                                     }
                                 },
                                 "type": "object"
@@ -1898,7 +1918,7 @@
                     }
                 ],
                 "responses": {
-                    "202": {
+                    "201": {
                         "description": "Semestre supprimé !"
                     },
                     "404": {
@@ -2678,8 +2698,7 @@
             "Personne": {
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "readOnly": "true"
+                        "type": "integer"
                     },
                     "nom": {
                         "type": "string"
