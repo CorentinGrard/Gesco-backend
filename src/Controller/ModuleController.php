@@ -289,14 +289,24 @@ class ModuleController extends AbstractController
      * )
      * @Route("/module/{id}", name="update_module", methods={"PUT"})
      * @param SemestreRepository $semestreRepository
+     * @param ResponsableRepository $responsableRepository
      * @param ModuleRepository $moduleRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Module $module
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function updateModule(SemestreRepository $semestreRepository,ModuleRepository $moduleRepository, Request $request, EntityManagerInterface $entityManager, Module $module): JsonResponse
+    public function updateModule(SemestreRepository $semestreRepository, ResponsableRepository $responsableRepository, ModuleRepository $moduleRepository, Request $request, EntityManagerInterface $entityManager, Module $module): JsonResponse
     {
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+
         $data = json_decode($request->getContent(), true);
 
         $nom = $data["nom"];
@@ -308,12 +318,15 @@ class ModuleController extends AbstractController
             throw new NotFoundHttpException('Expecting mandatory parameters!');
         }
 
-        $repoResponse = $moduleRepository->updateModule($entityManager,$semestreRepository,$nom,$ects,$semestre_id,$module);
+        $repoResponse = $moduleRepository->updateModule($entityManager,$semestreRepository,$nom,$ects,$semestre_id,$module, $responsableConnected);
 
         switch ($repoResponse["status"]){
             case 201:
                 $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'update_module']);
                 return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
                 break;
             case 409:
                 return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);

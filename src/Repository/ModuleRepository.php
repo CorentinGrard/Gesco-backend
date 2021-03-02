@@ -82,39 +82,49 @@ class ModuleRepository extends ServiceEntityRepository
 
     }
 
-    public function updateModule(EntityManagerInterface $entityManager, SemestreRepository $semestreRepository, $nom, $ects, $semestre_id, Module $module)
+    public function updateModule(EntityManagerInterface $entityManager, SemestreRepository $semestreRepository, $nom, $ects, $semestre_id, Module $module, Responsable $responsableConnected): array
     {
-        $semestre = $semestreRepository->find($semestre_id);
+        $responsableCible = $module->getSemestre()->getPromotion()->getFormation()->getResponsable();
 
-        if (!$semestre) {
-            return [
-                "status" => 409,
-                "error" => "Le semestre d'ID ".$semestre_id." n'existe pas"
-            ];
+        if ($responsableConnected === $responsableCible) {
+            $semestre = $semestreRepository->find($semestre_id);
+
+            if (!$semestre) {
+                return [
+                    "status" => 409,
+                    "error" => "Le semestre d'ID " . $semestre_id . " n'existe pas"
+                ];
+            }
+
+            if ($ects < 0) {
+                return [
+                    "status" => 409,
+                    "error" => "L'ECTS doit ne peut pas être négatif"
+                ];
+            }
+
+            $module->setNom($nom);
+            $module->setEcts($ects);
+            $module->setSemestre($semestre);
+
+            try {
+                $entityManager->persist($module);
+                $entityManager->flush();
+                return [
+                    "status" => 201,
+                    "data" => $module
+                ];
+            } catch (\Exception $e) {
+                return [
+                    "status" => 500,
+                    "error" => "Probleme lors de l'injection du module dans la base de données"
+                ];
+            }
         }
-
-        if($ects < 0) {
+        else {
             return [
-                "status" => 409,
-                "error" => "L'ECTS doit ne peut pas être négatif"
-            ];
-        }
-
-        $module->setNom($nom);
-        $module->setEcts($ects);
-        $module->setSemestre($semestre);
-
-        try {
-            $entityManager->persist($module);
-            $entityManager->flush();
-            return [
-                "status" => 201,
-                "data" => $module
-            ];
-        } catch (\Exception $e) {
-            return [
-                "status" => 500,
-                "error" => "Probleme lors de l'injection du module dans la base de données"
+                "status" => 403,
+                "error" => "Vous n'êtes pas responsable du modèle que vous voulez modifier"
             ];
         }
 
