@@ -111,6 +111,7 @@ class FormationController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function AddFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
