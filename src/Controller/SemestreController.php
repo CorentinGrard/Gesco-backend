@@ -195,29 +195,50 @@ class SemestreController extends AbstractController
      *          description="id Semestre",
      *          @OA\Schema(type="integer")
      *      ),
-     *      @OA\Response(response="202", description="Semestre supprimé !"),
+     *      @OA\Response(response="201", description="Semestre supprimé !"),
      *      @OA\Response(response="404", description="Non trouvé..."),
      *      @OA\Response(response="409", description="Présence de module(s) dans le semestre, suppression impossible.")
      * )
      * @Route("/semestre/{id}", name="delete_semestre", methods={"DELETE"})
      * @param SemestreRepository $semestreRepository
+     * @param ResponsableRepository $responsableRepository
      * @param EntityManagerInterface $entityManager
-     * @param Semestre $semestre
+     * @param Semestre|null $semestre
      * @return JsonResponse
+     * @Security("is_granted('ROLE_RESPO')")
      */
-    public function deleteSemestre(SemestreRepository $semestreRepository, EntityManagerInterface $entityManager, Semestre $semestre = null): JsonResponse
+    public function deleteSemestre(SemestreRepository $semestreRepository, ResponsableRepository $responsableRepository, EntityManagerInterface $entityManager, Semestre $semestre = null): JsonResponse
     {
-                if (is_null($semestre)) {
-            $reponse = [
-                "status" => 404,
-                "data" => "Semestre non trouvé"
-            ];
-            $json = SessionSerializer::serializeJson($reponse["data"], ['groups' => 'delete_semestre']);
-            return new JsonResponse($json, Response::HTTP_OK);
-        }
-        $repoResponse = $semestreRepository->deleteSemestre($entityManager, $semestre);
-        $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups' => 'delete_semestre']);
-        return new JsonResponse($json, Response::HTTP_CREATED);
-    }
 
+        $user = $this->getUser();
+        if($user != null){
+            $username = $user->getUsername();
+            if(!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+        }
+
+        if (is_null($semestre)) {
+            return new JsonResponse("Semestre non trouvé", Response::HTTP_CONFLICT);
+        }
+
+        $repoResponse = $semestreRepository->deleteSemestre($entityManager, $semestre, $responsableConnected);
+
+        switch ($repoResponse["status"]){
+            case 201:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'delete_semestre']);
+                return new JsonResponse($json,Response::HTTP_CREATED);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
+    }
 }

@@ -9,6 +9,7 @@ use App\Entity\Semestre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @method Semestre|null find($id, $lockMode = null, $lockVersion = null)
@@ -116,23 +117,33 @@ class SemestreRepository extends ServiceEntityRepository
 
     }
 
-    public function deleteSemestre(EntityManagerInterface $entityManager, Semestre $semestre): array
+    public function deleteSemestre(EntityManagerInterface $entityManager, Semestre $semestre, Responsable $responsableConnected): array
     {
 
-        if (sizeof($semestre->getModules()) > 0) {
+        $responsableCible = $semestre->getPromotion()->getFormation()->getResponsable();
+
+        if ($responsableConnected === $responsableCible) {
+            if (sizeof($semestre->getModules()) > 0) {
+                return [
+                    "status" => 409,
+                    "data" => "Présence de module(s) dans le semestre, suppression impossible."
+                ];
+            }
+
+            $entityManager->remove($semestre);
+            $entityManager->flush();
+
             return [
-                "status" => 409,
-                "data" => "Présence de module(s) dans le semestre, suppression impossible."
+                "status" => 201,
+                "data" => $semestre,
             ];
         }
-
-        $entityManager->remove($semestre);
-        $entityManager->flush();
-
-        return [
-            "status" => 202,
-            "data" => "Semestre supprimé",
-        ];
+        else {
+            return [
+                "status" => 403,
+                "error" => "Vous ne pouvez pas supprimer un semestre dont vous n'êtes pas le responsable"
+            ];
+        }
     }
 
     public function insertModuleInSemestre(EntityManagerInterface $entityManager, $nom, Semestre $semestre, $ects, Responsable $responsableConnected)
