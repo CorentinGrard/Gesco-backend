@@ -93,8 +93,8 @@ class Responsable
     {
         if ($this->formations->removeElement($formation)) {
             // set the owning side to null (unless already changed)
-            if ($formation->getRespo() === $this) {
-                $formation->setRespo(null);
+            if ($formation->getResponsable() === $this) {
+                $formation->setResponsable(null);
             }
         }
 
