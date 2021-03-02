@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Assistant;
+use App\Entity\Etudiant;
 use App\Entity\Matiere;
 use App\Entity\Promotion;
 use App\Entity\Session;
@@ -75,6 +76,24 @@ class SessionRepository extends ServiceEntityRepository
         foreach($sessions as $session) {
             if($session->getDateDebut() >= $startDate && $session->getDateFin() <= $endDate){
                 array_push($sessionArray, $session);//->getArray());
+            }
+        }
+
+        return [
+            "status" => 200,
+            "data" => $sessionArray
+        ];
+    }
+
+    public function allSessionsBetweenStartDateAndEndDateForPromotionEtudiant(Promotion $promotion, $startDate, $endDate): array
+    {
+
+        $sessions = $promotion->getSessions();
+
+        $sessionArray = [];
+        foreach($sessions as $session) {
+            if($session->getDateDebut() >= $startDate && $session->getDateFin() <= $endDate){
+                array_push($sessionArray, $session);
             }
         }
 
