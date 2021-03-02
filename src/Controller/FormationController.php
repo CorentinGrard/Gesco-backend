@@ -17,16 +17,6 @@ use OpenApi\Annotations as OA;
 
 class FormationController extends AbstractController
 {
-    /**
-     * @Route("/formation", name="formation")
-     */
-    public function index(): Response
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/FormationController.php',
-        ]);
-    }
 
     /**
      * @OA\Delete(
@@ -88,7 +78,7 @@ class FormationController extends AbstractController
      * @Route("/formations", name="formation_list", methods={"GET"})
      * @param FormationRepository $formationRepository
      * @return Response
-     * Security("is_granted('ROLE_ASSISTANT')")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function GetAllFormation(FormationRepository $formationRepository) : Response
     {
