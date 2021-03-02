@@ -44,6 +44,7 @@ class FormationController extends AbstractController
      * @param FormationRepository $formationRepository
      * @param int $idFormation
      * @return JsonResponse
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function DeleteFormationById(EntityManagerInterface $entityManager, FormationRepository $formationRepository, int $idFormation): JsonResponse
     {
