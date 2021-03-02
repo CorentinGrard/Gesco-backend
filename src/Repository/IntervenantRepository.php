@@ -69,18 +69,24 @@ class IntervenantRepository extends ServiceEntityRepository
         return $intervenant;
     }
 
+    /**
+     * @param $username
+     * @return Intervenant|null
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function findOneByUsername($username)
     {
         try {
             $sql = "SELECT r.id FROM responsable r ".
-                "JOIN personne p ON r.personne_id = p.id AND p.id = r.personne_id WHERE p.email = :email";
+                "JOIN personne p ON r.personne_id = p.id WHERE p.email = :email";
 
             $conn = $this->getEntityManager()->getConnection();
             $stmt = $conn->prepare($sql);
             $stmt->execute(array('email' => $username));
             $result = $stmt->fetchOne();
-            $etudiant = $this->find($result);
-            return $etudiant;
+            $intervenant = $this->find($result);
+            return $intervenant;
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
         }

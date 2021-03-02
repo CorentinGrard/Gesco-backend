@@ -21,13 +21,16 @@ class AssistantRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param $username
      * @return Assistant Returns an array of Personne objects
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public function findOneByUsername($username)
     {
         try {
             $sql = "SELECT a.id FROM assistant a ".
-                "JOIN personne p ON a.personne_id = p.id AND p.id = a.personne_id WHERE p.email = :email";
+                "JOIN personne p ON a.personne_id = p.id WHERE p.email = :email";
 
             $conn = $this->getEntityManager()->getConnection();
             $stmt = $conn->prepare($sql);

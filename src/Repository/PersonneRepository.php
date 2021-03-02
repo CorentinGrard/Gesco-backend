@@ -22,7 +22,7 @@ class PersonneRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Personne Returns an array of Personne objects
+     * @return Personne Returns a Personne object
      */
     public function findOneByUsername($username)
     {
