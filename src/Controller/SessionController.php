@@ -315,7 +315,7 @@ class SessionController extends AbstractController
             return new JsonResponse("Etudiant sans promotion", Response::HTTP_NOT_FOUND);
         }
 
-        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion, $startDate, $endDate);
+        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotionEtudiant($promotion, $startDate, $endDate);
 
         $json = SessionSerializer::serializeJson($sessionArray, ['groups' => 'get_session_by_startDate_and_endDate']);
 
