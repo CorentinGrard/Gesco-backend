@@ -238,11 +238,14 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/etudiant/{id}", name="update_etudiant", methods={"PUT"})
      * @param Etudiant $etudiant
+     * @param ResponsableRepository $responsableRepository
      * @param EtudiantRepository $etudiantRepository
      * @param PromotionRepository $promotionRepository
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      * @Security("is_granted('ROLE_RESPO')")
      */
     public function updateEtudiant(Etudiant $etudiant, ResponsableRepository $responsableRepository, EtudiantRepository $etudiantRepository, PromotionRepository $promotionRepository, EntityManagerInterface $entityManager, Request $request): JsonResponse

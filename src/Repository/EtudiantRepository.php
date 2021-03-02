@@ -141,6 +141,16 @@ class EtudiantRepository extends ServiceEntityRepository
         $responsableCible = $etudiant->getPromotion()->getFormation()->getResponsable();
 
         if ($responsableCible === $responsableConnected) {
+
+            $responsableCible = $promotion->getFormation()->getResponsable();
+            if($responsableCible === $responsableConnected) {
+                return [
+                    "status" => 403,
+                    "data" => null,
+                    "error" => "Vous ne pouvez pas mettre un etudiant dans une promotion dont vous n'êtes pas responsable"
+                ];
+            }
+
             $etudiant->setPromotion($promotion);
 
             $personne = $etudiant->getPersonne();
