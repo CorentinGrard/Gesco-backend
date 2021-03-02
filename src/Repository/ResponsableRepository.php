@@ -21,29 +21,23 @@ class ResponsableRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Responsable Returns an array of Personne objects
+     * @param $username
+     * @return Responsable Returns a Responsable object
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public function findOneByUsername($username)
     {
-        /*
-                $sql = "SELECT * FROM etudiant e " .
-                    "INNER JOIN personne p ON (p.id = e.personne_id) ".
-                    "WHERE p.email = :email";
-
-                $rsm = new ResultSetMapping();
-
-                $query = $this->_em->createNativeQuery($sql, $rsm);
-                $query->setParameter('email', $username);
-
-                return $query->getOneOrNullResult();
-        */
         try {
-            return $this->createQueryBuilder('r')
-                ->innerJoin('r.Personne', 'p', 'WITH', 'p.id = r.Personne')
-                ->where('p.email = :email')
-                ->setParameter('email', $username)
-                ->getQuery()
-                ->getOneOrNullResult();
+            $sql = "SELECT r.id FROM responsable r ".
+                "JOIN personne p ON r.personne_id = p.id WHERE p.email = :email";
+
+            $conn = $this->getEntityManager()->getConnection();
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(array('email' => $username));
+            $result = $stmt->fetchOne();
+            $etudiant = $this->find($result);
+            return $etudiant;
         } catch (NonUniqueResultException $e) {
             var_dump($e->getMessage());
         }

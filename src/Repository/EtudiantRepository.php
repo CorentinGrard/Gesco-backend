@@ -32,14 +32,17 @@ class EtudiantRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Etudiant Returns an array of Personne objects
+     * @param $username
+     * @return Etudiant Returns an Etudiant object
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public function findOneByUsername($username)
     {
 
         try {
             $sql = "SELECT e.id FROM etudiant e ".
-                    "JOIN personne p ON e.personne_id = p.id AND p.id = e.personne_id WHERE p.email = :email";
+                    "JOIN personne p ON e.personne_id = p.id WHERE p.email = :email";
 
             $conn = $this->getEntityManager()->getConnection();
             $stmt = $conn->prepare($sql);
