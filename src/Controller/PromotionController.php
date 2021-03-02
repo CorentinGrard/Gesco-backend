@@ -75,15 +75,62 @@ class PromotionController extends AbstractController
      * )
      * @Route("/promotions", name="promotions", methods={"GET"})
      * @param PromotionRepository $promotionRepository
+     * @param ResponsableRepository $responsableRepository
+     * @param AssistantRepository $assistantRepository
      * @return Response
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ASSISTANT') or is_granted('ROLE_ADMIN')")
      */
-    public function getAllPromotions(PromotionRepository $promotionRepository):Response
+    public function getAllPromotions(PromotionRepository $promotionRepository, ResponsableRepository $responsableRepository, AssistantRepository $assistantRepository):Response
     {
-        $promos = $promotionRepository->findAll();
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
 
-        $json = GenericSerializer::serializeJson($promos, ["groups"=>"get_promotion"]);
+        if(in_array("ROLE_ADMIN",$roles)) {
+            $promos = $promotionRepository->findAll();
 
-        return new JsonResponse($json, Response::HTTP_OK);
+            $json = GenericSerializer::serializeJson($promos, ["groups" => "get_promotion"]);
+
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_RESPO",$roles)) {
+
+            $responsableConnected = null;
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+
+            $promos = $promotionRepository->findAll();
+            $promoOfRespo = [];
+            foreach ($promos as $promo) {
+                if ($promo->getFormation()->getResponsable() === $responsableConnected) {
+                    array_push($promoOfRespo,$promo);
+                }
+            }
+
+            $json = GenericSerializer::serializeJson($promoOfRespo, ["groups" => "get_promotion"]);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_ASSISTANT",$roles)) {
+            $assistantConnected = null;
+            if (!empty($username))
+                $assistantConnected = $assistantRepository->findOneByUsername($username);
+
+            $promos = $promotionRepository->findAll();
+            $promoOfAssistant = [];
+            foreach ($promos as $promo) {
+                if ($promo->getAssistant() === $assistantConnected) {
+                    array_push($promoOfAssistant,$promo);
+                }
+            }
+
+            $json = GenericSerializer::serializeJson($promoOfAssistant, ["groups" => "get_promotion"]);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
     }
 
     /**
