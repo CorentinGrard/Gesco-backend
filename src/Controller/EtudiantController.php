@@ -34,15 +34,48 @@ class EtudiantController extends AbstractController
      * )
      * @Route("/etudiants", name="etudiant_list")
      * @param EtudiantRepository $etudiantRepository
+     * @param ResponsableRepository $responsableRepository
      * @return Response
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ADMIN')")
      */
-    public function list(EtudiantRepository $etudiantRepository): Response
+    public function list(EtudiantRepository $etudiantRepository, ResponsableRepository $responsableRepository): Response
     {
-        $etudiants = $etudiantRepository->findAll();
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
 
-        $json = GenericSerializer::serializeJson($etudiants,['groups'=>'get_etudiant']);
+        if(in_array("ROLE_ADMIN",$roles)) {
 
-        return new JsonResponse($json, Response::HTTP_OK);
+            $etudiants = $etudiantRepository->findAll();
+
+            $json = GenericSerializer::serializeJson($etudiants, ['groups' => 'get_etudiant']);
+
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else if (in_array("ROLE_RESPO",$roles)) {
+
+            $responsableConnected = null;
+            if (!empty($username))
+                $responsableConnected = $responsableRepository->findOneByUsername($username);
+
+            $etudiants = $etudiantRepository->findAll();
+            $etudiantsOfRespo = [];
+            foreach ($etudiants as $etudiant) {
+                if ($etudiant->getPromotion()->getFormation()->getResponsable() === $responsableConnected) {
+                    array_push($etudiantsOfRespo,$etudiant);
+                }
+            }
+            $json = GenericSerializer::serializeJson($etudiantsOfRespo, ['groups' => 'get_etudiant']);
+            return new JsonResponse($json, Response::HTTP_OK);
+        }
+        else {
+            return new JsonResponse("Problème de rôle", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
     }
 
