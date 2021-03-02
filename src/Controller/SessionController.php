@@ -11,6 +11,7 @@ use App\Repository\MatiereRepository;
 use App\Repository\PersonneRepository;
 use App\Repository\PromotionRepository;
 use App\Repository\SessionRepository;
+use App\Serializers\GenericSerializer;
 use App\Serializers\SessionSerializer;
 use App\Tools;
 use DateTime;
@@ -174,14 +175,23 @@ class SessionController extends AbstractController
      * )
      * @Route("/promotions/{idPromotion}/start/{startDateString}/end/{endDateString}/sessions", name="get_session_by_startDate_and_endDate", methods={"GET"})
      * @param SessionRepository $sessionRepository
+     * @param AssistantRepository $assistantRepository
      * @param PromotionRepository $promotionRepository
      * @param int $idPromotion
      * @param string $startDateString
      * @param string $endDateString
      * @return Response
+     * @Security("is_granted('ROLE_ASSISTANT') or is_granted('ROLE_ADMIN')")
      */
-    public function allSessionsBetweenStartDateAndEndDateForPromotion(SessionRepository $sessionRepository, PromotionRepository $promotionRepository, int $idPromotion, string $startDateString, string $endDateString): Response
+    public function allSessionsBetweenStartDateAndEndDateForPromotion(SessionRepository $sessionRepository, AssistantRepository $assistantRepository, PromotionRepository $promotionRepository, int $idPromotion, string $startDateString, string $endDateString): Response
     {
+        $user = $this->getUser();
+        $username = null;
+        if($user != null){
+            $roles = $user->getRoles();
+            $username = $user->getUsername();
+        }
+
         $promotion = $promotionRepository->find($idPromotion);
 
         if ($promotion == null) {
@@ -198,11 +208,37 @@ class SessionController extends AbstractController
             return new JsonResponse("La date de fin n'est pas valable", Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotion($promotion, $startDate, $endDate);
+       if (in_array("ROLE_ADMIN",$roles)) {
+            $repoResponse = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotionAdmin($promotion, $startDate, $endDate);
+        }
+        else if (in_array("ROLE_ASSISTANT",$roles)) {
+            $assistantConnected = null;
+            if (!empty($username))
+                $assistantConnected = $assistantRepository->findOneByUsername($username);
 
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups' => 'get_session_by_startDate_and_endDate']);
+            $repoResponse = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotionAssistant($promotion, $startDate, $endDate, $assistantConnected);
+        }
+        else {
+            return new JsonResponse("Vous n'avez pas le bon rôle pour utiliser cette route", Response::HTTP_FORBIDDEN);
+        }
 
-        return new JsonResponse($json, Response::HTTP_OK);
+        switch ($repoResponse["status"]){
+            case 200:
+                $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_session_by_startDate_and_endDate']);
+                return new JsonResponse($json,Response::HTTP_OK);
+                break;
+            case 403:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_FORBIDDEN);
+                break;
+            case 409:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_CONFLICT);
+                break;
+            case 500:
+                return new JsonResponse($repoResponse["error"],Response::HTTP_INTERNAL_SERVER_ERROR);
+                break;
+            default:
+                return new JsonResponse(Response::HTTP_NOT_FOUND);
+        }
     }
 
 

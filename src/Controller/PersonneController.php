@@ -96,10 +96,8 @@ class PersonneController extends AbstractController
                 return new JsonResponse($json, Response::HTTP_OK);
             }
         }
-
         return new JsonResponse("Non trouvé", Response::HTTP_NOT_FOUND);
-
-
     }
+
 
 }
