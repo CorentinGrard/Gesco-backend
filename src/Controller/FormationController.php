@@ -193,12 +193,15 @@ class FormationController extends AbstractController
      *      @OA\Response(response="400", description="Requête invalide"),
      *      @OA\Response(response="404", description="Erreur")
      * )
-     * @Route("/formations", methods={"POST"})
+     * @Route("/formations", name="create_formation", methods={"POST"})
      * @param PersonneRepository $personneRepository
      * @param ResponsableRepository $responsableRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param IntervenantRepository $intervenantRepository
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function AddFormation(PersonneRepository $personneRepository, ResponsableRepository $responsableRepository, Request $request, EntityManagerInterface $entityManager, IntervenantRepository $intervenantRepository): Response
