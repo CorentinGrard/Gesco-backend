@@ -322,7 +322,7 @@ class ModuleController extends AbstractController
 
         switch ($repoResponse["status"]){
             case 201:
-                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'update_module']);
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups'=>'module_get']);
                 return new JsonResponse($json,Response::HTTP_CREATED);
                 break;
             case 403:

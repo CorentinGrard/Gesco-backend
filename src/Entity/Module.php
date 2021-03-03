@@ -72,6 +72,7 @@ class Module
      * @ORM\ManyToOne(targetEntity=Semestre::class, inversedBy="modules")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"module_get", "get_notes_etudiant"})
+     * @var Semestre
      */
     private $semestre;
 
