@@ -224,7 +224,7 @@ class SessionController extends AbstractController
 
         switch ($repoResponse["status"]){
             case 200:
-                $json = GenericSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_session_by_startDate_and_endDate']);
+                $json = SessionSerializer::serializeJson($repoResponse["data"], ['groups'=>'get_session_by_startDate_and_endDate']);
                 return new JsonResponse($json,Response::HTTP_OK);
                 break;
             case 403:
@@ -293,6 +293,7 @@ class SessionController extends AbstractController
         if (empty($username)) {
             return new JsonResponse("L'utilisateur n'existe pas", Response::HTTP_FORBIDDEN);
         }
+
 
         $etudiant = $etudiantRepository->findOneByUsername($username);
         if ($etudiant == null) {
