@@ -170,7 +170,7 @@ class MatiereController extends AbstractController
         $entityManager->persist($matiere);
         $entityManager->flush();
 
-        $json = GenericSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
+        $json = GenericSerializer::serializeJson($matiere, ["groups" => "matiere_get"]);
         return new JsonResponse($json, Response::HTTP_CREATED);
 
     }
@@ -274,7 +274,7 @@ class MatiereController extends AbstractController
 
         switch ($repoResponse["status"]) {
             case 201:
-                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups' => 'update_matiere']);
+                $json = GenericSerializer::serializeJson($repoResponse['data'], ['groups' => 'matiere_get']);
                 return new JsonResponse($json, Response::HTTP_CREATED);
                 break;
             case 409:
@@ -290,8 +290,8 @@ class MatiereController extends AbstractController
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
         }
 
-        $json = GenericSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
-        return new JsonResponse($json, Response::HTTP_CREATED);
+        //$json = GenericSerializer::serializeJson($matiere, ["groups" => "post_matiere_in_module"]);
+        //return new JsonResponse($json, Response::HTTP_CREATED);
 
     }
 
