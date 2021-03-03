@@ -309,6 +309,11 @@ class FormationController extends AbstractController
         if ($formation == null)
             return new JsonResponse("La formation n'existe pas !", Response::HTTP_NOT_FOUND);
 
+        if(sizeof($formation->getPromotions()) > 0)
+        {
+            return new JsonResponse("Veuillez supprimer les promotions associées avant de supprimer la formation !", Response::HTTP_CONFLICT);
+        }
+
         $respo_old = $formation->getResponsable();
 
         $data = json_decode($request->getContent(), true);
