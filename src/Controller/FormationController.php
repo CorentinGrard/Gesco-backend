@@ -39,7 +39,7 @@ class FormationController extends AbstractController
      *          description="Formation inexistante !",
      *      )
      * )
-     * @Route("/formations/{id}", name="get_formation")
+     * @Route("/formations/{id}", name="get_formation", methods={"GET"})
      * @param Formation|null $formation
      * @return JsonResponse
      * @Security("is_granted('ROLE_ADMIN')")
