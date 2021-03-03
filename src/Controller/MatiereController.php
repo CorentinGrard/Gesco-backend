@@ -83,18 +83,16 @@ class MatiereController extends AbstractController
             return new JsonResponse("Veuillez supprimer les notes associées avant de supprimer la matière !", Response::HTTP_CONFLICT);
         }
         
-        /*$repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
+        $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $matiere->getId());
 
         switch ($repoResponse["status"]) {
             case 202:
-                return new JsonResponse("Ok", Response::HTTP_ACCEPTED);
-                break;
+                return new JsonResponse("Matière supprimée", Response::HTTP_ACCEPTED);
             case 404:
                 return new JsonResponse($repoResponse["error"], Response::HTTP_NOT_FOUND);
-                break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
-        }*/
+        }
     }
 
     /**
