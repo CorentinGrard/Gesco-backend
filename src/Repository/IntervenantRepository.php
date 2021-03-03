@@ -78,8 +78,8 @@ class IntervenantRepository extends ServiceEntityRepository
     public function findOneByUsername($username)
     {
         try {
-            $sql = "SELECT r.id FROM responsable r ".
-                "JOIN personne p ON r.personne_id = p.id WHERE p.email = :email";
+            $sql = "SELECT i.id FROM intervenant i ".
+                "JOIN personne p ON i.personne_id = p.id WHERE p.email = :email";
 
             $conn = $this->getEntityManager()->getConnection();
             $stmt = $conn->prepare($sql);
