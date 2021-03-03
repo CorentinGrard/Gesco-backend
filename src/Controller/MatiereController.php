@@ -52,12 +52,12 @@ class MatiereController extends AbstractController
     /**
      * @OA\Delete(
      *      tags={"Matieres"},
-     *      path="/matieres/{idMatiere}",
+     *      path="/matieres/{id}",
      *      @OA\Parameter(
-     *          name="idMatiere",
+     *          name="id",
      *          in="path",
      *          required=true,
-     *          description ="",
+     *          description ="id Matiere",
      *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
@@ -67,24 +67,23 @@ class MatiereController extends AbstractController
      *          response="404",
      *      )
      * )
-     * @Route("/matieres/{idMatiere}", name="delete_matiere", methods={"DELETE"})
+     * @Route("/matieres/{id}", name="delete_matiere", methods={"DELETE"})
      * @param EntityManagerInterface $entityManager
      * @param MatiereRepository $matiereRepository
-     * @param int $idMatiere
+     * @param Matiere|null $matiere
      * @return JsonResponse
      */
-    public function deleteMatiereById(EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, int $idMatiere): JsonResponse
+    public function deleteMatiereById(EntityManagerInterface $entityManager, MatiereRepository $matiereRepository, Matiere $matiere = null): JsonResponse
     {
-        /*
-                if($matiere == null){
+        if($matiere == null){
             return new JsonResponse("Matiere inexistante !",Response::HTTP_NOT_FOUND);
         }
         if(sizeof($matiere->getNotes()) > 0)
         {
             return new JsonResponse("Veuillez supprimer les notes associées avant de supprimer la matière !", Response::HTTP_CONFLICT);
-        }*/
+        }
         
-        $repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
+        /*$repoResponse = $matiereRepository->deleteMatiereById($entityManager, $idMatiere);
 
         switch ($repoResponse["status"]) {
             case 202:
@@ -95,7 +94,7 @@ class MatiereController extends AbstractController
                 break;
             default:
                 return new JsonResponse(Response::HTTP_NOT_FOUND);
-        }
+        }*/
     }
 
     /**
