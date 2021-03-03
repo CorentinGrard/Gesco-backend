@@ -46,9 +46,9 @@ class FormationController extends AbstractController
      */
     public function index(Formation $formation = null): JsonResponse
     {
-        if($formation == null)
+        if ($formation == null)
             return new JsonResponse("Formation inexistante !", Response::HTTP_NOT_FOUND);
-        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups"=>"get_formation"]), Response::HTTP_OK);
+        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups" => "get_formation"]), Response::HTTP_OK);
     }
 
     /**
@@ -81,8 +81,8 @@ class FormationController extends AbstractController
      */
     public function DeleteFormationById(EntityManagerInterface $entityManager, FormationRepository $formationRepository, Formation $formation = null): JsonResponse
     {
-        if($formation == null)
-            return new JsonResponse("La formation n'existe pas !",Response::HTTP_NOT_FOUND);
+        if ($formation == null)
+            return new JsonResponse("La formation n'existe pas !", Response::HTTP_NOT_FOUND);
 
         $respo = $formation->getResponsable();
 
@@ -90,12 +90,11 @@ class FormationController extends AbstractController
         $entityManager->remove($formation);
         $formations = $respo->getFormations();
 
-        if(sizeof($formations) == 0)
-        {
+        if (sizeof($formations) == 0) {
             $personne = $respo->getPersonne();
             $personne->removeRole("ROLE_RESPO");
             $entityManager->remove($respo);
-        }else{
+        } else {
             $entityManager->persist($respo);
         }
 
@@ -140,23 +139,22 @@ class FormationController extends AbstractController
      * @throws \Doctrine\DBAL\Exception
      * @Security("is_granted('ROLE_RESPO') or is_granted('ROLE_ADMIN')")
      */
-    public function GetAllFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository) : Response
+    public function GetAllFormation(FormationRepository $formationRepository, ResponsableRepository $responsableRepository): Response
     {
         $user = $this->getUser();
         $username = null;
-        if($user != null){
+        if ($user != null) {
             $roles = $user->getRoles();
             $username = $user->getUsername();
         }
 
-        if(in_array("ROLE_ADMIN",$roles)) {
+        if (in_array("ROLE_ADMIN", $roles)) {
             $formations = $formationRepository->findAll();
 
             $json = GenericSerializer::serializeJson($formations, ['groups' => 'get_formation']);
 
             return new JsonResponse($json, Response::HTTP_OK);
-        }
-        else if (in_array("ROLE_RESPO",$roles)){
+        } else if (in_array("ROLE_RESPO", $roles)) {
             $responsableConnected = null;
             if (!empty($username))
                 $responsableConnected = $responsableRepository->findOneByUsername($username);
@@ -171,8 +169,7 @@ class FormationController extends AbstractController
             $json = GenericSerializer::serializeJson($formationsOfRespo, ['groups' => 'get_formation']);
 
             return new JsonResponse($json, Response::HTTP_OK);
-        }
-        else {
+        } else {
             return new JsonResponse("Problème de rôle", Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -212,26 +209,22 @@ class FormationController extends AbstractController
         $isAlternance = $data['isAlternance'];
 
         $personne = $personneRepository->find($idPersonne);
-        if($personne == null)
-        {
+        if ($personne == null) {
             return new JsonResponse("Personne avec l'ID '$idPersonne' inexistante !", Response::HTTP_NOT_FOUND);
         }
 
-        if($personne->hasRole("ROLE_ETUDIANT"))
-        {
+        if ($personne->hasRole("ROLE_ETUDIANT")) {
             return new JsonResponse("Un étudiant ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
         }
 
         $intervenant = $intervenantRepository->findOneByUsername($personne->getUsername());
-        if($intervenant != null && $intervenant->getExterne())
-        {
+        if ($intervenant != null && $intervenant->getExterne()) {
             return new JsonResponse("Un intervenant [externe] ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
         }
 
         //$personne->addRole("ROLE_RESPO");
         $respo = $responsableRepository->findOneByUsername($personne->getUsername());
-        if($respo == null)
-        {
+        if ($respo == null) {
             $respo = new Responsable();
             $respo->setPersonne($personne);
         }
@@ -247,7 +240,7 @@ class FormationController extends AbstractController
 
         $entityManager->flush();
 
-        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups"=>"get_formation"]), Response::HTTP_CREATED);
+        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups" => "get_formation"]), Response::HTTP_CREATED);
 
         /*if(empty($nameFormation) || empty($idPersonne))
         {
@@ -313,8 +306,8 @@ class FormationController extends AbstractController
      */
     public function UpdateFormation(PersonneRepository $personneRepository, EntityManagerInterface $entityManager, IntervenantRepository $intervenantRepository, Request $request, ResponsableRepository $responsableRepository, Formation $formation = null): JsonResponse
     {
-        if($formation == null)
-            return new JsonResponse("La formation n'existe pas !",Response::HTTP_NOT_FOUND);
+        if ($formation == null)
+            return new JsonResponse("La formation n'existe pas !", Response::HTTP_NOT_FOUND);
 
         $respo_old = $formation->getResponsable();
 
@@ -324,55 +317,50 @@ class FormationController extends AbstractController
         $isAlternance = $data['isAlternance'];
 
         $personne = $personneRepository->find($idPersonne);
-        if($personne == null)
-        {
+        if ($personne == null) {
             return new JsonResponse("Personne avec l'ID '$idPersonne' inexistante !", Response::HTTP_NOT_FOUND);
         }
 
-        if($personne->hasRole("ROLE_ETUDIANT"))
-        {
+        if ($personne->hasRole("ROLE_ETUDIANT")) {
             return new JsonResponse("Un étudiant ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
         }
 
         $intervenant = $intervenantRepository->findOneByUsername($personne->getUsername());
-        if($intervenant != null && $intervenant->getExterne())
-        {
+        if ($intervenant != null && $intervenant->getExterne()) {
             return new JsonResponse("Un intervenant [externe] ne peux pas devenir responsable !", Response::HTTP_CONFLICT);
         }
 
-        //$personne->addRole("ROLE_RESPO");
         $newRespo = $responsableRepository->findOneByUsername($personne->getUsername());
-        if($newRespo == null)
-        {
+        if ($newRespo == null) {
             $newRespo = new Responsable();
             $newRespo->setPersonne($personne);
         }
+        if ($respo_old->getId() != $newRespo->getId()) {
+            $respo_old->removeFormation($formation);
+            $formation->setResponsable($newRespo);
+            $entityManager->persist($personne);
+            $entityManager->persist($newRespo);
+        }
 
-        $respo_old->removeFormation($formation);
-
-        $formation->setResponsable($newRespo);
         $formation->setIsAlternance($isAlternance);
         $formation->setNom($nameFormation);
 
-        $entityManager->persist($personne);
-        $entityManager->persist($newRespo);
         $entityManager->persist($formation);
 
 
         $formations = $respo_old->getFormations();
 
-        if(sizeof($formations) == 0)
-        {
+        if (sizeof($formations) == 0) {
             $personne = $respo_old->getPersonne();
             $personne->removeRole("ROLE_RESPO");
             $entityManager->remove($respo_old);
-        }else{
+        } else {
             $entityManager->persist($respo_old);
         }
 
         $entityManager->flush();
 
-        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups"=>"get_formation"]), Response::HTTP_OK);
+        return new JsonResponse(GenericSerializer::serializeJson($formation, ["groups" => "get_formation"]), Response::HTTP_OK);
 
         /*$repoResponse = $formationRepository->UpdateFormation($formationRepository, $entityManager, $idFormation, $request, $responsableRepository);
 
