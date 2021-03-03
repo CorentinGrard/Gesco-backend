@@ -43,8 +43,6 @@ class SessionRepository extends ServiceEntityRepository
 
         $sessions = $promotion->getSessions();
 
-
-
         if ($promotion->getAssistant() === $assistantConnected) {
             $sessionArray = [];
             foreach($sessions as $session) {
