@@ -303,7 +303,8 @@ class AppFixtures extends Fixture
             $dateDebut = $faker->dateTimeBetween($startDate = '-5 days', $endDate = '+5 days');
             if(date('H', $dateDebut->getTimestamp()) < 8) {
                 $dateDebut->setTime(8,0);
-            }elseif(date('H', $dateDebut->getTimestamp()) > 18) {
+            }
+            else if(date('H', $dateDebut->getTimestamp()) > 18) {
                 $dateDebut->setTime(18,0);
             }
             $dateFin = clone $dateDebut;
