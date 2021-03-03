@@ -223,28 +223,52 @@ class AppFixtures extends Fixture
 
         $k = 0;
         $modules = [];
-        foreach ($semestres as $semestre) {
-            $module = new Module();
-            $module->setNom(self::generateRandomString($k%5+10));
-            $module->setEcts(3);
-            $module->setSemestre($semestre);
-            $manager->persist($module);
 
-            array_push($modules, $module);
-            $k++;
+        $module = new Module();
+        $module->setNom("Génie Logiciel");
+        $module->setEcts(3);
+        $module->setSemestre($semestres[2]);
+        $manager->persist($module);
 
-            $module = new Module();
-            $module->setNom(self::generateRandomString(($k*$k)%5+10));
-            try {
-                $module->setEcts(random_int(0, 10));
-            } catch (\Exception $e) {
-            }
-            $module->setSemestre($semestre);
-            $manager->persist($module);
+        array_push($modules, $module);
 
-            array_push($modules, $module);
-            $k++;
-        }
+        $module = new Module();
+        $module->setNom("Gestion de projet");
+        $module->setEcts(5);
+        $module->setSemestre($semestres[2]);
+        $manager->persist($module);
+
+        array_push($modules, $module);
+
+
+        //$k++;
+
+
+
+
+
+//        foreach ($semestres as $semestre) {
+//            $module = new Module();
+//            $module->setNom(self::generateRandomString($k%5+10));
+//            $module->setEcts(3);
+//            $module->setSemestre($semestre);
+//            $manager->persist($module);
+//
+//            array_push($modules, $module);
+//            $k++;
+//
+//            $module = new Module();
+//            $module->setNom(self::generateRandomString(($k*$k)%5+10));
+//            try {
+//                $module->setEcts(random_int(0, 10));
+//            } catch (\Exception $e) {
+//            }
+//            $module->setSemestre($semestre);
+//            $manager->persist($module);
+//
+//            array_push($modules, $module);
+//            $k++;
+//        }
 
         $intervenant = new Intervenant();
         $personne = new Personne();
@@ -257,6 +281,19 @@ class AppFixtures extends Fixture
         $manager->persist($personne);
         $manager->persist($intervenant);
 
+
+        $intervenantASP = new Intervenant();
+        $personne = new Personne();
+        $personne->setPrenom($faker->firstName);
+        $personne->setNom($faker->lastName);
+        $personne->setEmail("intervenant.asp@gmail.com");
+        $intervenantASP->setPersonne($personne);
+        $intervenantASP->setExterne(true);
+
+        $manager->persist($personne);
+        $manager->persist($intervenantASP);
+
+
         $intervenantYan = new Intervenant();
         $intervenantYan->setPersonne($yan);
         $intervenantYan->setExterne(false);
@@ -267,57 +304,176 @@ class AppFixtures extends Fixture
 
         $k = 0;
         $matieres = [];
-        foreach ($modules as $module) {
-            //$faker = Factory::create();
 
-            $matiere = new Matiere();
-            $matiere->setNom($faker->firstName);
-            $matiere->setCoefficient($k % 4 + 1);
-            $matiere->setModule($module);
-            $matiere->setNombreHeuresAPlacer(($k % 5) * 1);
-            $matiere->addIntervenant($intervenant);
-            $manager->persist($matiere);
-            array_push($matieres, $matiere);
+        $matiere = new Matiere();
+        $matiere->setNom("Symfony");
+        $matiere->setCoefficient(2);
+        $matiere->setModule($modules[0]);
+        $matiere->setNombreHeuresAPlacer(21);
+        $matiere->addIntervenant($intervenant);
+        $manager->persist($matiere);
+        array_push($matieres, $matiere);
 
-            $matiere = new Matiere();
-            $matiere->setNom($faker->firstName);
-            $matiere->setCoefficient(($k*$k) % 4 + 1);
-            $matiere->setModule($module);
-            $matiere->setNombreHeuresAPlacer((($k*$k) % 5) * 1);
-            $manager->persist($matiere);
-            array_push($matieres, $matiere);
+        $matiere = new Matiere();
+        $matiere->setNom("ASP.NET");
+        $matiere->setCoefficient(3);
+        $matiere->setModule($modules[0]);
+        $matiere->setNombreHeuresAPlacer(25);
+        $matiere->addIntervenant($intervenantASP);
+        $manager->persist($matiere);
+        array_push($matieres, $matiere);
 
-            $k++;
-        }
+        $matiere = new Matiere();
+        $matiere->setNom("Projet");
+        $matiere->setCoefficient(3);
+        $matiere->setModule($modules[1]);
+        $matiere->setNombreHeuresAPlacer(143);
+        $matiere->addIntervenant($intervenantYan);
+        $manager->persist($matiere);
+        array_push($matieres, $matiere);
 
-        $mat = sizeof($matieres);
-        $bool = true;
-        for ($i = 0; $i < 20; $i++) {
-            //$faker = Factory::create();
 
-            $bool = !$bool;
+        // 01/03
+
+        $session = new Session();
+        $session->setMatiere($matieres[0]);
+        $session->setType(SessionType::TD);
+        $session->setObligatoire(true);
+        $dateDebut = new DateTime("2021-03-01");
+        $dateDebut->setTime(7,30);
+        $dateFin = clone $dateDebut;
+        $dateFin->setTime(11,30);
+        $session->setDateDebut($dateDebut);
+        $session->setDateFin($dateFin);
+        $session->addSessionSalle($salles[0]);
+        $session->setDetail("");
+        $manager->persist($session);
+
+        $session = new Session();
+        $session->setMatiere($matieres[0]);
+        $session->setType(SessionType::TD);
+        $session->setObligatoire(true);
+        $dateDebut = new DateTime("2021-03-01");
+        $dateDebut->setTime(12,45);
+        $dateFin = clone $dateDebut;
+        $dateFin->setTime(16,15);
+        $session->setDateDebut($dateDebut);
+        $session->setDateFin($dateFin);
+        $session->addSessionSalle($salles[0]);
+        $session->setDetail("");
+        $manager->persist($session);
+
+
+        for ($i = 2; $i < 5; $i++)
+        {
             $session = new Session();
-            $session->setMatiere($matieres[$i % $mat]);
-            $session->setType(SessionType::values[$i % 6 + 1]);
-            $session->setObligatoire($bool);
-            $dateDebut = $faker->dateTimeBetween($startDate = '-5 days', $endDate = '+5 days');
-            if(date('H', $dateDebut->getTimestamp()) < 8) {
-                $dateDebut->setTime(8,0);
-            }
-            else if(date('H', $dateDebut->getTimestamp()) > 18) {
-                $dateDebut->setTime(18,0);
-            }
+            $session->setMatiere($matieres[1]);
+            $session->setType(SessionType::COURS);
+            $session->setObligatoire(true);
+            $dateDebut = new DateTime("2021-03-0$i");
+            $dateDebut->setTime(8,0);
             $dateFin = clone $dateDebut;
-            $heure = $faker->numberBetween(1,3);
-            $min = $faker->randomElement([0,15,30,45]);
-            $dateFin->add(new \DateInterval('PT'.$heure.'H'.$min.'M'));
+            $dateFin->setTime(11,30);
             $session->setDateDebut($dateDebut);
             $session->setDateFin($dateFin);
-            $session->addSessionSalle($salles[$i]);
-            $session->setDetail($faker->randomAscii);
+            $session->addSessionSalle($salles[0]);
+            $session->setDetail("");
+            $manager->persist($session);
 
+            $session = new Session();
+            $session->setMatiere($matieres[1]);
+            $session->setType(SessionType::COURS);
+            $session->setObligatoire(true);
+            $dateDebut = new DateTime("2021-03-0$i");
+            $dateDebut->setTime(12,45);
+            $dateFin = clone $dateDebut;
+            $dateFin->setTime(16,15);
+            $session->setDateDebut($dateDebut);
+            $session->setDateFin($dateFin);
+            $session->addSessionSalle($salles[0]);
+            $session->setDetail("");
             $manager->persist($session);
         }
+
+        $session = new Session();
+        $session->setMatiere($matieres[2]);
+        $session->setType(SessionType::TP);
+        $session->setObligatoire(true);
+        $dateDebut = new DateTime("2021-03-05");
+        $dateDebut->setTime(8,0);
+        $dateFin = clone $dateDebut;
+        $dateFin->setTime(11,30);
+        $session->setDateDebut($dateDebut);
+        $session->setDateFin($dateFin);
+        $session->addSessionSalle($salles[0]);
+        $session->setDetail("");
+        $manager->persist($session);
+
+        $session = new Session();
+        $session->setMatiere($matieres[2]);
+        $session->setType(SessionType::TP);
+        $session->setObligatoire(true);
+        $dateDebut = new DateTime("2021-03-05");
+        $dateDebut->setTime(12,45);
+        $dateFin = clone $dateDebut;
+        $dateFin->setTime(16,15);
+        $session->setDateDebut($dateDebut);
+        $session->setDateFin($dateFin);
+        $session->addSessionSalle($salles[0]);
+        $session->setDetail("");
+        $manager->persist($session);
+
+//        foreach ($modules as $module) {
+//            //$faker = Factory::create();
+//
+//            $matiere = new Matiere();
+//            $matiere->setNom($faker->firstName);
+//            $matiere->setCoefficient($k % 4 + 1);
+//            $matiere->setModule($module);
+//            $matiere->setNombreHeuresAPlacer(($k % 5) * 1);
+//            $matiere->addIntervenant($intervenant);
+//            $manager->persist($matiere);
+//            array_push($matieres, $matiere);
+//
+//            $matiere = new Matiere();
+//            $matiere->setNom($faker->firstName);
+//            $matiere->setCoefficient(($k*$k) % 4 + 1);
+//            $matiere->setModule($module);
+//            $matiere->setNombreHeuresAPlacer((($k*$k) % 5) * 1);
+//            $manager->persist($matiere);
+//            array_push($matieres, $matiere);
+//
+//            $k++;
+//        }
+
+//        $mat = sizeof($matieres);
+//        $bool = true;
+//        for ($i = 0; $i < 20; $i++) {
+//            //$faker = Factory::create();
+//
+//            $bool = !$bool;
+//            $session = new Session();
+//            $session->setMatiere($matieres[$i % $mat]);
+//            $session->setType(SessionType::values[$i % 6 + 1]);
+//            $session->setObligatoire($bool);
+//            $dateDebut = $faker->dateTimeBetween($startDate = '-5 days', $endDate = '+5 days');
+//            if(date('H', $dateDebut->getTimestamp()) < 8) {
+//                $dateDebut->setTime(8,0);
+//            }
+//            else if(date('H', $dateDebut->getTimestamp()) > 18) {
+//                $dateDebut->setTime(18,0);
+//            }
+//            $dateFin = clone $dateDebut;
+//            $heure = $faker->numberBetween(1,3);
+//            $min = $faker->randomElement([0,15,30,45]);
+//            $dateFin->add(new \DateInterval('PT'.$heure.'H'.$min.'M'));
+//            $session->setDateDebut($dateDebut);
+//            $session->setDateFin($dateFin);
+//            $session->addSessionSalle($salles[$i]);
+//            $session->setDetail($faker->randomAscii);
+//
+//            $manager->persist($session);
+//        }
 
 
         // Ajout de personnes et d'étudiants
