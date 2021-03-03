@@ -126,7 +126,7 @@ class SemestreRepository extends ServiceEntityRepository
             if (sizeof($semestre->getModules()) > 0) {
                 return [
                     "status" => 409,
-                    "data" => "Présence de module(s) dans le semestre, suppression impossible."
+                    "error" => "Présence de module(s) dans le semestre, suppression impossible."
                 ];
             }
 
