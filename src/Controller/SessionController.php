@@ -317,7 +317,7 @@ class SessionController extends AbstractController
 
         $sessionArray = $sessionRepository->allSessionsBetweenStartDateAndEndDateForPromotionEtudiant($promotion, $startDate, $endDate);
 
-        $json = SessionSerializer::serializeJson($sessionArray, ['groups' => 'get_session_by_startDate_and_endDate']);
+        $json = SessionSerializer::serializeJson($sessionArray["data"], ['groups' => 'get_session_by_startDate_and_endDate']);
 
         return new JsonResponse($json, Response::HTTP_OK);
     }
