@@ -106,7 +106,8 @@ class FormationController extends AbstractController
 
         $entityManager->flush();
 
-        return new JsonResponse("Formation supprimée !", Response::HTTP_ACCEPTED);
+        $json = GenericSerializer::serializeJson($formation, ['groups' => 'get_formation']);
+        return new JsonResponse($json, Response::HTTP_ACCEPTED);
 
 
         /*$repoResponse = $formationRepository->DeleteFormationById($entityManager,$formationRepository, $idFormation);
