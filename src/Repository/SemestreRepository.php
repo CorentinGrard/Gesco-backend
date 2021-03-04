@@ -130,12 +130,13 @@ class SemestreRepository extends ServiceEntityRepository
                 ];
             }
 
+
             $entityManager->remove($semestre);
             $entityManager->flush();
 
             return [
                 "status" => 201,
-                "data" => $semestre,
+                "data" => $semestreSaved,
             ];
         }
         else {
