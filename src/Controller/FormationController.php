@@ -84,6 +84,12 @@ class FormationController extends AbstractController
         if ($formation == null)
             return new JsonResponse("La formation n'existe pas !", Response::HTTP_NOT_FOUND);
 
+        $promotionsOfFormation = $formation->getPromotions();
+
+        if(sizeof($promotionsOfFormation) > 0 ) {
+            return new JsonResponse("Vous ne pouvez supprimer une formation qui comporte des promotions", Response::HTTP_FORBIDDEN);
+        }
+
         $respo = $formation->getResponsable();
 
         $respo->removeFormation($formation);
